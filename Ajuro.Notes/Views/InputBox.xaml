@@ -1,0 +1,31 @@
+﻿<Window x:Class="MemoDrops.View.InputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoDrops.View"
+        mc:Ignorable="d"
+		Closing="Window_Closing"
+        Title="Input box" Height="200" Width="300">
+	<Grid>
+		<StackPanel Margin="10,0,10,0">
+			<Label Name="DilogueTitle" Foreground="Gray">Sharing your item...</Label>
+			<Label Name="DilogueItem" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="Azure" FontWeight="Bold">MyItemName</Label>
+			<Label Name="DilogueDescription" FontSize="10" Margin="10,0,10,-10" Foreground="Blue">Share by email:</Label>
+			<TextBox Name="QuestionAnswer" Margin="10" BorderBrush="Blue" PreviewKeyDown="QuestionAnswer_PreviewKeyDown" ToolTip="Type email here!"></TextBox>
+			<ProgressBar Minimum="0" Maximum="100" Name="ProgressIndicator" IsIndeterminate="False" Height="10" Margin="10,0,10,0"/>
+			<Label Name="ProgressText" Foreground="Red" FontSize="10" Margin="10,-5,10,0">A error occured. Please try again!</Label>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<StackPanel Name="LoginOptions" Orientation="Horizontal" HorizontalAlignment="Center">
+					<Button Name="NoButton" Content="No" Padding="10,0,10,0" Margin="10,0,10,0" Click="NoButton_Click" Background="Wheat"></Button>
+					<Button Name="YesButton" Content="Yes" Padding="10,0,10,0" Margin="10,0,10,0" Click="YesButton_Click" Background="GreenYellow"></Button>
+					<Button Name="CancelButton" Content="Cancel" Padding="10,0,10,0" Margin="10,0,10,0" Click="CancelButton_Click" Background="White" Visibility="Collapsed"></Button>
+					<Button Name="RetryButton" Content="Retry" Padding="10,0,10,0" Margin="10,0,10,0" Click="RetryButton_Click" Background="White" Visibility="Collapsed"></Button>
+				</StackPanel>
+			</StackPanel>
+			<ScrollViewer>
+				<TextBlock TextWrapping="WrapWithOverflow" Name="DilogueMore" Foreground="Gray">An email will be sent with the link. You will be notified when the link is accessed. Your email address will not be revealed.</TextBlock>
+			</ScrollViewer>
+		</StackPanel>
+	</Grid>
+</Window>

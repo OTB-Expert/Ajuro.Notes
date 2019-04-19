@@ -1,0 +1,33 @@
+﻿<Window x:Class="MemoDrops.View.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoDrops.View"
+        mc:Ignorable="d"
+		Closing="Window_Closing"
+        Title="Settings" Height="350" Width="300">
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Vertical">
+				<StackPanel Orientation="Horizontal">
+					<Label>Configuration:</Label>
+					<ComboBox Width="200" SelectionChanged="ComboBox_SelectionChanged" ItemsSource="{Binding SettingProfiles}" SelectedItem="{Binding SelectedProfile, Mode=TwoWay}">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding Name}" />
+								</StackPanel>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+				</StackPanel>
+				<Button Content="Add new property" Click="AddProperty_Click"></Button>
+				<StackPanel Name="PropertiesStackPanel" CanVerticallyScroll="True" MaxHeight="200">
+
+				</StackPanel>
+				<Button Content="Save" Click="SaveButton_Click"></Button>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</Window>

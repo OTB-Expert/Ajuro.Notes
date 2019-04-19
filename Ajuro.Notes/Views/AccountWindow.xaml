@@ -1,0 +1,33 @@
+﻿<Window x:Class="MemoDrops.View.AccountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoDrops.View"
+        mc:Ignorable="d"
+        Title="AccountWindow" Height="350" Width="300">
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Vertical">
+				<Label Name="ErrorLabel" Foreground="Red" HorizontalAlignment="Center" Content=""></Label>
+				<StackPanel Name="LoginOptions" Orientation="Horizontal" HorizontalAlignment="Center">
+					<Button Name="LogInSwitchButton" Content="LogIn" Padding="5,0,5,0" Margin="3" Click="LogInSwitchButton_Click" Background="AliceBlue"></Button>
+					<Button Name="SignInSwitchButton" Content="SignIn" Padding="5,0,5,0" Margin="3" Click="SignInSwitchButton_Click" Background="Wheat"></Button>
+				</StackPanel>
+				<Label Name="NameLabel">Publisher name will be public:</Label>
+				<TextBox Name="NameTextBox" Text="{Binding RealName, Mode=TwoWay}"></TextBox>
+				<Label Name="MailLabel">Email (not public):</Label>
+				<TextBox Name="MailTextBox" Text="{Binding Email, Mode=TwoWay}"></TextBox>
+				<Label Name="UsernameLabel">Username:</Label>
+				<TextBox Name="UsernameTextBok" Text="{Binding Username, Mode=TwoWay}"></TextBox>
+				<Label Name="SectretLabel">Secret word that will be saved in clear text:</Label>
+				<TextBox Name="SectretTextBox" Text="{Binding Password, Mode=TwoWay}" PreviewKeyUp="SectretTextBox_PreviewKeyUp"></TextBox>
+				<!--Label Name="Sectret2Label">Repeat Secret:</>
+				<TextBox Name="Sectret2TextBox" Text="{Binding Password, Mode=TwoWay}"></TextBox-->
+				<Label Name="ClientLabel">Let others follow your notes by PublisherID:</Label>
+				<TextBox Name="ClientText" Text="{Binding RowKey, Mode=TwoWay}" IsReadOnly="True" Background="LightGray" FontWeight="Bold"></TextBox>
+				<Button Name="ActionButton" Click="ActionButton_Click" Content="LogIn" Margin="10"></Button>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</Window>
