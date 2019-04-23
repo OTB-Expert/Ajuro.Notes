@@ -1,0 +1,19 @@
+﻿{
+"ResourceFolders": [
+{
+"Name": "Business Logic Fragments",
+"Path": "C:\\PRO\\PHP\\Ajuro.Html.tp\\api\\docs",
+"Type": "files"
+},
+{
+"Name": "Generator Template Fragments",
+"Path": "C:\\PRO\\PHP\\Ajuro.Html.tp\\templates",
+"Type": "files"
+},
+{
+"Name": "Notes",
+"Path": "C:\\Work\\Resources",
+"Type": "notes"
+}
+]
+}

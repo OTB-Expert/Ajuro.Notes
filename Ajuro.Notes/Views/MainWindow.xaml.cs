@@ -1,4 +1,5 @@
 ﻿using Markdig;
+using MemoDrops.DataAccess;
 using MemoDrops.Model;
 using MemoDrops.Views;
 using Newtonsoft.Json;
@@ -23,7 +24,16 @@ namespace MemoDrops.View
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private readonly AppViewModel view = new AppViewModel();
+
+		// Business configuration used to define this instance as a customized product.
+		BusinessConfiguration businessConfiguration = new BusinessConfiguration();
+
+		// Local settings related to environment.
 		LocalSettings localSettings = new LocalSettings();
+
+		public ResourceFolder SelectedResourceFolder { get; set; }
+
 		public string Mem { get; set; }
 
 		public UserAccount Me { get; set; }
@@ -40,7 +50,7 @@ namespace MemoDrops.View
 		/// <summary>
 		/// Last selected note item.
 		/// </summary>
-		MyItem CurrentItem { get; set; }
+		FileItem CurrentItem { get; set; }
 
 		/// <summary>
 		/// Last selected note item.
@@ -55,8 +65,8 @@ namespace MemoDrops.View
 		/// <summary>
 		/// All notes as a list fo binding.
 		/// </summary>
-		public ObservableCollection<MyItem> AllItems { get; set; }
-		public ObservableCollection<MyItem> FileItems { get; set; }
+		public ObservableCollection<FileItem> AllItems { get; set; }
+		public ObservableCollection<FileItem> FileItems { get; set; }
 
 		/// <summary>
 		/// Default public constructor
@@ -72,6 +82,12 @@ namespace MemoDrops.View
 		/// </summary>
 		private void CustomInitialize()
 		{
+			 LoginWithFacebookButton.DataContext = view;
+			LoginWithFacebookButton.Visibility = Visibility.Visible;
+
+
+			// Accept Tab key in RichTextBox
+			ResourceContentTextBox.AcceptsTab = true;
 			this.Closing += Window_Closing;
 			VisibilityLevels = new ObservableCollection<VisibilityLevel>()
 			{
@@ -95,6 +111,11 @@ namespace MemoDrops.View
 				}
 			};
 
+			if (File.Exists("Resources/Config/BusinessConfiguration.json"))
+			{
+				businessConfiguration = JsonConvert.DeserializeObject<BusinessConfiguration>(File.ReadAllText("Resources/Config/BusinessConfiguration.json"));
+				RepositorySourceComboBox.ItemsSource = businessConfiguration.ResourceFolders;
+			}
 			if (File.Exists("LocalSettings.json"))
 			{
 				localSettings = JsonConvert.DeserializeObject<LocalSettings>(File.ReadAllText("LocalSettings.json"));
@@ -122,7 +143,7 @@ namespace MemoDrops.View
 			}
 
 			ChannelSelector.SelectedIndex = 0;
-			FileItems = new ObservableCollection<MyItem>();
+			FileItems = new ObservableCollection<FileItem>();
 			// Don't be invasive, ask user for permission to ctreate stuffs on his disk if is not in your app folder.
 			if (!Directory.Exists(BasePath))
 			{
@@ -139,14 +160,16 @@ namespace MemoDrops.View
 
 			// Colect notes from disk
 			var files = Directory.GetFiles(BasePath).ToList();
-			ObservableCollection<MyItem> items = new ObservableCollection<MyItem>();
+			ObservableCollection<FileItem> items = new ObservableCollection<FileItem>();
 			foreach (string filePath in files)
 			{
 				if (filePath.EndsWith(".meta"))
 				{
 					NoteEntity noteMeta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(filePath));
-					items.Add(new MyItem()
+					items.Add(new FileItem()
 					{
+						Tags = noteMeta.Tags,
+						Files = noteMeta.Files,
 						Key = noteMeta.RowKey,
 						Name = noteMeta.Title,
 						Synced = noteMeta.Synced,
@@ -159,8 +182,8 @@ namespace MemoDrops.View
 			FilterNotes(string.Empty); // Dows it improve performance to wait for the list to be constructed?
 
 			// Wire-up events
-			ResourceContent.PreviewKeyUp += ResourceContent_PreviewKeyUp;
-			ResourceContent.PreviewKeyDown += ResourceContent_PreviewKeyDown;
+			ResourceContentTextBox.PreviewKeyUp += ResourceContentTextBox_PreviewKeyUp;
+			ResourceContentTextBox.PreviewKeyDown += ResourceContentTextBox_PreviewKeyDown;
 			Resource_Name.PreviewKeyUp += Resource_Name_PreviewKeyUp;
 			filesList.PreviewKeyUp += FilesList_PreviewKeyUp;
 
@@ -183,7 +206,7 @@ namespace MemoDrops.View
 			DataContext = this;
 		}
 
-		private void ResourceContent_PreviewKeyDown(object sender, KeyEventArgs e)
+		private void ResourceContentTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 			{
@@ -300,7 +323,7 @@ namespace MemoDrops.View
 			FileNr++;
 			// if (response == MessageBoxResult.Yes)
 			{
-				CurrentItem = new MyItem()
+				CurrentItem = new FileItem()
 				{
 					Name = itemName,
 					Key = Guid.NewGuid().ToString(),
@@ -308,7 +331,7 @@ namespace MemoDrops.View
 				};
 				FileItems.Add(CurrentItem);
 				AllItems.Add(CurrentItem);
-				ResourceContent.Document = new FlowDocument();
+				ResourceContentTextBox.Document = new FlowDocument();
 			}
 		}
 
@@ -316,11 +339,11 @@ namespace MemoDrops.View
 		private void ExecuteQuery(bool openWindow)
 		{
 			SQL.DataAccess dataAccess = new SQL.DataAccess();
-			string queryString = new TextRange(ResourceContent.Document.ContentStart, ResourceContent.Document.ContentEnd).Text;
+			string queryString = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd).Text;
 			var property = MainModel.Instance.SelectedProfile.Properties.Where(p => p.Key == "cs").FirstOrDefault();
 			string connectionString = property ==  null? string.Empty : property.Value;
 
-			if (queryString.StartsWith("-- SQL"))
+			if (queryString.StartsWith("-- SQL") || CurrentItem.Name.EndsWith(".sql"))
 			{
 				if(string.IsNullOrEmpty(connectionString))
 				{
@@ -347,11 +370,34 @@ namespace MemoDrops.View
 				PreviewHtml.NavigateToString(result);
 			}
 
-			if (queryString.StartsWith("-- MD"))
+			if (queryString.StartsWith("-- MD") || CurrentItem.Name.EndsWith(".md"))
 			{
 				var result = Markdown.ToHtml(queryString);
 				PreviewHtml.NavigateToString(result);
 			}
+
+			if (queryString.StartsWith("-- HTML") || CurrentItem.Name.EndsWith(".html"))
+			{
+				var result = Markdown.ToHtml(queryString);
+				PreviewHtml.NavigateToString(result);
+			}
+
+			if (queryString.StartsWith("-- JSON") || CurrentItem.Name.EndsWith(".json"))
+			{
+				var result = Markdown.ToHtml(queryString);
+				PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
+			}
+
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+			{
+				Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + CurrentItem.Key);
+			}
+			if (Keyboard.Modifiers == ModifierKeys.Shift)
+			{
+				File.WriteAllText("Results.html", File.ReadAllText("C:\\Work\\Resources\\" + CurrentItem.Key));
+				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "Results.html");
+			}
+
 		}
 
 		/// <summary>
@@ -428,7 +474,7 @@ namespace MemoDrops.View
 		/// </summary>
 		/// <param name="sender">Control</param>
 		/// <param name="e">Event</param>
-		private void ResourceContent_PreviewKeyUp(object sender, KeyEventArgs e)
+		private void ResourceContentTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
 		{
 			KeyShortcuts.Visibility = Visibility.Collapsed;
 			ExecuteWindowAction(e);
@@ -439,8 +485,66 @@ namespace MemoDrops.View
 			}
 		}
 
-		private void ReloadItems(string entity, string action, string channel)
+		private void ReloadItems(ResourceFolder rootFolder)
 		{
+			var itemProvider = new ItemProvider();
+
+			var rawItemsList = itemProvider.GetItems(rootFolder.Path);
+			bool hasMetadata = rootFolder.Type=="notes";
+
+			AllItems.Clear();
+			foreach (var item in rawItemsList)
+			{
+				if (hasMetadata)
+				{
+					if (!item.Name.EndsWith(".meta"))
+					{
+						continue;
+					}
+					else
+					{
+						var meta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(BasePath + item.Name));
+						AllItems.Add(new FileItem()
+						{
+							Tags = meta.Tags,
+							Files = meta.Files,
+							Author = meta.Author,
+							Name = meta.Title,
+							Key = meta.RowKey,
+							Synced = DateTime.Now
+						});
+					}
+				}
+				else
+				{
+					List<string> files = new List<string>();
+					if(File.Exists(item.Path))
+					{
+						files.Add(item.Path);
+					}
+					else
+					{
+						// Is a folder
+						files.AddRange(Directory.GetFiles(item.Path));
+					}
+
+					AllItems.Add(new FileItem()
+					{
+						Name = item.Name,
+						Synced = DateTime.Now,
+						Label = string.Empty,
+						Files = files
+
+					});
+				}
+			}
+			FilterNotes(string.Empty);
+			StatusBartextBlock.Text = "Found " + AllItems.Count + " items;";
+		}
+			private void ReloadItems(string entity, string action, string channel)
+			{
+				
+
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create(MainModel.UrlBase + entity + "/" + action + "/" + channel);
 			httpWebRequest.ContentType = "application/json";
 			httpWebRequest.Method = "GET";
@@ -461,7 +565,7 @@ namespace MemoDrops.View
 						File.WriteAllText(BasePath + item.RowKey, item.Content);
 						item.Content = string.Empty;
 						File.WriteAllText(BasePath + item.RowKey + ".meta", JsonConvert.SerializeObject(item));
-						AllItems.Add(new MyItem()
+						AllItems.Add(new FileItem()
 						{
 							Name = item.RowKey,
 							Synced = DateTime.Now,
@@ -508,7 +612,7 @@ namespace MemoDrops.View
 					}
 					item.Content = string.Empty;
 					// File.WriteAllText(BasePath + item.RowKey + ".meta", JsonConvert.SerializeObject(item));
-					AllItems.Add(new MyItem()
+					AllItems.Add(new FileItem()
 					{
 						Author = item.Author,
 						Name = item.Title,
@@ -536,7 +640,7 @@ namespace MemoDrops.View
 
 			using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
 			{
-				TextRange range = new TextRange(ResourceContent.Document.ContentStart, ResourceContent.Document.ContentEnd);
+				TextRange range = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd);
 				NoteEntity item = new NoteEntity()
 				{
 					Author = Me.RowKey,
@@ -576,13 +680,13 @@ namespace MemoDrops.View
 		/// </summary>
 		private void DuplicateItem(string entity)
 		{
-			MyItem NewCurrentItem = new MyItem()
+			FileItem NewCurrentItem = new FileItem()
 			{
 				Name = CurrentItem.Name,
 				Label = ""
 			};
 			FileItems.Add(NewCurrentItem);
-			TextRange range = new TextRange(ResourceContent.Document.ContentStart, ResourceContent.Document.ContentEnd);
+			TextRange range = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd);
 			File.WriteAllText(BasePath + CurrentItem.Name, range.Text);
 			CurrentItem.Label = "";
 		}
@@ -592,13 +696,19 @@ namespace MemoDrops.View
 		/// </summary>
 		private void SaveItem(string entity)
 		{
-			TextRange range = new TextRange(ResourceContent.Document.ContentStart, ResourceContent.Document.ContentEnd);
+			TextRange range = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd);
+			if(CurrentItem.Key == null)
+			{
+				CurrentItem.Key = Guid.NewGuid().ToString(); 
+			}
 			File.WriteAllText(BasePath + CurrentItem.Key, range.Text);
 			CurrentItem.Name = Resource_Name.Text;
 			CurrentItem.LastUpdated = DateTime.UtcNow;
 			File.WriteAllText(BasePath + CurrentItem.Key + ".meta", JsonConvert.SerializeObject(
 			new NoteEntity()
 			{
+				Tags = CurrentItem.Tags,
+				Files = CurrentItem.Files,
 				Author = SelectedChannel,
 				RowKey = CurrentItem.Key,
 				Synced = CurrentItem.Synced,
@@ -624,7 +734,7 @@ namespace MemoDrops.View
 		/// <param name="e"></param>
 		private void FilesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			CurrentItem = ((MyItem)filesList.SelectedItem);
+			CurrentItem = ((FileItem)filesList.SelectedItem);
 			if (CurrentItem != null)
 			{
 				Resource_Name.Text = CurrentItem.Name;
@@ -632,17 +742,54 @@ namespace MemoDrops.View
 				FlowDocument LinksReaderDocument = new FlowDocument();
 				Paragraph ResourceContentParagraph = new Paragraph();
 				Paragraph LinksReaderParagraph = new Paragraph();
+				AdditionalFiles.Children.Clear();
+				AdditionalFiles.Orientation = Orientation.Horizontal;
+
+				if (CurrentItem.Files != null)
+				{
+					AdditionalFilesContainer.Visibility = Visibility.Visible;
+					foreach (string file in CurrentItem.Files)
+					{
+						Label label = new Label();
+						label.Content = file.Substring(file.LastIndexOf("\\") + 1);
+						AdditionalFiles.Children.Add(label);
+						// label
+					}
+				}
+
+				TagsStackPanel.Children.Clear();
+				if (CurrentItem.Tags != null)
+				{
+					foreach (string tag in CurrentItem.Tags)
+					{
+						Label label = new Label();
+						label.Content = tag;
+						TagsStackPanel.Children.Add(label);
+					}
+				}
+
 				if (!File.Exists(BasePath + CurrentItem.Key))
 				{
 					CurrentItem.Label = "!";
+					ResourceContentTextBox.Document = new FlowDocument();
+					DataTabControl.SelectedIndex = 1;
+
+					if (CurrentItem.Files != null)
+					{
+						string resourceContent = File.ReadAllText(CurrentItem.Files[0]);
+						LinksReaderParagraph.Inlines.Add(new Run(resourceContent));
+						LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
+						LinksReader.Document = LinksReaderDocument;
+					}
 					return;
 				}
+
 				string content = File.ReadAllText(BasePath + CurrentItem.Key);
 				ResourceContentParagraph.Inlines.Add(new Run(content));
 				LinksReaderParagraph.Inlines.Add(new Run(content));
 
 				ResourceContentDocument.Blocks.Add(ResourceContentParagraph);
-				ResourceContent.Document = ResourceContentDocument;
+				ResourceContentTextBox.Document = ResourceContentDocument;
 
 				LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
 				LinksReader.Document = LinksReaderDocument;
@@ -772,26 +919,63 @@ namespace MemoDrops.View
 
 		private void LinksReader_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			var start = ResourceContent.Document.ContentStart;
-			var here = ResourceContent.CaretPosition;
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+			{
+				SelectText(true);
+			}
+
+			if (Keyboard.Modifiers == ModifierKeys.Shift)
+			{
+				SelectText(false);
+			}
+		}
+
+		public void SelectText(bool isSpecial)
+		{ 
+			var start = ResourceContentTextBox.Document.ContentStart;
+			var here = ResourceContentTextBox.CaretPosition;
 			var range = new TextRange(start, here);
 			int indexInText = range.Text.Length;
 
-			string allText = new TextRange(ResourceContent.Document.ContentStart, ResourceContent.Document.ContentEnd).Text;
+			string allText = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd).Text;
 			allText = allText.Substring(0, (allText.IndexOf("\n", indexInText)));
 			int fromIndex = allText.LastIndexOf("\n")+2;
 			int toIndex = allText.Length + 1;
 			allText = allText.Substring(allText.LastIndexOf("\n") + 1).Trim();
-			TextPointer fromPointer = ResourceContent.Document.ContentStart.GetPositionAtOffset(fromIndex);
-			TextPointer toPointer = ResourceContent.Document.ContentStart.GetPositionAtOffset(toIndex);
-			ResourceContent.Selection.Select(fromPointer, toPointer);
+			TextPointer fromPointer = ResourceContentTextBox.Document.ContentStart.GetPositionAtOffset(fromIndex);
+			TextPointer toPointer = ResourceContentTextBox.Document.ContentStart.GetPositionAtOffset(toIndex);
+			ResourceContentTextBox.Selection.Select(fromPointer, toPointer);
 			TextRange newRange = new TextRange(fromPointer, toPointer);
 
 			if(allText.StartsWith("> "))
 			{
 				try
 				{
-					Process.Start(allText.Substring(2));
+					var fileName = string.Empty;
+					if(!allText.ToUpper().Contains(" C:"))
+					{
+						fileName = allText.Substring(2);
+					}
+					else
+					{
+						fileName = allText.Substring(20);
+					}
+					var existentPage = AllItems.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
+					if (existentPage != null)
+					{
+						var visiblePage = FileItems.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
+						if(visiblePage==null)
+						{
+							FileItems.Add(existentPage);
+							visiblePage = existentPage;
+						}
+						filesList.SelectedItem = visiblePage;
+						Adopt(existentPage);
+					}
+					else
+					{
+						Process.Start(allText.Substring(2));
+					}
 				}
 				catch(Exception ex)
 				{
@@ -799,6 +983,12 @@ namespace MemoDrops.View
 				}
 			}
 		}
+
+		private void Adopt(FileItem item)
+		{
+			throw new NotImplementedException();
+		}
+
 		private void LinksReader_TextChanged(object sender, TextChangedEventArgs e)
 		{
 
@@ -810,7 +1000,7 @@ namespace MemoDrops.View
 			settingsWindow.Show();
 		}
 
-		private void ResourceContent_KeyUp(object sender, KeyEventArgs e)
+		private void ResourceContentTextBox_KeyUp(object sender, KeyEventArgs e)
 		{
 			if(Keyboard.Modifiers == ModifierKeys.None)
 			{
@@ -820,11 +1010,11 @@ namespace MemoDrops.View
 
 		private void Image_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			MyItem item = (MyItem)((Image)sender).Tag;
+			FileItem item = (FileItem)((Image)sender).Tag;
 			ShareItem(item);
 		}
 
-		private void ShareItem(MyItem item)
+		private void ShareItem(FileItem item)
 		{
 			InputBox inputBox = new InputBox("Send to email:");
 			inputBox.Answered += InputBox_Answered;
@@ -857,19 +1047,76 @@ namespace MemoDrops.View
 
 		private void ShareButton_Click(object sender, RoutedEventArgs e)
 		{
-			MyItem item = (MyItem)((Button)sender).Tag;
+			FileItem item = (FileItem)((Button)sender).Tag;
 			ShareItem(item);
 		}
 
 		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			// Process.Start(CurrentItem.Name);
+		}
+
+		private void RepositorySourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if(RepositorySourceComboBox.SelectedItem != null)
+			{
+				SelectedResourceFolder = (ResourceFolder)RepositorySourceComboBox.SelectedItem;
+				ReloadItems(SelectedResourceFolder);
+			}
+		}
+
+		private void ItemResourcesButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (SelectedResourceFolder != null)
+			{
+				Process.Start(SelectedResourceFolder.Path + "\\" + CurrentItem.Name);
+			}
+		}
+
+		private void TagsButton_Click(object sender, RoutedEventArgs e)
+		{
 
 		}
+
+		private void TagEditor_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Tab || e.Key == Key.Enter)
+			{
+				Label label = new Label();
+				label.Content = TagEditor.Text.Trim().ToLower();
+				TagsStackPanel.Children.Add(label);
+				CurrentItem.Tags.Add(TagEditor.Text.Trim().ToLower());
+				TagEditor.Text = string.Empty;
+			}
+
+			if(e.Key == Key.Delete || e.Key == Key.Back)
+			{
+				if (TagEditor.Text == "")
+				{
+					readyForDelete = !readyForDelete;
+					if (readyForDelete)
+					{
+						if (TagsStackPanel.Children.Count > 0)
+						{
+							CurrentItem.Tags.RemoveAt(CurrentItem.Tags.Count-1);
+							TagsStackPanel.Children.RemoveAt(TagsStackPanel.Children.Count - 1);
+						}
+					}
+				}
+			}
+			else
+			{
+				readyForDelete = false;
+			}
+		}
+		bool readyForDelete = false;
 	}
-	
+
 	public class NoteEntity
 	{
 		public string RowKey { get; set; }
+		public List<string> Tags { get; set; }
+		public List<string> Files { get; set; }
 		public DateTime Synced { get; set; }
 		public string Author { get; set; }
 		public string Title { get; set; }
