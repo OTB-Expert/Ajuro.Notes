@@ -100,6 +100,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StatusToColorConverter.cs" />
+    <Compile Include="Model\ItemList.cs" />
     <Compile Include="Model\KeyValue.cs" />
     <Compile Include="Model\LocalSettings.cs" />
     <Compile Include="Model\MyItem.cs" />

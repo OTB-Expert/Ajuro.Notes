@@ -37,7 +37,7 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal">
 				<Label>Order by:</Label>
-				<ComboBox MinWidth="100">
+				<ComboBox x:Name="orderCriteria" MinWidth="100" SelectionChanged="orderCriteria_SelectionChanged">
 					<ComboBoxItem>Most likes</ComboBoxItem>
 					<ComboBoxItem>Most visited by you</ComboBoxItem>
 					<ComboBoxItem>Name</ComboBoxItem>
@@ -50,7 +50,8 @@
 			</StackPanel>
 			<TextBox Name="FilterItems" KeyUp="FilterItems_KeyUp" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Background="AliceBlue" Margin="4"></TextBox>
 			<ListView Name="filesList" 
-				  ItemsSource="{Binding FileItems}" 
+				  ItemsSource="{Binding FileItemsView, Mode=TwoWay}" 
+				  IsSynchronizedWithCurrentItem="True"
 				  Grid.Column="0" Grid.Row="3" Grid.RowSpan="2" 
 				  SelectionChanged="FilesList_SelectionChanged" 
 				  MouseDoubleClick="FilesList_MouseDoubleClick"
