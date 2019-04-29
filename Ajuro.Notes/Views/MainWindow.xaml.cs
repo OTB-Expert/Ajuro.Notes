@@ -425,7 +425,7 @@ namespace MemoDrops.View
 				var itemVar = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
 				string variables = File.ReadAllText(BasePath + itemVar.Key);
 				var itemTemplate = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
-				if (File.Exists(BasePath + itemTemplate.Key))
+				if (itemTemplate == null || File.Exists(BasePath + itemTemplate.Key))
 				{
 					string template = File.ReadAllText(BasePath + itemTemplate.Key);
 					if (template.IndexOf("============== Vars end ==============") > -1)
