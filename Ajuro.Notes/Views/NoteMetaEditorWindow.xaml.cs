@@ -9,14 +9,14 @@ namespace MemoDrops.Views
 	/// </summary>
 	public partial class NoteMetaEditorWindow : Window
 	{
-		MyItem Item { get; set; }
+		FileItem Item { get; set; }
 
 		public NoteMetaEditorWindow()
 		{
 			InitializeComponent();
 		}
 
-		internal void LinkData(MyItem item)
+		internal void LinkData(FileItem item)
 		{
 			Item = item;
 		}
