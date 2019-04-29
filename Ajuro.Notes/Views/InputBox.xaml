@@ -10,7 +10,7 @@
 	<Grid>
 		<StackPanel Margin="10,0,10,0">
 			<Label Name="DilogueTitle" Foreground="Gray">Sharing your item...</Label>
-			<Label Name="DilogueItem" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="Azure" FontWeight="Bold">MyItemName</Label>
+			<Label Name="DilogueItem" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="Azure" FontWeight="Bold">FileItemName</Label>
 			<Label Name="DilogueDescription" FontSize="10" Margin="10,0,10,-10" Foreground="Blue">Share by email:</Label>
 			<TextBox Name="QuestionAnswer" Margin="10" BorderBrush="Blue" PreviewKeyDown="QuestionAnswer_PreviewKeyDown" ToolTip="Type email here!"></TextBox>
 			<ProgressBar Minimum="0" Maximum="100" Name="ProgressIndicator" IsIndeterminate="False" Height="10" Margin="10,0,10,0"/>

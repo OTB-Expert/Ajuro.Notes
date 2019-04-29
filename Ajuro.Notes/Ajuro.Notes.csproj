@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>MemoDrops</RootNamespace>
     <AssemblyName>MemoDrops</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +35,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,6 +68,9 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ajuro.Net.Templater, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ajuro.Net.Templater.1.0.0\lib\netstandard2.0\Ajuro.Net.Templater.dll</HintPath>
+    </Reference>
     <Reference Include="Markdig, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.16.0\lib\net40\Markdig.dll</HintPath>
     </Reference>
@@ -76,7 +78,7 @@
       <HintPath>..\packages\Markdown.2.2.1\lib\net451\Markdown.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -104,10 +106,10 @@
     <Compile Include="DataAccess\ItemProvider.cs" />
     <Compile Include="Model\BusinessConfiguration.cs" />
     <Compile Include="Model\DirectoryItem.cs" />
+    <Compile Include="Model\FileItem.cs" />
     <Compile Include="Model\ItemList.cs" />
     <Compile Include="Model\KeyValue.cs" />
     <Compile Include="Model\LocalSettings.cs" />
-    <Compile Include="Model\FileItem.cs" />
     <Compile Include="Model\SettingsProfile.cs" />
     <Compile Include="Model\UserAccount.cs" />
     <Compile Include="Model\VisibilityLevel.cs" />
@@ -210,12 +212,6 @@
     <Content Include="Resources\Theme\Default\style.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Cezar\Ajuro.WPF.Controls\Ajuro.WPF.Controls\Ajuro.WPF.Controls.csproj">
-      <Project>{e00796a0-7df2-4b99-8c3c-8653e27244c0}</Project>
-      <Name>Ajuro.WPF.Controls</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

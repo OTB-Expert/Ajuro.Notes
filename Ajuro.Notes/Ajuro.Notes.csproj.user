@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <PublishUrlHistory>ftp://ftp.otb.expert/MemoDrops/</PublishUrlHistory>
     <InstallUrlHistory>https://otb.expert/MemoDrops/</InstallUrlHistory>
     <SupportUrlHistory />
