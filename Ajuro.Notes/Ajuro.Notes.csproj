@@ -116,6 +116,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SQL\DataAccess.cs" />
+    <Compile Include="Views\TemplaterInstruction.cs" />
     <Page Include="Views\InputBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -202,6 +203,12 @@
     <Content Include="Resources\Theme\Default\style.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Cezar\Ajuro.Net.Templater\Ajuro.Net.Templater\Ajuro.Net.Templater.csproj">
+      <Project>{6b5e6a2a-acd0-4a0d-93a7-3573a13ed909}</Project>
+      <Name>Ajuro.Net.Templater</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
