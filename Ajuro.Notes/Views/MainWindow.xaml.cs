@@ -3,6 +3,7 @@ using MemoDrops.DataAccess;
 using MemoDrops.Model;
 using MemoDrops.Views;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Ajuro.Template.Processor;
 
 namespace MemoDrops.View
 {
@@ -195,9 +197,9 @@ namespace MemoDrops.View
 			SelectedProfileIndicator.DataContext = MainModel.Instance;
 			EnvironmentComboBox.DataContext = MainModel.Instance;
 
-			if(!string.IsNullOrEmpty(localSettings.ProfileName) && MainModel.Instance.SettingProfiles !=null)
+			if (!string.IsNullOrEmpty(localSettings.ProfileName) && MainModel.Instance.SettingProfiles != null)
 			{
-				MainModel.Instance.SelectedProfile = MainModel.Instance.SettingProfiles.Where(p=>p.Name.Equals(localSettings.ProfileName)).FirstOrDefault();
+				MainModel.Instance.SelectedProfile = MainModel.Instance.SettingProfiles.Where(p => p.Name.Equals(localSettings.ProfileName)).FirstOrDefault();
 			}
 
 			if (MainModel.Instance.SelectedProfile == null)
@@ -313,7 +315,7 @@ namespace MemoDrops.View
 		/// <summary>
 		/// Add a new note
 		/// </summary>
-		private void NewItem(string itemName = null)
+		private void NewItem(string itemName = null, string content = null)
 		{
 			if (string.IsNullOrEmpty(itemName))
 			{
@@ -338,22 +340,27 @@ namespace MemoDrops.View
 			}
 		}
 
+		public string ExecuteSQL(string connectionString, string queryString)
+		{
+			SQL.DataAccess dataAccess = new SQL.DataAccess();
+			string result = dataAccess.ExecuteQuery(connectionString, queryString);
+			return result;
+		}
 
 		private void ExecuteQuery(bool openWindow)
 		{
-			SQL.DataAccess dataAccess = new SQL.DataAccess();
 			string queryString = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd).Text;
 			var property = MainModel.Instance.SelectedProfile.Properties.Where(p => p.Key == "cs").FirstOrDefault();
-			string connectionString = property ==  null? string.Empty : property.Value;
+			string connectionString = property == null ? string.Empty : property.Value;
 
 			if (queryString.StartsWith("-- SQL") || FileItems.CurrentItem.Name.EndsWith(".sql"))
 			{
-				if(string.IsNullOrEmpty(connectionString))
+				if (string.IsNullOrEmpty(connectionString))
 				{
-					MessageBox.Show("Please define a property named cs with the value of your connectionString in your current environment or change the environment from "+ MainModel.Instance.SelectedProfile.Name, "No connection string defined!");
+					MessageBox.Show("Please define a property named cs with the value of your connectionString in your current environment or change the environment from " + MainModel.Instance.SelectedProfile.Name, "No connection string defined!");
 					return;
 				}
-				string result = dataAccess.ExecuteQuery(connectionString, queryString);
+				string result = ExecuteSQL(connectionString, queryString);
 				string theme = File.ReadAllText("Resources/Theme/Default/style.css");
 				string view = "<style>" + theme + "</style>" + result;
 				File.WriteAllText("Results.html", view);
@@ -401,6 +408,35 @@ namespace MemoDrops.View
 				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "Results.html");
 			}
 
+
+			if (queryString.StartsWith("-- HTML") || FileItems.CurrentItem.Name.EndsWith(".html"))
+			{
+				PreviewHtml.NavigateToString(queryString);
+			}
+
+			if (queryString.StartsWith("-- RD") || FileItems.CurrentItem.Name.EndsWith(".rd"))
+			{
+				TemplaterInstruction templaterInstruction = JsonConvert.DeserializeObject<TemplaterInstruction>(queryString);
+				TemplateProcessor TemplateProcessor = null;
+				TemplateInterpreter TemplateInterpreter = null;
+				TemplateProcessor = new TemplateProcessor();
+				TemplateInterpreter = new TemplateInterpreter();
+
+				var itemVar = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
+				string variables = File.ReadAllText(BasePath + itemVar.Key);
+				var itemTemplate = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
+				string template = File.ReadAllText(BasePath + itemTemplate.Key);
+				if(template.IndexOf("============== Vars end ==============") > -1)
+				{
+					template = template.Substring(template.IndexOf("============== Vars end ==============") + "============== Vars end ==============".Length);
+				}
+				var vars = new List<AjuVarset>() { TemplateProcessor.ToAjuVarset(JObject.Parse(variables)) };
+				var result = TemplateProcessor.TestCase(template, vars[0].Varset);
+				var result0 = TemplateProcessor.UpdateTemplate(variables, template);
+				// NewItem(templaterInstruction.Ready, result);
+				TemplateInterpreter.InterpretProcessedTemplate(result0);
+				PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
+			}
 		}
 
 		/// <summary>
@@ -582,9 +618,7 @@ namespace MemoDrops.View
 			FilterNotes(string.Empty);
 			StatusBartextBlock.Text = "Found " + added + " new items from " + found;
 		}
-
-
-
+		
 		private void PreviewItems(string entity, string action, string channel)
 		{
 			if (AllItems == null)
@@ -631,7 +665,7 @@ namespace MemoDrops.View
 
 		private void UploadItem(string entity)
 		{
-			if(string.IsNullOrEmpty(Me.RowKey))
+			if (string.IsNullOrEmpty(Me.RowKey))
 			{
 				Login();
 			}
@@ -943,7 +977,7 @@ namespace MemoDrops.View
 
 			string allText = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd).Text;
 			allText = allText.Substring(0, (allText.IndexOf("\n", indexInText)));
-			int fromIndex = allText.LastIndexOf("\n")+2;
+			int fromIndex = allText.LastIndexOf("\n") + 2;
 			int toIndex = allText.Length + 1;
 			allText = allText.Substring(allText.LastIndexOf("\n") + 1).Trim();
 			TextPointer fromPointer = ResourceContentTextBox.Document.ContentStart.GetPositionAtOffset(fromIndex);
@@ -951,7 +985,7 @@ namespace MemoDrops.View
 			ResourceContentTextBox.Selection.Select(fromPointer, toPointer);
 			TextRange newRange = new TextRange(fromPointer, toPointer);
 
-			if(allText.StartsWith("> "))
+			if (allText.StartsWith("> "))
 			{
 				try
 				{
@@ -981,7 +1015,7 @@ namespace MemoDrops.View
 						Process.Start(allText.Substring(2));
 					}
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 
 				}
@@ -1006,7 +1040,7 @@ namespace MemoDrops.View
 
 		private void ResourceContentTextBox_KeyUp(object sender, KeyEventArgs e)
 		{
-			if(Keyboard.Modifiers == ModifierKeys.None)
+			if (Keyboard.Modifiers == ModifierKeys.None)
 			{
 				// CurrentItem.Status = 1;
 			}
@@ -1034,7 +1068,7 @@ namespace MemoDrops.View
 		{
 
 		}
-		
+
 		private void Window_Closing(object sender, CancelEventArgs e)
 		{
 			SaveLocalSettings();
@@ -1046,8 +1080,6 @@ namespace MemoDrops.View
 			localSettings.ProfileName = MainModel.Instance.SelectedProfile.Name;
 			File.WriteAllText("LocalSettings.json", JsonConvert.SerializeObject(localSettings));
 		}
-
-		
 
 		private void ShareButton_Click(object sender, RoutedEventArgs e)
 		{

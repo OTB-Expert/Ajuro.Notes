@@ -68,8 +68,8 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ajuro.Net.Templater, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ajuro.Net.Templater.1.0.0\lib\netstandard2.0\Ajuro.Net.Templater.dll</HintPath>
+    <Reference Include="Ajuro.Net.Templater, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ajuro.Net.Templater.1.0.1\lib\netstandard2.0\Ajuro.Net.Templater.dll</HintPath>
     </Reference>
     <Reference Include="Markdig, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.16.0\lib\net40\Markdig.dll</HintPath>
@@ -123,6 +123,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SQL\DataAccess.cs" />
+    <Compile Include="Views\TemplaterInstruction.cs" />
     <Page Include="Views\InputBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
