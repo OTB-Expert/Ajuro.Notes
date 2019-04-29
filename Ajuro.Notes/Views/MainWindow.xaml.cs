@@ -425,17 +425,24 @@ namespace MemoDrops.View
 				var itemVar = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
 				string variables = File.ReadAllText(BasePath + itemVar.Key);
 				var itemTemplate = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
-				string template = File.ReadAllText(BasePath + itemTemplate.Key);
-				if(template.IndexOf("============== Vars end ==============") > -1)
+				if (File.Exists(BasePath + itemTemplate.Key))
 				{
-					template = template.Substring(template.IndexOf("============== Vars end ==============") + "============== Vars end ==============".Length);
+					string template = File.ReadAllText(BasePath + itemTemplate.Key);
+					if (template.IndexOf("============== Vars end ==============") > -1)
+					{
+						template = template.Substring(template.IndexOf("============== Vars end ==============") + "============== Vars end ==============".Length);
+					}
+					var vars = new List<AjuVarset>() { TemplateProcessor.ToAjuVarset(JObject.Parse(variables)) };
+					var result = TemplateProcessor.TestCase(template, vars[0].Varset);
+					var result0 = TemplateProcessor.UpdateTemplate(variables, template);
+					// NewItem(templaterInstruction.Ready, result);
+					TemplateInterpreter.InterpretProcessedTemplate(result0);
+					PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
 				}
-				var vars = new List<AjuVarset>() { TemplateProcessor.ToAjuVarset(JObject.Parse(variables)) };
-				var result = TemplateProcessor.TestCase(template, vars[0].Varset);
-				var result0 = TemplateProcessor.UpdateTemplate(variables, template);
-				// NewItem(templaterInstruction.Ready, result);
-				TemplateInterpreter.InterpretProcessedTemplate(result0);
-				PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
+				else
+				{
+					PreviewHtml.NavigateToString("<pre>Missing template file!</pre>");
+				}
 			}
 		}
 
