@@ -29,8 +29,10 @@
             <Button>Send the link by email</Button>
 
             <Label>Read-only invitation to this note:</Label>
-            <TextBox>http://otb.expert/notes/164322378743</TextBox>
-           
-        </StackPanel>
+			<TextBox>http://otb.expert/notes/164322378743</TextBox>
+			<TextBox Name="RepoNameTextBox" MouseDoubleClick="RepoName_MouseDoubleClick"></TextBox>
+			<TextBox Name="FileNameTextBox" MouseDoubleClick="FileName_MouseDoubleClick"></TextBox>
+			<TextBox Name="MetaTextBox" MouseDoubleClick="Meta_MouseDoubleClick"></TextBox>
+		</StackPanel>
     </Grid>
 </Window>

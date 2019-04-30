@@ -49,6 +49,7 @@
 					</ComboBox>
 					<StackPanel Orientation="Horizontal">
 						<Label Name="SortByNameLabel" Content="N" MouseUp="SortByNameLabel_MouseUp"></Label>
+						<CheckBox Name="RealTimeCompileCheckBox" Content="RT" Checked="RealTimeCompileCheckBox_Checked"></CheckBox>
 					</StackPanel>
 					<ComboBox MinWidth="100" Name="OrderCriteriaComboBox"  SelectionChanged="orderCriteria_SelectionChanged">
 					<ComboBoxItem>Most likes</ComboBoxItem>
@@ -109,9 +110,10 @@
 				<StackPanel Name="TagsStackPanel" Orientation="Horizontal"></StackPanel>
 				<TextBox Name="TagEditor" PreviewKeyUp="TagEditor_KeyUp" MinWidth="50" AcceptsTab="True"></TextBox>
 			</StackPanel>
-			<StackPanel Name="AdditionalFilesContainer" Orientation="Horizontal">
-				<Button Name="ItemResourcesButton" Content="Resources" Click="ItemResourcesButton_Click"></Button>
-				<StackPanel Name="AdditionalFiles"></StackPanel>
+			<StackPanel Name="FilesContainer" Orientation="Horizontal">
+				<Button Name="ItemResourcesButton" Content="R" Click="ItemResourcesButton_Click"></Button>
+				<StackPanel Name="FilesStackPanel" Orientation="Horizontal"></StackPanel>
+				<TextBox Name="FileEditor" PreviewKeyUp="FileEditor_KeyUp" MinWidth="50" AcceptsTab="True"></TextBox>
 			</StackPanel>
 			<TabControl Name="DataTabControl" HorizontalAlignment="Stretch">
 				<TabItem Header="Content">

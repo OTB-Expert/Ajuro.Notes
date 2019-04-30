@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Ajuro.Template.Processor;
+using System.Windows.Media;
 
 namespace MemoDrops.View
 {
@@ -68,11 +69,12 @@ namespace MemoDrops.View
 		//public ObservableCollection<FileItem> FileItems { get; set; }
         public ItemList FileItems { get; set; }
         public static  ItemList AllItems { get; set; }
+		public bool CompileRT { get; private set; }
 
-        /// <summary>
-        /// Default public constructor
-        /// </summary>
-        public MainWindow()
+		/// <summary>
+		/// Default public constructor
+		/// </summary>
+		public MainWindow()
 		{
 			InitializeComponent();
 			CustomInitialize();
@@ -119,6 +121,10 @@ namespace MemoDrops.View
 			{
 				businessConfiguration = JsonConvert.DeserializeObject<BusinessConfiguration>(File.ReadAllText("Resources/Config/BusinessConfiguration.json"));
 				RepositorySourceComboBox.ItemsSource = businessConfiguration.ResourceFolders;
+				if(businessConfiguration.ResourceFolders.Count > 0)
+				{
+					RepositorySourceComboBox.SelectedIndex = 0;
+				}
 			}
 			if (File.Exists("LocalSettings.json"))
 			{
@@ -425,7 +431,7 @@ namespace MemoDrops.View
 				var itemVar = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
 				string variables = File.ReadAllText(BasePath + itemVar.Key);
 				var itemTemplate = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
-				if (itemTemplate == null || File.Exists(BasePath + itemTemplate.Key))
+				if (itemTemplate != null && File.Exists(BasePath + itemTemplate.Key))
 				{
 					string template = File.ReadAllText(BasePath + itemTemplate.Key);
 					if (template.IndexOf("============== Vars end ==============") > -1)
@@ -437,7 +443,7 @@ namespace MemoDrops.View
 					var result0 = TemplateProcessor.UpdateTemplate(variables, template);
 					// NewItem(templaterInstruction.Ready, result);
 					TemplateInterpreter.InterpretProcessedTemplate(result0);
-					PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
+					PreviewHtml.NavigateToString("<pre>" + result0 + "</pre>");
 				}
 				else
 				{
@@ -484,7 +490,7 @@ namespace MemoDrops.View
 					consumed = true;
 					SaveItem("notes");
 				}
-				if (e.Key == Key.F5)
+				if (e.Key == Key.F5 || CompileRT)
 				{
 					consumed = true;
 					ExecuteQuery(Keyboard.Modifiers == ModifierKeys.Control);
@@ -748,17 +754,7 @@ namespace MemoDrops.View
 			File.WriteAllText(BasePath + FileItems.CurrentItem.Key, range.Text);
 			FileItems.CurrentItem.Name = Resource_Name.Text;
 			FileItems.CurrentItem.LastUpdated = DateTime.UtcNow;
-			File.WriteAllText(BasePath + FileItems.CurrentItem.Key + ".meta", JsonConvert.SerializeObject(
-			new NoteEntity()
-			{
-				Tags = FileItems.CurrentItem.Tags,
-				Files = FileItems.CurrentItem.Files,
-				Author = SelectedChannel,
-				RowKey = FileItems.CurrentItem.Key,
-				Synced = FileItems.CurrentItem.Synced,
-				Content = string.Empty,
-				Title = Resource_Name.Text
-			})) ;
+			SaveItemMeta();
             /*CurrentItem.Label = "";
 			CurrentItem.Name = Resource_Name.Text;
 			if (CurrentItem.Name.ToLower() != CurrentItem.NameOriginal.ToLower())
@@ -787,18 +783,23 @@ namespace MemoDrops.View
 				Paragraph ResourceContentParagraph = new Paragraph();
 				Paragraph LinksReaderParagraph = new Paragraph();
 				if (!File.Exists(BasePath + FileItems.CurrentItem.Key))
-				AdditionalFiles.Children.Clear();
-				AdditionalFiles.Orientation = Orientation.Horizontal;
-
+				{
+					TagsStackPanel.Children.Clear();
+					FilesStackPanel.Children.Clear();
+				}
+				TagsStackPanel.Orientation = Orientation.Horizontal;
+			
+				FilesStackPanel.Children.Clear();
 				if (FileItems.CurrentItem.Files != null)
 				{
-					AdditionalFilesContainer.Visibility = Visibility.Visible;
+					FilesContainer.Visibility = Visibility.Visible;
 					foreach (string file in FileItems.CurrentItem.Files)
 					{
 						Label label = new Label();
+						label.BorderBrush = Brushes.Gray;
+						label.BorderThickness = new Thickness(2);
 						label.Content = file.Substring(file.LastIndexOf("\\") + 1);
-						AdditionalFiles.Children.Add(label);
-						// label
+						FilesStackPanel.Children.Add(label);
 					}
 				}
 
@@ -907,7 +908,7 @@ namespace MemoDrops.View
 		{
 			// Process.Start("notepad.exe", BasePath + CurrentItem.Key + ".meta");
 			NoteMetaEditorWindow editorWindow = new NoteMetaEditorWindow();
-			editorWindow.LinkData(FileItems.CurrentItem);
+			editorWindow.LinkData(FileItems.CurrentItem, SelectedResourceFolder);
 			editorWindow.Show();
 		}
 
@@ -1117,7 +1118,10 @@ namespace MemoDrops.View
 		{
 			if (SelectedResourceFolder != null)
 			{
-				Process.Start(SelectedResourceFolder.Path + "\\" + FileItems.CurrentItem.Name);
+				if (Directory.Exists(SelectedResourceFolder.Path + "\\" + FileItems.CurrentItem.Name))
+				{
+					Process.Start(SelectedResourceFolder.Path + "\\" + FileItems.CurrentItem.Name);
+				}
 			}
 		}
 
@@ -1133,8 +1137,13 @@ namespace MemoDrops.View
 				Label label = new Label();
 				label.Content = TagEditor.Text.Trim().ToLower();
 				TagsStackPanel.Children.Add(label);
-			FileItems.CurrentItem.Tags.Add(TagEditor.Text.Trim().ToLower());
+				if(FileItems.CurrentItem.Tags == null)
+				{
+					FileItems.CurrentItem.Tags = new List<string>();
+				}
+				FileItems.CurrentItem.Tags.Add(TagEditor.Text.Trim().ToLower());
 				TagEditor.Text = string.Empty;
+				SaveItemMeta();
 			}
 
 			if(e.Key == Key.Delete || e.Key == Key.Back)
@@ -1157,6 +1166,22 @@ namespace MemoDrops.View
 				readyForDelete = false;
 			}
 		}
+
+		private void SaveItemMeta()
+		{
+			File.WriteAllText(BasePath + FileItems.CurrentItem.Key + ".meta", JsonConvert.SerializeObject(
+			new NoteEntity()
+			{
+				Tags = FileItems.CurrentItem.Tags,
+				Files = FileItems.CurrentItem.Files,
+				Author = SelectedChannel,
+				RowKey = FileItems.CurrentItem.Key,
+				Synced = FileItems.CurrentItem.Synced,
+				Content = string.Empty,
+				Title = Resource_Name.Text
+			}));
+		}
+
 		bool readyForDelete = false;
 
 		private void Label_MouseLeave(object sender, MouseEventArgs e)
@@ -1168,6 +1193,34 @@ namespace MemoDrops.View
 		{
 			bool isAsccending = FileItems.OrderByName("Name");
 			SortByNameLabel.Foreground = isAsccending ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Magenta;
+		}
+
+		private void RealTimeCompileCheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			CompileInRealTime(RealTimeCompileCheckBox.IsChecked);
+		}
+
+		private void CompileInRealTime(bool? isChecked)
+		{
+			CompileRT = true;
+		}
+
+		private void FileEditor_KeyUp(object sender, KeyEventArgs e)
+		{
+
+			if (e.Key == Key.Tab || e.Key == Key.Enter)
+			{
+				Label label = new Label();
+				label.Content = FileEditor.Text.Trim().ToLower();
+				FilesStackPanel.Children.Add(label);
+				if (FileItems.CurrentItem.Files == null)
+				{
+					FileItems.CurrentItem.Files = new List<string>();
+				}
+				FileItems.CurrentItem.Files.Add(FileEditor.Text.Trim().ToLower());
+				FileEditor.Text = string.Empty;
+				SaveItemMeta();
+			}
 		}
 	}
 
