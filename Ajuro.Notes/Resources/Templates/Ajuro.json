@@ -1,0 +1,181 @@
+﻿{
+"Items": [
+{
+"Title": "Title",
+"Layout": "Postman",
+"Items": [
+
+
+{
+"Title": "Id_Products",
+"Layout": "Postman",
+"Items": [
+{
+"Path": "gen_uni.Title.php",
+"Verb": "POST",
+"Dev": "Tested",
+"AJURO": "list_Id_Products",
+"Title": "list_Products",
+"Source": "gen_ui_first",
+"Headers": [
+{
+"Key": "Content-Type",
+"Value": "application/json"
+}
+],
+"QueryParameters": [],
+"ResponseParameters": [],
+"RequestParameters": [],
+"Marker": "English",
+"Query": "SELECT * FROM `Id_Products` LIMIT 30;"
+},
+{
+"Path": "gen_uni.Title.php",
+"Verb": "POST",
+"Dev": "Tested",
+"AJURO": "read_Id_Products",
+"Title": "read_Products",
+"Source": "gen_ui_first",
+"Headers": [
+{
+"Key": "Content-Type",
+"Value": "application/json"
+}
+],
+"QueryParameters": [],
+"ResponseParameters": [],
+"RequestParameters": [
+{
+"Name": "Id",
+"Type": "int",
+"Value": 0
+}
+],
+"Marker": "English",
+"Query": "SELECT * FROM `Id_Products` WHERE `Id` =  '{Id}' LIMIT 30;"
+},
+{
+"Path": "gen_uni.Title.php",
+"Verb": "POST",
+"Dev": "Tested",
+"AJURO": "create_Id_Products",
+"Title": "create_Products",
+"Source": "gen_ui_first",
+"Headers": [
+{
+"Key": "Content-Type",
+"Value": "application/json"
+}
+],
+"QueryParameters": [],
+"ResponseParameters": [
+{
+"Name": "Id",
+"Type": "int",
+"Value": 0
+}
+],
+"RequestParameters": [
+{
+"Name": "Title",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Image",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Price",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Rating",
+"Type": "varchar",
+"Value": "10"
+}
+],
+"Marker": "English",
+"Query": "INSERT INTO `Id_Products`( `Title` , `Image` , `Price` , `Rating`) VALUES (    '{Title}'   , '{Image}'   , '{Price}'   , '{Rating}' );"
+},
+{
+"Path": "gen_uni.Title.php",
+"Verb": "POST",
+"Dev": "Tested",
+"AJURO": "update_Id_Products",
+"Title": "update_Products",
+"Source": "gen_ui_first",
+"Headers": [
+{
+"Key": "Content-Type",
+"Value": "application/json"
+}
+],
+"QueryParameters": [],
+"ResponseParameters": [],
+"RequestParameters": [
+{
+"Name": "Id",
+"Type": "int",
+"Value": "10"
+},
+{
+"Name": "Title",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Image",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Price",
+"Type": "varchar",
+"Value": "10"
+},
+{
+"Name": "Rating",
+"Type": "varchar",
+"Value": "10"
+}
+],
+"Marker": "English",
+"Query": "UPDATE `Id_Products` SET  `Title`='{Title}' , `Image`='{Image}' , `Price`='{Price}' , `Rating`='{Rating}' WHERE `Id`='{Id}';"
+},
+{
+"Path": "gen_uni.Title.php",
+"Verb": "POST",
+"Dev": "Tested",
+"AJURO": "delete_Id_Products",
+"Title": "delete_Products",
+"Source": "gen_ui_first",
+"Headers": [
+{
+"Key": "Content-Type",
+"Value": "application/json"
+}
+],
+"QueryParameters": [],
+"ResponseParameters": [],
+"RequestParameters": [
+{
+"Name": "Id",
+"Type": "int",
+"Value": 0
+}
+],
+"Marker": "English",
+"Query": "DELETE FROM `Id_Products` WHERE `Id` = '{Id}';"
+}
+]
+}
+
+
+]
+}
+]
+}   
+  
