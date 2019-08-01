@@ -1,0 +1,77 @@
+﻿<Window x:Class="Ajuro.Notes.Views.FragmentSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ajuro.Notes.Views"
+        xmlns:net="clr-namespace:Ajuro.Net.Template.Processor;assembly=Ajuro.Net.Template.Processor"
+        mc:Ignorable="d"
+        Title="FragmentSelector" Height="450" Width="800">
+    <Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="3"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="3"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="3"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<RichTextBox ManipulationStarted="OrigonalRichTextBox_ManipulationStarted" ManipulationCompleted="OrigonalRichTextBox_ManipulationCompleted" TouchDown="OrigonalRichTextBox_TouchDown"  TouchUp="OrigonalRichTextBox_TouchUp" AutoWordSelection="False" MouseDoubleClick="OrigonalRichTextBox_MouseDoubleClick"  MouseDown="OrigonalRichTextBox_MouseDown" MouseUp="OrigonalRichTextBox_MouseUp" SelectionChanged="OrigonalRichTextBox_SelectionChanged" Name="OriginalCodeRichTextBox" Grid.Column="0" HorizontalAlignment="Left">
+			<FlowDocument PageHeight="180">
+				<Paragraph>
+					<Run Text="{Binding OriginalCode, Mode=TwoWay}"/>
+				</Paragraph>
+			</FlowDocument>
+		</RichTextBox>
+		<GridSplitter Grid.Column="1"></GridSplitter>
+		<DockPanel Grid.Column="2">
+			<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+				<!--CheckBox Name="RealTimeUpdatesCheckBox" IsChecked="{Binding RealTimeUpdates}">Real time</-->
+
+				<Button Content="Clear all Markers" Click="Button_Click"/>
+				<Label>Fragment type</Label>
+				<RadioButton Name="RadioButtonRepeat" Checked="RadioButtonRepeat_Checked">Repeat</RadioButton>
+				<RadioButton Name="RadioButtonReplace" Checked="RadioButtonReplace_Checked">Replace</RadioButton>
+				<DockPanel>
+					<Label>Name:</Label>
+					<TextBox Name="FragmentNameTextBox" KeyUp="FragmentNameTextBox_KeyUp" Text="{Binding CurrentFragment.Name, Mode=TwoWay}"></TextBox>
+				</DockPanel>
+				<DockPanel>
+					<Label>From:</Label>
+					<TextBox MinWidth="50" KeyUp="SelectionFromTextBox_KeyUp" Name="SelectionFromTextBox" Text="{Binding CurrentFragment.SelectionStart, Mode=TwoWay}"></TextBox>
+					<Label>To:</Label>
+					<TextBox MinWidth="50" KeyUp="SelectionToTextBox_KeyUp" Name="SelectionToTextBox" Text="{Binding CurrentFragment.SelectionLength, Mode=TwoWay}"></TextBox>
+				</DockPanel>
+				<TextBox Name="FragmentContentTextBox" TextChanged="FragmentContentTextBox_TextChanged" Text="{Binding CurrentFragment.Content, Mode=TwoWay}"></TextBox>
+			</StackPanel>
+			<RichTextBox Name="RichTextBoxCodeFragment" KeyUp="RichTextBoxCodeFragment_KeyUp">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding JsonSampleString, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+		</DockPanel>
+		<GridSplitter Grid.Column="3"></GridSplitter>
+		<TreeView Grid.Column="4" KeyUp="FragmentsTreeView_KeyUp" SelectedItemChanged="FragmentsTreeView_SelectedItemChanged" Name="FragmentsTreeView" ItemsSource="{Binding RootCodeFragment.Fragments}">
+			<TreeView.Resources>
+				<HierarchicalDataTemplate DataType="{x:Type net:CodeFragment}"  ItemsSource="{Binding Path=Fragments}">
+
+					<!-- Display the AnimalCategory by showing it's Category string -->
+					<TextBlock FontWeight="Bold" Text="{Binding Path=Name}" />
+				</HierarchicalDataTemplate>
+			</TreeView.Resources>
+		</TreeView>
+		<RichTextBox Visibility="Collapsed" Grid.Column="4" SelectionChanged="OrigonalRichTextBox_SelectionChanged" HorizontalAlignment="Left">
+			<FlowDocument PageHeight="180">
+				<Paragraph>
+					<Run Text="{Binding StructureJson, Mode=TwoWay}"/>
+				</Paragraph>
+			</FlowDocument>
+		</RichTextBox>
+		<GridSplitter Grid.Column="5"></GridSplitter>
+		<WebBrowser Grid.Column="6" Name="webBrowserPreview"></WebBrowser>
+
+	</Grid>
+</Window>

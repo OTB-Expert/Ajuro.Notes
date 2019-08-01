@@ -1,27 +1,50 @@
-﻿using System;
+﻿using Ajuro.Notes.View;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 
 
 	/// <summary>
 	/// The structure of a note
 	/// </summary>
-	public class FileItem : INotifyPropertyChanged
+	public class MultiFileDocument : INotifyPropertyChanged
 	{
-		public FileItem()
+		public MultiFileDocument()
 		{
-			Tags = new List<string>();
+			Tags = new ObservableCollection<string>();
+			AffectedFiles = new ObservableCollection<AffectedFile>();
 		}
 
-		public List<string> Tags { get; set; }
-		public List<string> Files { get; set; }
+		public ObservableCollection<string> Tags { get; set; }
+		public ObservableCollection<string> files { get; set; }
+		public ObservableCollection<string> Files
+		{
+			get { return files; }
+			set
+			{
+				files = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<AffectedFile> affectedFiles { get; set; }
+		public ObservableCollection<AffectedFile> AffectedFiles
+		{
+			get { return affectedFiles; }
+			set
+			{
+				affectedFiles = value;
+				NotifyPropertyChanged();
+			}
+		}
 
 		public VisibilityLevel visibility { get; set; }
 		public VisibilityLevel Visibility
@@ -97,6 +120,8 @@ namespace MemoDrops.Model
 				NotifyPropertyChanged();
 			}
 		}
+
+		public TemplaterInstruction TemplaterInstruction { get; internal set; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

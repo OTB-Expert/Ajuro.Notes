@@ -1,4 +1,6 @@
-﻿using MemoDrops.Model;
+﻿using Ajuro.Notes.Model;
+using Ajuro.Notes.View;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,14 +8,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoDrops.DataAccess
+namespace Ajuro.Notes.DataAccess
 {
-
-	public class ItemProvider
+	public class FileDataAccess
 	{
-		public List<FileItem> GetItems(string path)
+		/// <summary>
+		/// Saving a simplified structure
+		/// </summary>
+		/// <param name="basePath">The path to phisical file. This is defined by the current repository.</param>
+		/// <param name="item">The file item to save. It is the current item of the main model.</param>
+		public void SaveItemMeta(string basePath, MultiFileDocument item)
 		{
-			var items = new List<FileItem>();
+			File.WriteAllText(basePath + item.Key + ".meta", JsonConvert.SerializeObject(
+			   new NoteEntity()
+			   {
+				   Tags = item.Tags,
+				   Files = item.Files,
+				   // Author = SelectedChannel,
+				   RowKey = item.Key,
+				   Synced = item.Synced,
+				   Content = string.Empty,
+				   Title = item.Name
+			   }));
+		}
+
+		/// <summary>
+		/// Collect file items
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public List<MultiFileDocument> GetItems(string path)
+		{
+			var items = new List<MultiFileDocument>();
 
 			var dirInfo = new DirectoryInfo(path);
 
@@ -31,7 +57,7 @@ namespace MemoDrops.DataAccess
 
 			foreach (var file in dirInfo.GetFiles())
 			{
-				var item = new FileItem
+				var item = new MultiFileDocument
 				{
 					Name = file.Name,
 					Path = file.FullName

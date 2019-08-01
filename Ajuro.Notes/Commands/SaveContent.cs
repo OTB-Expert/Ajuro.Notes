@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MemoDrops.Commands
+namespace Ajuro.Notes.Commands
 	{
 		class SaveContent : ICommand
 		{

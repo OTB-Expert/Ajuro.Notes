@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class UserAccount : INotifyPropertyChanged
 	{

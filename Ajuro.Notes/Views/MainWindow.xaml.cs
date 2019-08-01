@@ -1,7 +1,7 @@
 ﻿using Markdig;
-using MemoDrops.DataAccess;
-using MemoDrops.Model;
-using MemoDrops.Views;
+using Ajuro.Notes.DataAccess;
+using Ajuro.Notes.Model;
+using Ajuro.Notes.Views;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,17 +16,50 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Ajuro.Template.Processor;
 using System.Windows.Media;
+using Ajuro.Net.Template.Processor;
+using System.Text;
 
-namespace MemoDrops.View
+namespace Ajuro.Notes.View
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public string ScriptErrorSuppressor = "<script>window.onerror = function(msg,url,line){return true;}</script>";
+		public List<LogEntry> LogEntries = new List<LogEntry>();
+		public int logLevel = 0;
+		public void Log(LogEntry logEntry)
+		{
+			logEntry.LogLevel = logLevel;
+			LogEntries.Add(logEntry);
+			Console.WriteLine(logEntry.Message);
+		}
+		public string LogEntriesToHtml()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (LogEntry logEntry in LogEntries)
+			{
+				sb.AppendLine("<div>" + new String('.', logEntry.LogLevel) + "<span class='type'>" + (logEntry.Type == LogType.Normal ? "" : logEntry.Type.ToString()) + "</span> <span class='message'>" + logEntry.Message + "</span>" + (string.IsNullOrEmpty(logEntry.Link) ? "" : " <span class='link'>" + logEntry.Link + "</span>") + "</div>");
+			}
+			return sb.ToString();
+		}
+		public string LogEntriesToText()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (LogEntry logEntry in LogEntries)
+			{
+				sb.AppendLine(new String('\t', logEntry.LogLevel) + logEntry.Message);
+			}
+			return sb.ToString();
+		}
+
+
 		private readonly AppViewModel view = new AppViewModel();
+		private FileDataAccess FileDataAccess { get; set; }
+		private TemplateInterpreter templateInterpreter = null;
+		private TemplateProcessor templateProcessor = null;
 
 		// Business configuration used to define this instance as a customized product.
 		BusinessConfiguration businessConfiguration = new BusinessConfiguration();
@@ -64,13 +97,6 @@ namespace MemoDrops.View
 		/// </summary>
 		static int FileNr = 0;
 
-		/// <summary>
-		/// All notes as a list fo binding.
-		/// </summary>
-		//public ObservableCollection<FileItem> AllItems { get; set; }
-		//public ObservableCollection<FileItem> FileItems { get; set; }
-        public ItemList FileItems { get; set; }
-        public static  ItemList AllItems { get; set; }
 		public bool CompileRT { get; private set; }
 
 		/// <summary>
@@ -87,6 +113,7 @@ namespace MemoDrops.View
 		/// </summary>
 		private void CustomInitialize()
 		{
+			FileDataAccess = new FileDataAccess();
 			LoginWithFacebookButton.DataContext = view;
 			LoginWithFacebookButton.Visibility = Visibility.Visible;
 
@@ -94,16 +121,15 @@ namespace MemoDrops.View
 			// Accept Tab key in RichTextBox
 			ResourceContentTextBox.AcceptsTab = true;
 			this.Closing += Window_Closing;
-			FileItems = new ItemList(
-				new List<FileItem>
+			MainModel.Instance.FileItems = new ItemList(
+				new List<MultiFileDocument>
 				{ }
 				);
-			AllItems = new ItemList(
-				new List<FileItem>
+			MainModel.Instance.AllItems = new ItemList(
+				new List<MultiFileDocument>
 				{ }
 				);
 
-			this.Closing += Window_Closing;
 			VisibilityLevels = new ObservableCollection<VisibilityLevel>()
 			{
 				new VisibilityLevel()
@@ -139,9 +165,9 @@ namespace MemoDrops.View
 			{
 				localSettings = JsonConvert.DeserializeObject<LocalSettings>(File.ReadAllText("LocalSettings.json"));
 			}
-			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account"))
+			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account"))
 			{
-				string myIdentity = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/me.json");
+				string myIdentity = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/me.json");
 				Me = JsonConvert.DeserializeObject<UserAccount>(myIdentity);
 
 				ChannelSelector.Items.Insert(0, Me.RowKey);
@@ -162,7 +188,7 @@ namespace MemoDrops.View
 			}
 
 			ChannelSelector.SelectedIndex = 0;
-			FileItems.Items = new ObservableCollection<FileItem>();
+			MainModel.Instance.FileItems.Items = new ObservableCollection<MultiFileDocument>();
 			// Don't be invasive, ask user for permission to ctreate stuffs on his disk if is not in your app folder.
 			if (!Directory.Exists(BasePath))
 			{
@@ -179,13 +205,13 @@ namespace MemoDrops.View
 
 			// Colect notes from disk
 			var files = Directory.GetFiles(BasePath).ToList();
-			ObservableCollection<FileItem> items = new ObservableCollection<FileItem>();
+			ObservableCollection<MultiFileDocument> items = new ObservableCollection<MultiFileDocument>();
 			foreach (string filePath in files)
 			{
 				if (filePath.EndsWith(".meta"))
 				{
 					NoteEntity noteMeta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(filePath));
-					items.Add(new FileItem()
+					items.Add(new MultiFileDocument()
 					{
 						Tags = noteMeta.Tags,
 						Files = noteMeta.Files,
@@ -197,19 +223,20 @@ namespace MemoDrops.View
 					});
 				}
 			}
-			AllItems.Items = items;
+			MainModel.Instance.AllItems.Items = items;
 			FilterNotes(string.Empty); // Dows it improve performance to wait for the list to be constructed?
 
 			// Wire-up events
 			ResourceContentTextBox.PreviewKeyUp += ResourceContentTextBox_PreviewKeyUp;
 			ResourceContentTextBox.PreviewKeyDown += ResourceContentTextBox_PreviewKeyDown;
 			Resource_Name.PreviewKeyUp += Resource_Name_PreviewKeyUp;
-			filesList.PreviewKeyUp += FilesList_PreviewKeyUp;
+			MultyFileDocumentsList.PreviewKeyUp += FilesList_PreviewKeyUp;
 
 			InisializeSettings();
 
-			SelectedProfileIndicator.DataContext = MainModel.Instance;
-			EnvironmentComboBox.DataContext = MainModel.Instance;
+			// SelectedProfileIndicator.DataContext = MainModel.Instance;
+			// EnvironmentComboBox.DataContext = MainModel.Instance;
+			// CurentItemLabel.DataContext = MainModel.Instance;
 
 			if (!string.IsNullOrEmpty(localSettings.ProfileName) && MainModel.Instance.SettingProfiles != null)
 			{
@@ -222,7 +249,18 @@ namespace MemoDrops.View
 			}
 
 			// Provide me as model
-			DataContext = FileItems;
+			DataContext = MainModel.Instance;
+
+			string filterString = localSettings.LastFilterValue;
+			FilterItems.Text = filterString;
+			FilterNotes(filterString);
+
+			if (!string.IsNullOrEmpty(localSettings.LastDocumentName))
+			{
+				MultiFileDocument lastDocument = GeDocumentByName(localSettings.LastDocumentName);
+				MultyFileDocumentsList.SelectedItem = lastDocument;
+				Adopt(lastDocument);
+			}
 		}
 
 		private void ResourceContentTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -230,16 +268,17 @@ namespace MemoDrops.View
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 			{
 				KeyShortcuts.Visibility = Visibility.Visible;
+				ButtonShortcuts.Visibility = Visibility.Collapsed;
 			}
 		}
 
 		private void InisializeSettings()
 		{
-			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account"))
+			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account"))
 			{
-				if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json"))
+				if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json"))
 				{
-					string mySettings = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json");
+					string mySettings = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json");
 					var profiles = JsonConvert.DeserializeObject<List<SettingsProfile>>(mySettings);
 					MainModel.Instance.SettingProfiles = new ObservableCollection<SettingsProfile>();
 					foreach (var profile in profiles)
@@ -256,43 +295,43 @@ namespace MemoDrops.View
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Pre-Alfa",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Alfa",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Beta",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "RC",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "RTM",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "GA",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Live",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 			}
 		}
@@ -306,13 +345,13 @@ namespace MemoDrops.View
 		{
 			if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
 			{
-				FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
+				MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
 			}
 			if (e.Key == Key.D && Keyboard.Modifiers == ModifierKeys.Control)
 			{
 				DuplicateItem("notes");
 			}
-			if (FileItems.CurrentItem != null)
+			if (MainModel.Instance.FileItems.CurrentItem != null)
 			{
 				if (e.Key == Key.Delete)
 				{
@@ -342,14 +381,14 @@ namespace MemoDrops.View
 			FileNr++;
 			// if (response == MessageBoxResult.Yes)
 			{
-				FileItems.CurrentItem = new FileItem()
+				MainModel.Instance.FileItems.CurrentItem = new MultiFileDocument()
 				{
 					Name = itemName,
 					Key = Guid.NewGuid().ToString(),
 					Label = "!!"
 				};
-				FileItems.Add(FileItems.CurrentItem);
-				AllItems.Add(FileItems.CurrentItem);
+				MainModel.Instance.FileItems.Add(MainModel.Instance.FileItems.CurrentItem);
+				MainModel.Instance.AllItems.Add(MainModel.Instance.FileItems.CurrentItem);
 				ResourceContentTextBox.Document = new FlowDocument();
 			}
 		}
@@ -361,12 +400,37 @@ namespace MemoDrops.View
 			return result;
 		}
 
-		private void ExecuteQuery(bool openWindow)
+		private void ExecuteQuery(Key key, bool openWindow)
 		{
 			SQL.DataAccess dataAccess = new SQL.DataAccess();
 			string queryString = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd).Text;
 			var property = MainModel.Instance.SelectedProfile.Properties.Where(p => p.Key == "cs").FirstOrDefault();
-			string connectionString = property == null ? string.Empty : property.Value;
+			string connectionString = property.Value == null ? string.Empty : property.Value.ToString();
+
+
+			// Edit in external editor!
+			if (Keyboard.Modifiers == ModifierKeys.Control && key == Key.F5)
+			{
+				Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + MainModel.Instance.FileItems.CurrentItem.Key);
+				return;
+			}
+			else if (queryString.StartsWith("-- MD") || MainModel.Instance.FileItems.CurrentItem.Name.EndsWith(".md"))
+			{
+				var result = Markdown.ToHtml(queryString);
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor  + "<div>You can not execute a MD file. Change to another file if you need to execute.</div>" + result);
+				return;
+			}
+
+			if (MainModel.Instance.FileItems.CurrentItem.Files!= null && MainModel.Instance.FileItems.CurrentItem.Files.Count > 0 && MainModel.Instance.FileItems.CurrentItem.Files[0].EndsWith(".rd"))
+			{
+				SaveItem("notes");
+				MultiFileDocument document = GeDocumentByName(MainModel.Instance.FileItems.CurrentItem.Files[0]);
+				if (document != null)
+				{
+					ExecuteTemplate(File.ReadAllText(BasePath + document.Key));
+				}
+				return;
+			}
 
 			if (queryString.StartsWith("-- SQL"))
 			{
@@ -383,7 +447,7 @@ namespace MemoDrops.View
 				{
 					Process.Start("Results.html");
 				}
-				PreviewHtml.NavigateToString(view);
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor + view);
 				if (string.IsNullOrEmpty(MainModel.Instance.JsonRepresentation))
 				{
 					PreviewJson.NavigateToString("Parse Error");
@@ -392,96 +456,290 @@ namespace MemoDrops.View
 				{
 					PreviewJson.NavigateToString(MainModel.Instance.JsonRepresentation);
 				}
-				PreviewHtml.NavigateToString(result);
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor + result);
 			}
 
-			if (queryString.StartsWith("-- MD"))
+			if (queryString.StartsWith("-- HTML") || MainModel.Instance.FileItems.CurrentItem.Name.EndsWith(".html"))
 			{
-				var result = Markdown.ToHtml(queryString);
-				PreviewHtml.NavigateToString(result);
-			}
-
-			if (queryString.StartsWith("-- HTML") || FileItems.CurrentItem.Name.EndsWith(".html"))
-			{
-				var result = Markdown.ToHtml(queryString);
-				PreviewHtml.NavigateToString(result);
-			}
-
-			if (queryString.StartsWith("-- JSON") || FileItems.CurrentItem.Name.EndsWith(".json"))
-			{
-				var result = Markdown.ToHtml(queryString);
-				PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
-			}
-
-			if (Keyboard.Modifiers == ModifierKeys.Control)
-			{
-				Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + FileItems.CurrentItem.Key);
-			}
-			if (Keyboard.Modifiers == ModifierKeys.Shift)
-			{
-				File.WriteAllText("Results.html", File.ReadAllText("C:\\Work\\Resources\\" + FileItems.CurrentItem.Key));
-				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "Results.html");
-			}
-
-
-			if (queryString.StartsWith("-- HTML") || FileItems.CurrentItem.Name.EndsWith(".html"))
-			{
-				var result = Markdown.ToHtml(queryString);
-				PreviewHtml.NavigateToString(result);
-			}
-
-			if (queryString.StartsWith("-- JSON") || FileItems.CurrentItem.Name.EndsWith(".json"))
-			{
-				var result = Markdown.ToHtml(queryString);
-				PreviewHtml.NavigateToString("<pre>" + result + "</pre>");
-			}
-
-			if (Keyboard.Modifiers == ModifierKeys.Control)
-			{
-				Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + FileItems.CurrentItem.Key);
-			}
-			if (Keyboard.Modifiers == ModifierKeys.Shift)
-			{
-				File.WriteAllText("Results.html", File.ReadAllText("C:\\Work\\Resources\\" + FileItems.CurrentItem.Key));
-				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "Results.html");
-			}
-
-
-			if (queryString.StartsWith("-- HTML") || FileItems.CurrentItem.Name.EndsWith(".html"))
-			{
-				PreviewHtml.NavigateToString(queryString);
-			}
-
-			if (queryString.StartsWith("-- RD") || FileItems.CurrentItem.Name.EndsWith(".rd"))
-			{
-				TemplaterInstruction templaterInstruction = JsonConvert.DeserializeObject<TemplaterInstruction>(queryString);
-				TemplateProcessor TemplateProcessor = null;
-				TemplateInterpreter TemplateInterpreter = null;
-				TemplateProcessor = new TemplateProcessor();
-				TemplateInterpreter = new TemplateInterpreter();
-
-				var itemVar = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
-				string variables = File.ReadAllText(BasePath + itemVar.Key);
-				var itemTemplate = AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
-				if (itemTemplate != null && File.Exists(BasePath + itemTemplate.Key))
+				File.WriteAllText("Results.html", queryString);
+				if (!CompileRT)
 				{
-					string template = File.ReadAllText(BasePath + itemTemplate.Key);
-					if (template.IndexOf("============== Vars end ==============") > -1)
+					PreviewHtml.NavigateToString(ScriptErrorSuppressor + queryString);
+				}
+			}
+
+			if (queryString.StartsWith("-- JSON") || MainModel.Instance.FileItems.CurrentItem.Name.EndsWith(".json"))
+			{
+				var result = Markdown.ToHtml(queryString);
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor + "<pre>" + result + "</pre>");
+			}
+			if (Keyboard.Modifiers == ModifierKeys.Shift && key == Key.F5)
+			{
+				File.WriteAllText("Results.html", File.ReadAllText("C:\\Work\\Resources\\" + MainModel.Instance.FileItems.CurrentItem.Key));
+				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "Results.html");
+			}
+
+			if (queryString.StartsWith("-- RD") || MainModel.Instance.FileItems.CurrentItem.Name.EndsWith(".rd"))
+			{
+				ExecuteTemplate(queryString);
+			}
+		}
+
+		private void ExecuteTemplate(string executionPlan)
+		{
+			TemplaterInstruction templaterInstruction = JsonConvert.DeserializeObject<TemplaterInstruction>(executionPlan.Replace("\\", "\\\\"));
+			templateProcessor = new TemplateProcessor();
+			templateInterpreter = new TemplateInterpreter();
+
+			string variables = string.Empty;
+			if (!string.IsNullOrEmpty(templaterInstruction.CSV))
+			{
+				var itemCSV = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.CSV)).FirstOrDefault();
+				string variablesCSV = File.ReadAllText(BasePath + itemCSV.Key);
+				var itemVar = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
+				variables = File.ReadAllText(BasePath + itemVar.Key);
+				variables = RecreateVariables(variables, variablesCSV);
+			}
+			else
+			{
+				var itemVar = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
+				if(itemVar == null)
+				{
+					return;
+				}
+				variables = File.ReadAllText(BasePath + itemVar.Key);
+			}
+			var itemTemplate = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
+			if (itemTemplate != null && File.Exists(BasePath + itemTemplate.Key))
+			{
+				LogEntries.Clear();
+				Log(new LogEntry() { Message = "Processing template: " + itemTemplate.Name });
+
+				logLevel++;
+				var result0 = ParseTemplate(templaterInstruction.Project, itemTemplate.Name, BasePath + itemTemplate.Key, variables);
+				AffectedFilesList.ItemsSource = MainModel.Instance.FileItems.CurrentItem.AffectedFiles;
+
+				logLevel--;
+
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor + "<pre>" + result0 + "</pre>");
+
+				string logHtml = "<style>.message{color: green} .type{color: red} .link{color: blue}</style>" + LogEntriesToHtml();
+
+				File.WriteAllText("LastLog.html", logHtml);
+				File.WriteAllText(MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Project + "\\LastLog.html", logHtml);
+				// PreviewJson.NavigateToString("<pre>" + TemplateInterpreter.Trace + "</pre><br /><pre>" + TemplateProcessor.Trace + "</pre>");
+				PreviewJson.NavigateToString(logHtml);
+			}
+			else
+			{
+				PreviewHtml.NavigateToString(ScriptErrorSuppressor + "<pre>Missing template file!</pre>");
+			}
+			AffectedFilesTab.IsSelected = true;
+			LogsTab.IsSelected = true;
+		}
+
+		private string ParseTemplate(string projectPath, string templatename, string templatePath, string variables)
+		{
+			string template = File.ReadAllText(templatePath);
+			if (template.IndexOf("============== Vars end ==============") > -1)
+			{
+				template = template.Substring(template.IndexOf("============== Vars end ==============") + "============== Vars end ==============".Length);
+			}
+			var vars = new List<AjuVarset>() { templateProcessor.ToAjuVarset(JObject.Parse(variables)) };
+			TemplateProcessor.processingSteps = "";
+
+			var result = templateProcessor.TestCase(template, vars[0].Varset);
+
+
+
+			var templateReady = templateProcessor.UpdateTemplate(variables, template);
+
+			File.WriteAllText(projectPath + "\\" + templatename + ".ready", templateReady);
+			Log(new LogEntry() { Message = "Ajuro Ready file created: " + templatePath, Name = templatename + ".ready", Path = projectPath + "\\" + templatename + ".ready", Size = templateReady.Length });
+
+			LogEntries.AddRange(templateProcessor.LogEntries);
+
+			if (string.IsNullOrEmpty(projectPath))
+			{
+				Log(new LogEntry() { Message = "No project path was defined, in case we need to create files they will be created in the 'none' folder of the working folder. For: " + templatePath });
+			}
+			// NewItem(templaterInstruction.Ready, result);
+			templateInterpreter.InterpretProcessedTemplate(projectPath, MainModel.Instance.SelectedProfile.Properties, templateReady);
+
+			LogEntries.AddRange(templateInterpreter.LogEntries);
+			// File.WriteAllText("Resources\\" + TemplateInterpreter + ".logs.html", log);
+
+			MainModel.Instance.FileItems.CurrentItem.AffectedFiles.Clear();
+			foreach (var entry in LogEntries)
+			{
+				if (entry.Name != null)
+				{
+					if (MainModel.Instance.FileItems.CurrentItem.AffectedFiles.Where(p => p.Name.Equals(entry.Name)).FirstOrDefault() == null)
 					{
-						template = template.Substring(template.IndexOf("============== Vars end ==============") + "============== Vars end ==============".Length);
+						if (File.Exists(entry.Path))
+						{
+							entry.Size = new FileInfo(entry.Path).Length;
+							if (entry.Size > 0)
+							{
+								entry.Size = entry.Size / 8;
+							}
+						}
+						MainModel.Instance.FileItems.CurrentItem.AffectedFiles.Add(new AffectedFile() { Name = entry.Name, Path = entry.Path, Size = entry.Size });
 					}
-					var vars = new List<AjuVarset>() { TemplateProcessor.ToAjuVarset(JObject.Parse(variables)) };
-					var result = TemplateProcessor.TestCase(template, vars[0].Varset);
-					var result0 = TemplateProcessor.UpdateTemplate(variables, template);
-					// NewItem(templaterInstruction.Ready, result);
-					TemplateInterpreter.InterpretProcessedTemplate(result0);
-					PreviewHtml.NavigateToString("<pre>" + result0 + "</pre>");
-				}
-				else
-				{
-					PreviewHtml.NavigateToString("<pre>Missing template file!</pre>");
 				}
 			}
+			var ScheduledProcesses = new List<ScheduledProcess>();
+			foreach (var item in templateInterpreter.ScheduledProcesses)
+			{
+				ScheduledProcesses.Add(item);
+			}
+			templateInterpreter.ScheduledProcesses.Clear();
+			foreach (var item in ScheduledProcesses)
+			{
+				Log(new LogEntry() { Message = "Processing fork template: " + item.TemplatePath });
+				logLevel++;
+				variables = File.ReadAllText(projectPath + "\\" + item.Data);
+				var childTemplateReady = ParseTemplate(projectPath, item.TemplatePath.Substring(item.TemplatePath.LastIndexOf("\\") + 1), item.TemplatePath, variables);
+				logLevel--;
+			}
+			return templateReady;
+		}
+
+		private string RecreateVariables(string variables, string itemCSV)
+		{
+			var jsonObject = (JObject)JsonConvert.DeserializeObject(variables);
+			var lines = itemCSV.Split(new string[] { "\n" }, StringSplitOptions.None);
+			// for (int i = 0; i < lines.Length; i++)
+			int i = 0;
+			{
+				if (lines[i].Length > 0)
+				{
+					if (lines[i][0] != '\t')
+					{
+						return MapVariables(jsonObject, lines, i, 0);
+					}
+				}
+			}
+			return string.Empty;
+		}
+
+		private string MapVariables(JObject jsonObject, string[] lines, int i, int identationLevel)
+		{
+			JArray jsonPointer = FindVariable(jsonObject, lines[i].Trim());
+
+			// Find the property to be mapped. And determine the items structure in case of arrays.
+			if (jsonPointer is JArray)
+			{
+				List<string> keys = new List<string>();
+				// Parse all array items
+				foreach (var item in ((JArray)jsonPointer).Children())
+				{
+					// To collect all possible properties
+					foreach (var property in item.Children())
+					{
+						var propertyName = property.Path;
+						if (propertyName.IndexOf('.') > 0)
+						{
+							propertyName = propertyName.Substring(propertyName.LastIndexOf('.') + 1);
+						}
+						if (!keys.Contains(propertyName))
+						{
+							keys.Add(propertyName);
+						}
+					}
+				}
+
+				i++;
+
+				while (i < lines.Length)
+				{
+					if (string.IsNullOrWhiteSpace(lines[i]))
+					{
+						i++;
+						continue;
+					}
+					int numberOfTabs = lines[i].Length - lines[i].Trim().Length;
+					var pointer = ((JArray)jsonPointer);
+					if (numberOfTabs == identationLevel + 1)
+					{
+						JObject newItem = new JObject();
+						var CsvProperties = lines[i].Trim().Split('\t');
+						for (int k = 0; k < CsvProperties.Length && k < keys.Count; k++)
+						{
+							newItem.Add(keys[k], CsvProperties[k]);
+						}
+						i++;
+
+						// Adding columns
+
+						JArray columns = new JArray();
+						newItem.Add("Columns", columns);
+
+						List<string> keys2 = new List<string>();
+						foreach (var item in ((JArray)jsonPointer)[0]["Columns"].Children())
+						{
+							// To collect all possible properties
+							foreach (var property in item.Children())
+							{
+								var propertyName = property.Path;
+								if (propertyName.IndexOf('.') > 0)
+								{
+									propertyName = propertyName.Substring(propertyName.LastIndexOf('.') + 1);
+								}
+								if (!keys2.Contains(propertyName))
+								{
+									keys2.Add(propertyName);
+								}
+							}
+						}
+
+						while (i < lines.Length)
+						{
+							numberOfTabs = lines[i].Length - lines[i].TrimStart().Length;
+							if(numberOfTabs < identationLevel + 2)
+							{
+								i--;
+								break;
+							}
+							JObject newItem2 = new JObject();
+							var CsvProperties2 = lines[i].Trim().Split('\t');
+							for (int k = 0; k < CsvProperties2.Length && k < keys2.Count; k++)
+							{
+								newItem2.Add(keys2[k], CsvProperties2[k]);
+							}
+							columns.Add(newItem2);
+							i++;
+						}
+
+						pointer.Add(newItem);
+					}
+					i++;
+				}
+			}
+			// jsonObject.Remove("Tables");
+			// jsonObject.Add("Tables", jsonPointer);
+			jsonPointer.RemoveAt(0);
+			jsonObject["Tables"] = jsonPointer;
+			string data = jsonObject.ToString();
+			return data;
+		}
+
+		private JArray FindVariable(JObject jsonObject, string v)
+		{
+			JArray result = null;
+			if(jsonObject.ContainsKey(v))
+			{
+				result = (JArray)jsonObject[v];
+				if(result is JObject)
+				{
+
+				}
+				else if(result is JArray)
+				{
+
+				}
+			}
+			return result;
 		}
 
 		/// <summary>
@@ -489,12 +747,12 @@ namespace MemoDrops.View
 		/// </summary>
 		private void DeleteItem(string entity)
 		{
-			var response = MessageBox.Show("Delete file [" + FileItems.CurrentItem.Name + "] ?", "Question", MessageBoxButton.YesNo);
+			var response = MessageBox.Show("Delete file [" + MainModel.Instance.FileItems.CurrentItem.Name + "] ?", "Question", MessageBoxButton.YesNo);
 			if (response == MessageBoxResult.Yes)
 			{
-				File.Delete(BasePath + FileItems.CurrentItem.Name);
-				FileItems.Remove(FileItems.CurrentItem);
-				AllItems.Remove(FileItems.CurrentItem);
+				File.Delete(BasePath + MainModel.Instance.FileItems.CurrentItem.Name);
+				MainModel.Instance.FileItems.Remove(MainModel.Instance.FileItems.CurrentItem);
+				MainModel.Instance.AllItems.Remove(MainModel.Instance.FileItems.CurrentItem);
 			}
 		}
 
@@ -512,9 +770,9 @@ namespace MemoDrops.View
 		{
 			if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
 			{
-				FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
+				MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
 			}
-			if (FileItems.CurrentItem != null)
+			if (MainModel.Instance.FileItems.CurrentItem != null)
 			{
 				bool consumed = false;
 				if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
@@ -522,15 +780,30 @@ namespace MemoDrops.View
 					consumed = true;
 					SaveItem("notes");
 				}
+				if (e.Key == Key.F6 && Keyboard.Modifiers == ModifierKeys.Control)
+				{
+					if (MainModel.Instance.FileItems.CurrentItem.Files[0].EndsWith(".rd"))
+					{
+						MultiFileDocument document = GeDocumentByName(MainModel.Instance.FileItems.CurrentItem.Files[0]);
+						FragmentSelector templateEditorWindow = new FragmentSelector();
+						templateEditorWindow.BasePath = BasePath;
+						templateEditorWindow.LoadTemplateFromPath(File.ReadAllText(BasePath + document.Key));
+						templateEditorWindow.Show();
+					}
+					else if(true)
+					{
+
+					}
+				}
 				if (e.Key == Key.F5 || CompileRT)
 				{
 					consumed = true;
-					ExecuteQuery(Keyboard.Modifiers == ModifierKeys.Control);
+					ExecuteQuery(e.Key, Keyboard.Modifiers == ModifierKeys.Control);
 				}
 				if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
 				{
 					consumed = true;
-					FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
+					MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox);
 				}
 				if (e.Key == Key.D && Keyboard.Modifiers == ModifierKeys.Control)
 				{
@@ -546,8 +819,8 @@ namespace MemoDrops.View
 				{
 					if (e.Key != Key.PageUp && e.Key != Key.PageDown && e.Key != Key.Home && e.Key != Key.End && e.Key != Key.Tab && e.Key != Key.Right && e.Key != Key.Left && e.Key != Key.Up && e.Key != Key.Down && e.Key != Key.System && e.Key != Key.LeftCtrl && e.Key != Key.LeftAlt && e.Key != Key.LeftShift && e.Key != Key.RightCtrl && e.Key != Key.RightAlt && e.Key != Key.RightShift)
 					{
-						FileItems.CurrentItem.Name = Resource_Name.Text;
-						FileItems.CurrentItem.Status = 1;
+						MainModel.Instance.FileItems.CurrentItem.Name = Resource_Name.Text;
+						MainModel.Instance.FileItems.CurrentItem.Status = 1;
 					}
 				}
 			}
@@ -561,6 +834,7 @@ namespace MemoDrops.View
 		private void ResourceContentTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
 		{
 			KeyShortcuts.Visibility = Visibility.Collapsed;
+			ButtonShortcuts.Visibility = Visibility.Visible;
 			ExecuteWindowAction(e);
 
 			if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
@@ -571,12 +845,10 @@ namespace MemoDrops.View
 
 		private void ReloadItems(ResourceFolder rootFolder)
 		{
-			var itemProvider = new ItemProvider();
-
-			var rawItemsList = itemProvider.GetItems(rootFolder.Path);
+			var rawItemsList = FileDataAccess.GetItems(rootFolder.Path);
 			bool hasMetadata = rootFolder.Type == "notes";
 
-			AllItems.Clear();
+			MainModel.Instance.AllItems.Clear();
 			foreach (var item in rawItemsList)
 			{
 				if (hasMetadata)
@@ -588,7 +860,7 @@ namespace MemoDrops.View
 					else
 					{
 						var meta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(BasePath + item.Name));
-						AllItems.Add(new FileItem()
+						MainModel.Instance.AllItems.Add(new MultiFileDocument()
 						{
 							Tags = meta.Tags,
 							Files = meta.Files,
@@ -601,7 +873,7 @@ namespace MemoDrops.View
 				}
 				else
 				{
-					List<string> files = new List<string>();
+					ObservableCollection<string> files = new ObservableCollection<string>();
 					if (File.Exists(item.Path))
 					{
 						files.Add(item.Path);
@@ -609,26 +881,23 @@ namespace MemoDrops.View
 					else
 					{
 						// Is a folder
-						files.AddRange(Directory.GetFiles(item.Path));
+						// files.AddRange(Directory.GetFiles(item.Path));
 					}
 
-					AllItems.Add(new FileItem()
+					MainModel.Instance.AllItems.Add(new MultiFileDocument()
 					{
 						Name = item.Name,
 						Synced = DateTime.Now,
 						Label = string.Empty,
 						Files = files
-
 					});
 				}
 			}
 			FilterNotes(string.Empty);
-			StatusBartextBlock.Text = "Found " + FileItems.Items.Count + " / " + AllItems.Items.Count + " items;";
+			StatusBartextBlock.Text = "Found " + MainModel.Instance.FileItems.Items.Count + " / " + MainModel.Instance.AllItems.Items.Count + " items;";
 		}
 		private void ReloadItems(string entity, string action, string channel)
 		{
-
-
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create(MainModel.UrlBase + entity + "/" + action + "/" + channel);
 			httpWebRequest.ContentType = "application/json";
 			httpWebRequest.Method = "GET";
@@ -649,7 +918,7 @@ namespace MemoDrops.View
 						File.WriteAllText(BasePath + item.RowKey, item.Content);
 						item.Content = string.Empty;
 						File.WriteAllText(BasePath + item.RowKey + ".meta", JsonConvert.SerializeObject(item));
-						AllItems.Add(new FileItem()
+						MainModel.Instance.AllItems.Add(new MultiFileDocument()
 						{
 							Name = item.RowKey,
 							Synced = DateTime.Now,
@@ -666,11 +935,11 @@ namespace MemoDrops.View
 
 		private void PreviewItems(string entity, string action, string channel)
 		{
-			if (AllItems == null)
+			if (MainModel.Instance.AllItems == null)
 			{
 				return;
 			}
-			AllItems.Clear();
+			MainModel.Instance.AllItems.Clear();
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create(MainModel.UrlBase + entity + "/" + action + "/" + channel);
 			httpWebRequest.ContentType = "application/json";
 			httpWebRequest.Method = "GET";
@@ -694,7 +963,7 @@ namespace MemoDrops.View
 					}
 					item.Content = string.Empty;
 					// File.WriteAllText(BasePath + item.RowKey + ".meta", JsonConvert.SerializeObject(item));
-					AllItems.Add(new FileItem()
+					MainModel.Instance.AllItems.Add(new MultiFileDocument()
 					{
 						Author = item.Author,
 						Name = item.Title,
@@ -715,7 +984,7 @@ namespace MemoDrops.View
 				Login();
 			}
 
-			var httpWebRequest = (HttpWebRequest)WebRequest.Create(MainModel.UrlBase + entity + "/" + (FileItems.CurrentItem.Synced == DateTime.MinValue ? "insert" : "update/" + FileItems.CurrentItem.Key));
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create(MainModel.UrlBase + entity + "/" + (MainModel.Instance.FileItems.CurrentItem.Synced == DateTime.MinValue ? "insert" : "update/" + MainModel.Instance.FileItems.CurrentItem.Key));
 
 			httpWebRequest.ContentType = "application/json";
 			httpWebRequest.Method = "POST";
@@ -726,9 +995,9 @@ namespace MemoDrops.View
 				NoteEntity item = new NoteEntity()
 				{
 					Author = Me.RowKey,
-					RowKey = FileItems.CurrentItem.Key,
+					RowKey = MainModel.Instance.FileItems.CurrentItem.Key,
 					Content = range.Text,
-					Title = FileItems.CurrentItem.Name
+					Title = MainModel.Instance.FileItems.CurrentItem.Name
 				};
 
 				streamWriter.Write(JsonConvert.SerializeObject(item));
@@ -739,11 +1008,11 @@ namespace MemoDrops.View
 				using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
 				{
 					var result = streamReader.ReadToEnd();
-					FileItems.CurrentItem.Synced = DateTime.Now;
-					FileItems.CurrentItem.Author = Me.RowKey;
+					MainModel.Instance.FileItems.CurrentItem.Synced = DateTime.Now;
+					MainModel.Instance.FileItems.CurrentItem.Author = Me.RowKey;
 					SaveItem(entity);
-					StatusBartextBlock.Text = DateTime.Now.ToShortTimeString() + ": Uploaded [" + FileItems.CurrentItem.Name + "]";
-					FileItems.CurrentItem.Status = 2;
+					StatusBartextBlock.Text = DateTime.Now.ToShortTimeString() + ": Uploaded [" + MainModel.Instance.FileItems.CurrentItem.Name + "]";
+					MainModel.Instance.FileItems.CurrentItem.Status = 2;
 				}
 			}
 		}
@@ -762,15 +1031,15 @@ namespace MemoDrops.View
 		/// </summary>
 		private void DuplicateItem(string entity)
 		{
-			FileItem NewCurrentItem = new FileItem()
+			MultiFileDocument NewCurrentItem = new MultiFileDocument()
 			{
-				Name = FileItems.CurrentItem.Name,
+				Name = MainModel.Instance.FileItems.CurrentItem.Name,
 				Label = ""
 			};
-			FileItems.Add(NewCurrentItem);
+			MainModel.Instance.FileItems.Add(NewCurrentItem);
 			TextRange range = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd);
-			File.WriteAllText(BasePath + FileItems.CurrentItem.Name, range.Text);
-			FileItems.CurrentItem.Label = "";
+			File.WriteAllText(BasePath + MainModel.Instance.FileItems.CurrentItem.Name, range.Text);
+			MainModel.Instance.FileItems.CurrentItem.Label = "";
 		}
 
 		/// <summary>
@@ -779,15 +1048,15 @@ namespace MemoDrops.View
 		private void SaveItem(string entity)
 		{
 			TextRange range = new TextRange(ResourceContentTextBox.Document.ContentStart, ResourceContentTextBox.Document.ContentEnd);
-			if (FileItems.CurrentItem.Key == null)
+			if (MainModel.Instance.FileItems.CurrentItem.Key == null)
 			{
-				FileItems.CurrentItem.Key = Guid.NewGuid().ToString();
+				MainModel.Instance.FileItems.CurrentItem.Key = Guid.NewGuid().ToString();
 			}
-			File.WriteAllText(BasePath + FileItems.CurrentItem.Key, range.Text);
-			FileItems.CurrentItem.Name = Resource_Name.Text;
-			FileItems.CurrentItem.LastUpdated = DateTime.UtcNow;
-			SaveItemMeta();
-            /*CurrentItem.Label = "";
+			File.WriteAllText(BasePath + MainModel.Instance.FileItems.CurrentItem.Key, range.Text);
+			MainModel.Instance.FileItems.CurrentItem.Name = Resource_Name.Text;
+			MainModel.Instance.FileItems.CurrentItem.LastUpdated = DateTime.UtcNow;
+			FileDataAccess.SaveItemMeta(BasePath, MainModel.Instance.FileItems.CurrentItem);
+			/*CurrentItem.Label = "";
 			CurrentItem.Name = Resource_Name.Text;
 			if (CurrentItem.Name.ToLower() != CurrentItem.NameOriginal.ToLower())
 			{
@@ -796,22 +1065,7 @@ namespace MemoDrops.View
 					File.Delete(BasePath + CurrentItem.NameOriginal);
 				}
 			}*/
-			FileItems.CurrentItem.Status = 0;
-		}
-
-		private void SaveItemMeta()
-		{
-			File.WriteAllText(BasePath + FileItems.CurrentItem.Key + ".meta", JsonConvert.SerializeObject(
-			   new NoteEntity()
-			   {
-				   Tags = FileItems.CurrentItem.Tags,
-				   Files = FileItems.CurrentItem.Files,
-				   Author = SelectedChannel,
-				   RowKey = FileItems.CurrentItem.Key,
-				   Synced = FileItems.CurrentItem.Synced,
-				   Content = string.Empty,
-				   Title = Resource_Name.Text
-			   }));
+			MainModel.Instance.FileItems.CurrentItem.Status = 0;
 		}
 
 		/// <summary>
@@ -821,15 +1075,62 @@ namespace MemoDrops.View
 		/// <param name="e"></param>
 		private void FilesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			FileItems.CurrentItem = ((FileItem)filesList.SelectedItem);
-			if (FileItems.CurrentItem != null)
+			bool isCompilable = false;
+			MainModel.Instance.FileItems.CurrentItem = ((MultiFileDocument)MultyFileDocumentsList.SelectedItem);
+			if (MainModel.Instance.FileItems.CurrentItem != null)
 			{
-				Resource_Name.Text = FileItems.CurrentItem.Name;
+				MultiFileDocument document = null;
+				if(MainModel.Instance.FileItems.CurrentItem.Name.EndsWith(".rd"))
+				{
+					document = MainModel.Instance.FileItems.CurrentItem;
+				}
+				else
+				if (MainModel.Instance.FileItems.CurrentItem.Files.Count > 0)
+				{
+					if(MainModel.Instance.FileItems.CurrentItem.Files[0].EndsWith(".rd"))
+					{
+						document = GeDocumentByName(MainModel.Instance.FileItems.CurrentItem.Files[0]);
+					}
+					else
+					{
+						var fName = MainModel.Instance.FileItems.CurrentItem.Files.Where(p => p.EndsWith(".rd")).FirstOrDefault();
+						if(!string.IsNullOrEmpty(fName))
+						{
+							document = GeDocumentByName(fName);
+						}
+					}
+				}
+				else
+				{
+				}
+
+				if (document != null)
+				{
+					isCompilable = true;
+					Button_BrowseLog.Visibility = Visibility.Visible;
+					Button_Compile.Visibility = Visibility.Visible;
+					Button_Project.Visibility = Visibility.Visible;
+					Button_Template.Visibility = Visibility.Visible;
+					Button_Data.Visibility = Visibility.Visible;
+
+					var executionPlan = File.ReadAllText(BasePath + document.Key);
+					MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction = JsonConvert.DeserializeObject<TemplaterInstruction>(executionPlan.Replace("\\", "\\\\"));
+				}
+
+				AffectedFilesList.ItemsSource = MainModel.Instance.FileItems.CurrentItem.AffectedFiles;
+				MainModel.Instance.LastDocumentNames.Add(MainModel.Instance.FileItems.CurrentItem.Name);
+				while(MainModel.Instance.LastDocumentNames.Count > 10)
+				{
+					MainModel.Instance.LastDocumentNames.RemoveAt(MainModel.Instance.LastDocumentNames.Count-1);
+				}
+
+				// MainModel.Instance.CurrentItem = MainModel.Instance.FileItems.CurrentItem;
+				Resource_Name.Text = MainModel.Instance.FileItems.CurrentItem.Name;
 				FlowDocument ResourceContentDocument = new FlowDocument();
 				FlowDocument LinksReaderDocument = new FlowDocument();
 				Paragraph ResourceContentParagraph = new Paragraph();
 				Paragraph LinksReaderParagraph = new Paragraph();
-				if (!File.Exists(BasePath + FileItems.CurrentItem.Key))
+				if (!File.Exists(BasePath + MainModel.Instance.FileItems.CurrentItem.Key))
 				{
 					TagsStackPanel.Children.Clear();
 					FilesStackPanel.Children.Clear();
@@ -837,13 +1138,16 @@ namespace MemoDrops.View
 				TagsStackPanel.Orientation = Orientation.Horizontal;
 			
 				FilesStackPanel.Children.Clear();
-				if (FileItems.CurrentItem.Files != null)
+				if (MainModel.Instance.FileItems.CurrentItem.Files != null)
 				{
 					FilesContainer.Visibility = Visibility.Visible;
-					foreach (string file in FileItems.CurrentItem.Files)
+					foreach (string file in MainModel.Instance.FileItems.CurrentItem.Files)
 					{
 						Label label = new Label();
 						label.BorderBrush = Brushes.Gray;
+						label.Tag = file.Substring(file.LastIndexOf("\\") + 1);
+						label.MouseUp += DocumenPartLabel_MouseUp;
+						label.MouseDoubleClick += DocumenPartLabel_MouseDoubleClick;
 						label.BorderThickness = new Thickness(2);
 						label.Content = file.Substring(file.LastIndexOf("\\") + 1);
 						FilesStackPanel.Children.Add(label);
@@ -851,9 +1155,9 @@ namespace MemoDrops.View
 				}
 
 				TagsStackPanel.Children.Clear();
-				if (FileItems.CurrentItem.Tags != null)
+				if (MainModel.Instance.FileItems.CurrentItem.Tags != null)
 				{
-					foreach (string tag in FileItems.CurrentItem.Tags)
+					foreach (string tag in MainModel.Instance.FileItems.CurrentItem.Tags)
 					{
 						Label label = new Label();
 						label.Content = tag;
@@ -861,22 +1165,22 @@ namespace MemoDrops.View
 					}
 				}
 
-				if (!File.Exists(BasePath + FileItems.CurrentItem.Key))
+				if (!File.Exists(BasePath + MainModel.Instance.FileItems.CurrentItem.Key))
 				{
-					FileItems.CurrentItem.Label = "!";
+					MainModel.Instance.FileItems.CurrentItem.Label = "!";
 					ResourceContentTextBox.Document = new FlowDocument();
 					DataTabControl.SelectedIndex = 1;
 
-					if (FileItems.CurrentItem.Files != null)
+					if (MainModel.Instance.FileItems.CurrentItem.Files != null && File.Exists(MainModel.Instance.FileItems.CurrentItem.Files[0]))
 					{
-						string resourceContent = File.ReadAllText(FileItems.CurrentItem.Files[0]);
+						string resourceContent = File.ReadAllText(MainModel.Instance.FileItems.CurrentItem.Files[0]);
 						LinksReaderParagraph.Inlines.Add(new Run(resourceContent));
 						LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
 						LinksReader.Document = LinksReaderDocument;
 					}
 					return;
 				}
-				string content = File.ReadAllText(BasePath + FileItems.CurrentItem.Key);
+				string content = File.ReadAllText(BasePath + MainModel.Instance.FileItems.CurrentItem.Key);
 				ResourceContentParagraph.Inlines.Add(new Run(content));
 				LinksReaderParagraph.Inlines.Add(new Run(content));
 
@@ -886,11 +1190,20 @@ namespace MemoDrops.View
 				LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
 				LinksReader.Document = LinksReaderDocument;
 			}
-		}
+			if (!isCompilable)
+			{
 
+				Button_BrowseLog.Visibility = Visibility.Collapsed;
+				Button_Compile.Visibility = Visibility.Collapsed;
+				Button_Project.Visibility = Visibility.Collapsed;
+				Button_Template.Visibility = Visibility.Collapsed;
+				Button_Data.Visibility = Visibility.Collapsed;
+			}
+		}
+		
 		private void HelpLink_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://otb.expert/MemoDrops/mail_template_invitation.html");
+			System.Diagnostics.Process.Start("http://otb.expert/Ajuro.Notes/mail_template_invitation.html");
 		}
 
 		private void FilterItems_KeyUp(object sender, KeyEventArgs e)
@@ -898,11 +1211,11 @@ namespace MemoDrops.View
 			if (e.Key == Key.Down)
 			{
 				ItemsSelectedIndex += 1;
-				if (ItemsSelectedIndex >= FileItems.Items.Count)
+				if (ItemsSelectedIndex >= MainModel.Instance.FileItems.Items.Count)
 				{
 					ItemsSelectedIndex = 0;
 				}
-				filesList.SelectedIndex = ItemsSelectedIndex;
+				MultyFileDocumentsList.SelectedIndex = ItemsSelectedIndex;
 				return;
 			}
 			if (e.Key == Key.Up)
@@ -910,14 +1223,14 @@ namespace MemoDrops.View
 				ItemsSelectedIndex -= 1;
 				if (ItemsSelectedIndex < 0)
 				{
-					ItemsSelectedIndex = FileItems.Items.Count - 1;
+					ItemsSelectedIndex = MainModel.Instance.FileItems.Items.Count - 1;
 				}
-				filesList.SelectedIndex = ItemsSelectedIndex;
+				MultyFileDocumentsList.SelectedIndex = ItemsSelectedIndex;
 				return;
 			}
-			if (e.Key == Key.Enter && FileItems.Items.Count == 0)
+			if (e.Key == Key.Enter && MainModel.Instance.FileItems.Items.Count == 0)
 			{
-				FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox, FilterItems.Text.Trim());
+				MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox, FilterItems.Text.Trim());
 
 			}
 			string filterString = FilterItems.Text.Trim().ToLower();
@@ -928,26 +1241,26 @@ namespace MemoDrops.View
 		{
 			if (string.IsNullOrEmpty(filterString))
 			{
-				FileItems.Clear();
+				MainModel.Instance.FileItems.Clear();
 
-				foreach (var item in AllItems.Items)
+				foreach (var item in MainModel.Instance.AllItems.Items)
 				{
-					FileItems.Add(item);
+					MainModel.Instance.FileItems.Add(item);
 				}
 			}
 			else
 			{
-				FileItems.Clear();
-				var items = AllItems.Items.Where(p => p.Name.ToLower().Contains(filterString));
+				MainModel.Instance.FileItems.Clear();
+				var items = MainModel.Instance.AllItems.Items.Where(p => p.Name.ToLower().Contains(filterString));
 				foreach (var item in items)
 				{
-					FileItems.Add(item);
+					MainModel.Instance.FileItems.Add(item);
 				}
 			}
-			if (FileItems.Items.Count > 0)
+			if (MainModel.Instance.FileItems.Items.Count > 0)
 			{
 				ItemsSelectedIndex = 0;
-				filesList.SelectedIndex = ItemsSelectedIndex;
+				MultyFileDocumentsList.SelectedIndex = ItemsSelectedIndex;
 			}
 		}
 
@@ -955,7 +1268,7 @@ namespace MemoDrops.View
 		{
 			// Process.Start("notepad.exe", BasePath + CurrentItem.Key + ".meta");
 			NoteMetaEditorWindow editorWindow = new NoteMetaEditorWindow();
-			editorWindow.LinkData(FileItems.CurrentItem, SelectedResourceFolder);
+			editorWindow.LinkData(MainModel.Instance.FileItems.CurrentItem, SelectedResourceFolder);
 			editorWindow.Show();
 		}
 
@@ -1053,16 +1366,16 @@ namespace MemoDrops.View
 					{
 						fileName = allText.Substring(20);
 					}
-					var existentPage = AllItems.Items.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
+					var existentPage = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
 					if (existentPage != null)
 					{
-						var visiblePage = FileItems.Items.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
+						var visiblePage = MainModel.Instance.FileItems.Items.Where(p => p.Name.Equals(fileName)).FirstOrDefault();
 						if (visiblePage == null)
 						{
-							FileItems.Add(existentPage);
+							MainModel.Instance.FileItems.Add(existentPage);
 							visiblePage = existentPage;
 						}
-						filesList.SelectedItem = visiblePage;
+						MultyFileDocumentsList.SelectedItem = visiblePage;
 						Adopt(existentPage);
 					}
 					else
@@ -1077,9 +1390,9 @@ namespace MemoDrops.View
 			}
 		}
 
-		private void Adopt(FileItem item)
+		private void Adopt(MultiFileDocument item)
 		{
-			throw new NotImplementedException();
+			// throw new NotImplementedException();
 		}
 
 		private void LinksReader_TextChanged(object sender, TextChangedEventArgs e)
@@ -1103,11 +1416,11 @@ namespace MemoDrops.View
 
 		private void Image_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			FileItem item = (FileItem)((Image)sender).Tag;
+			MultiFileDocument item = (MultiFileDocument)((Image)sender).Tag;
 			ShareItem(item);
 		}
 
-		private void ShareItem(FileItem item)
+		private void ShareItem(MultiFileDocument item)
 		{
 			InputBox inputBox = new InputBox("Send to email:");
 			inputBox.Answered += InputBox_Answered;
@@ -1133,12 +1446,18 @@ namespace MemoDrops.View
 		{
 			LocalSettings localSettings = new LocalSettings();
 			localSettings.ProfileName = MainModel.Instance.SelectedProfile.Name;
+			if (MainModel.Instance.FileItems.CurrentItem != null)
+			{
+				localSettings.LastDocumentName = MainModel.Instance.FileItems.CurrentItem.Name;
+			}
+			localSettings.LastDocumentNames = MainModel.Instance.LastDocumentNames.ToList();
+			localSettings.LastFilterValue = FilterItems.Text.Trim().ToLower();
 			File.WriteAllText("LocalSettings.json", JsonConvert.SerializeObject(localSettings));
 		}
 
 		private void ShareButton_Click(object sender, RoutedEventArgs e)
 		{
-			FileItem item = (FileItem)((Button)sender).Tag;
+			MultiFileDocument item = (MultiFileDocument)((Button)sender).Tag;
 			ShareItem(item);
 		}
 
@@ -1159,16 +1478,16 @@ namespace MemoDrops.View
 
 		private void orderCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			FileItems.OrderByName(OrderCriteriaComboBox.Text);
+			MainModel.Instance.FileItems.OrderByName(OrderCriteriaComboBox.Text);
 		}
 
 		private void ItemResourcesButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (SelectedResourceFolder != null)
 			{
-				if (Directory.Exists(SelectedResourceFolder.Path + "\\" + FileItems.CurrentItem.Name))
+				if (Directory.Exists(SelectedResourceFolder.Path + "\\" + MainModel.Instance.FileItems.CurrentItem.Name))
 				{
-					Process.Start(SelectedResourceFolder.Path + "\\" + FileItems.CurrentItem.Name);
+					Process.Start(SelectedResourceFolder.Path + "\\" + MainModel.Instance.FileItems.CurrentItem.Name);
 				}
 			}
 		}
@@ -1185,13 +1504,13 @@ namespace MemoDrops.View
 				Label label = new Label();
 				label.Content = TagEditor.Text.Trim().ToLower();
 				TagsStackPanel.Children.Add(label);
-				if(FileItems.CurrentItem.Tags == null)
+				if(MainModel.Instance.FileItems.CurrentItem.Tags == null)
 				{
-					FileItems.CurrentItem.Tags = new List<string>();
+					MainModel.Instance.FileItems.CurrentItem.Tags = new ObservableCollection<string>();
 				}
-				FileItems.CurrentItem.Tags.Add(TagEditor.Text.Trim().ToLower());
+				MainModel.Instance.FileItems.CurrentItem.Tags.Add(TagEditor.Text.Trim().ToLower());
 				TagEditor.Text = string.Empty;
-				SaveItemMeta();
+				FileDataAccess.SaveItemMeta(BasePath, MainModel.Instance.FileItems.CurrentItem);
 			}
 
 			if (e.Key == Key.Delete || e.Key == Key.Back)
@@ -1203,7 +1522,7 @@ namespace MemoDrops.View
 					{
 						if (TagsStackPanel.Children.Count > 0)
 						{
-							FileItems.CurrentItem.Tags.RemoveAt(FileItems.CurrentItem.Tags.Count - 1);
+							MainModel.Instance.FileItems.CurrentItem.Tags.RemoveAt(MainModel.Instance.FileItems.CurrentItem.Tags.Count - 1);
 							TagsStackPanel.Children.RemoveAt(TagsStackPanel.Children.Count - 1);
 						}
 					}
@@ -1213,17 +1532,6 @@ namespace MemoDrops.View
 			{
 				readyForDelete = false;
 			}
-		}
-		
-		private void Label_MouseLeave(object sender, MouseEventArgs e)
-		{
-
-		}
-
-		private void SortByNameLabel_MouseUp(object sender, MouseButtonEventArgs e)
-		{
-			bool isAsccending = FileItems.OrderByName("Name");
-			SortByNameLabel.Foreground = isAsccending ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Magenta;
 		}
 
 		private void RealTimeCompileCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -1242,24 +1550,231 @@ namespace MemoDrops.View
 			if (e.Key == Key.Tab || e.Key == Key.Enter)
 			{
 				Label label = new Label();
-				label.Content = FileEditorTextBox.Text.Trim().ToLower();
+				label.Content = FileEditorTextBox.Text.Trim();
+				label.Tag = FileEditorTextBox.Text;
+				label.MouseUp += DocumenPartLabel_MouseUp;
 				FilesStackPanel.Children.Add(label);
-				if (FileItems.CurrentItem.Files == null)
+				if (MainModel.Instance.FileItems.CurrentItem.Files == null)
 				{
-					FileItems.CurrentItem.Files = new List<string>();
+					MainModel.Instance.FileItems.CurrentItem.Files = new ObservableCollection<string>();
 				}
-				FileItems.CurrentItem.Files.Add(FileEditorTextBox.Text.Trim().ToLower());
+				MainModel.Instance.FileItems.CurrentItem.Files.Add(FileEditorTextBox.Text.Trim());
 				FileEditorTextBox.Text = string.Empty;
-				SaveItemMeta();
+				FileDataAccess.SaveItemMeta(BasePath, MainModel.Instance.FileItems.CurrentItem);
 			}
+		}
+
+		private void SortByNameLabel_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			bool isAsccending = MainModel.Instance.FileItems.OrderByName("Name");
+			SortByNameLabel.Foreground = isAsccending ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Magenta;
+		}
+
+		private void DocumenPartLabel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			var item = (string)((Label)sender).Tag;
+			if (item != null)
+			{
+				MultiFileDocument document = GeDocumentByName(item);
+				if(document == null)
+				{
+					// CreateDocument(item);
+					MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox, item);
+				}
+			}
+		}
+
+		private void CreateDocument(string name)
+		{
+			File.Create(BasePath + name);
+			var multiFileDocument = new MultiFileDocument()
+			{
+				/*Tags = noteMeta.Tags,
+				Files = noteMeta.Files,
+				Synced = noteMeta.Synced,,*/
+				Key = Guid.NewGuid().ToString(),
+				Name = name,
+				Label = name,
+				Visibility = VisibilityLevels[0]
+			};
+			MainModel.Instance.FileItems.Add(multiFileDocument);
+		}
+
+		private void DocumenPartLabel_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			var item = (string)((Label)sender).Tag;
+			if(item!= null)
+			{
+				MultiFileDocument document = GeDocumentByName(item);
+				if(document != null)
+				{
+					MultyFileDocumentsList.SelectedItem = document;
+					Adopt(document);
+				}
+				else
+				{
+					if (Keyboard.Modifiers == ModifierKeys.Control)
+					{
+						MainModel.Instance.FileItems.NewItem(BasePath, ref FileNr, ref ResourceContentTextBox, item);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Find document by name. If is not visible, add it to the visible list.
+		/// </summary>
+		/// <param name="documentName"></param>
+		/// <returns></returns>
+		private MultiFileDocument GeDocumentByName(string documentName)
+		{
+			MultiFileDocument foundDocument = null;
+			var existentPage = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(documentName)).FirstOrDefault();
+			if (existentPage != null)
+			{
+				foundDocument = MainModel.Instance.FileItems.Items.Where(p => p.Name.Equals(documentName)).FirstOrDefault();
+				if (foundDocument == null)
+				{
+					MainModel.Instance.FileItems.Add(existentPage);
+					foundDocument = existentPage;
+				}
+			}
+			return foundDocument;
+		}
+
+		private void MenuItemHelp_Click(object sender, RoutedEventArgs e)
+		{
+			string helpContent = File.ReadAllText("Resources\\Docs\\index.md");
+			var result = Markdown.ToHtml(helpContent);
+			PreviewHtml.NavigateToString(ScriptErrorSuppressor + result);
+			HtmlTab.IsSelected = true;
+		}
+
+		private void MenuItemHelp_DoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			Process.Start("Resources\\Docs");
+		}
+
+		private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			if (File.Exists(MainModel.Instance.SelectedAffectedFile.Path))
+			{
+				if (Keyboard.Modifiers == ModifierKeys.Control)
+				{
+					Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", MainModel.Instance.SelectedAffectedFile.Path);
+					return;
+				}
+
+				if (MainModel.Instance.SelectedAffectedFile.Path.ToUpper().StartsWith("C:\\PRO\\PHP\\"))
+				{
+					Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "http://localhost:86/" + MainModel.Instance.SelectedAffectedFile.Path.Substring(11).Replace("\\", "/"));
+				}
+				else
+				{
+					Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", MainModel.Instance.SelectedAffectedFile.Path);
+				}
+			}
+		}
+
+		private void Label_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			SelectedAffectedFileTextTab.IsSelected = true;
+		}
+
+		private void Browser_OnLoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+		{
+			var browser = sender as WebBrowser;
+
+			if (browser == null || browser.Document == null)
+				return;
+
+			dynamic document = browser.Document;
+
+			if (document.readyState != "complete")
+				return;
+
+			dynamic script = document.createElement("script");
+			script.type = @"text/javascript";
+			script.text = @"window.onerror = function(msg,url,line){return true;}";
+			document.head.appendChild(script);
+		}
+
+		private void Button_Click_BrowseLog(object sender, RoutedEventArgs e)
+		{
+			if (MainModel.Instance.FileItems.CurrentItem != null)
+			{
+				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Project + "\\LastLog.html");
+			}
+			else
+			{
+				Process.Start(@"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", "LastLog.html");
+			}
+		}
+
+		private void Button_Click_Compile(object sender, RoutedEventArgs e)
+		{
+			ExecuteQuery(Key.F5, false);
+		}
+
+		private void Button_Click_Project(object sender, RoutedEventArgs e)
+		{
+			if (MainModel.Instance.FileItems.CurrentItem != null)
+			{
+				Process.Start(MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Project);
+			}
+		}
+
+		private void Button_Click_Template(object sender, RoutedEventArgs e)
+		{
+			if (MainModel.Instance.FileItems.CurrentItem != null)
+			{
+				if (!string.IsNullOrEmpty(MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Template))
+				{
+					var resource = MainModel.Instance.FileItems.Items.Where(p=>p.Name == MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Template).FirstOrDefault();
+					if (resource != null)
+					{
+						Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + resource.Key);
+					}
+				}
+			}
+		}
+
+		private void Button_Click_Data(object sender, RoutedEventArgs e)
+		{
+			if (MainModel.Instance.FileItems.CurrentItem != null)
+			{
+				if (!string.IsNullOrEmpty(MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Model))
+				{
+					var resource = MainModel.Instance.FileItems.Items.Where(p => p.Name == MainModel.Instance.FileItems.CurrentItem.TemplaterInstruction.Model).FirstOrDefault();
+					if (resource != null)
+					{
+						Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", "C:\\Work\\Resources\\" + resource.Key);
+					}
+				}
+			}
+		}
+
+		private void Button_Click_DB(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Button_Click_API(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Button_Click_WEB(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 
 	public class NoteEntity
 	{
 		public string RowKey { get; set; }
-		public List<string> Tags { get; set; }
-		public List<string> Files { get; set; }
+		public ObservableCollection<string> Tags { get; set; }
+		public ObservableCollection<string> Files { get; set; }
 		public DateTime Synced { get; set; }
 		public string Author { get; set; }
 		public string Title { get; set; }

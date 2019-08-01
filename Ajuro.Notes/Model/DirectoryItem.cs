@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
-	public class DirectoryItem : FileItem
+	public class DirectoryItem : MultiFileDocument
 	{
-		public List<FileItem> Items { get; set; }
+		public List<MultiFileDocument> Items { get; set; }
 
 		public DirectoryItem()
 		{
-			Items = new List<FileItem>();
+			Items = new List<MultiFileDocument>();
 		}
 	}
 }

@@ -1,6 +1,6 @@
-﻿<Application x:Class="MemoDrops.App"
+﻿<Application x:Class="Ajuro.Notes.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MemoDrops"
+             xmlns:local="clr-namespace:Ajuro.Notes"
              StartupUri="Views/MainWindow.xaml">
 </Application>

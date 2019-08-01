@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Ajuro.Net.Util.Api;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public delegate void UserChanged(IdentityModel newIdentity);
 	///<summary>

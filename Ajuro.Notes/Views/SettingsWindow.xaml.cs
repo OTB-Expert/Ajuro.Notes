@@ -1,4 +1,4 @@
-﻿using MemoDrops.Model;
+﻿using Ajuro.Notes.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace MemoDrops.View
+namespace Ajuro.Notes.View
 {
 	/// <summary>
 	/// Interaction logic for AccountWindow.xaml
@@ -31,11 +31,11 @@ namespace MemoDrops.View
 
 		private void CustomInitialization()
 		{
-			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account"))
+			if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account"))
 			{
-				if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json"))
+				if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json"))
 				{
-					string mySettings = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json");
+					string mySettings = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json");
 					var profiles = JsonConvert.DeserializeObject<List<SettingsProfile>>(mySettings);
 					MainModel.Instance.SettingProfiles = new ObservableCollection<SettingsProfile>();
 					foreach (var profile in profiles)
@@ -52,69 +52,72 @@ namespace MemoDrops.View
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Pre-Alfa",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Alfa",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Beta",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "RC",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "RTM",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "GA",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 
 				MainModel.Instance.SettingProfiles.Add(new SettingsProfile()
 				{
 					Name = "Live",
-					Properties = new List<KeyValue>()
+					Properties = new List<KeyValuePair<string, string>>()
 				});
 			}
 		}
 
 		private void Window_Closing(object sender, CancelEventArgs e)
 		{
-			File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json", JsonConvert.SerializeObject(MainModel.Instance.SettingProfiles));
+			if (Directory.Exists("/OTB/Ajuro.Notes/Account"))
+			{
+				File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json", JsonConvert.SerializeObject(MainModel.Instance.SettingProfiles));
+			}
 		}
 
 		private void AddProperty_Click(object sender, RoutedEventArgs e)
 		{
-			CreateControlableProperty(new KeyValue() { Key = "Key", Value = "Value" }, true);
+			CreateControlableProperty(new KeyValuePair<string, string>("Key", "Value"), true);
 		}
 
 		private void NewItemValueTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			TextBox textBox = (TextBox)sender;
-			KeyValue keyValue = (KeyValue)textBox.Tag;
-			keyValue.Value = textBox.Text;
+			KeyValuePair<string, string> keyValue = (KeyValuePair<string, string>)textBox.Tag;
+			keyValue = new KeyValuePair<string, string>(keyValue.Key, textBox.Text);
 		}
 
 		private void NewItemNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			TextBox textBox = (TextBox)sender;
-			KeyValue keyValue = (KeyValue)textBox.Tag;
-			keyValue.Key = textBox.Text;
+			KeyValuePair<string, string> keyValue = (KeyValuePair<string, string>)textBox.Tag;
+			keyValue = new KeyValuePair<string, string>(textBox.Text, keyValue.Value);
 		}
 
 		private void NewItemButton_Click(object sender, RoutedEventArgs e)
@@ -129,7 +132,7 @@ namespace MemoDrops.View
 
 		private void SaveButton_Click(object sender, RoutedEventArgs e)
 		{
-			File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/settings.json", JsonConvert.SerializeObject(MainModel.Instance.SettingProfiles));
+			File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/settings.json", JsonConvert.SerializeObject(MainModel.Instance.SettingProfiles));
 		}
 
 		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -146,14 +149,11 @@ namespace MemoDrops.View
 			}
 		}
 
-		private void CreateControlableProperty(KeyValue property, bool add)
+		private void CreateControlableProperty(KeyValuePair<string, string> property, bool add)
 		{
 			PropertyControl propertyControl = new PropertyControl();
 
-			if (property != null)
-			{
-				propertyControl.Property = property;
-			}
+			propertyControl.Property = property;
 
 			StackPanel newItemStackPanel = new StackPanel();
 			TextBox newItemNameTextBox = new TextBox();
@@ -193,6 +193,6 @@ namespace MemoDrops.View
 	public class PropertyControl
 	{
 		public List<Control> Controls = new List<Control>();
-		public KeyValue Property = new KeyValue();
+		public KeyValuePair<string, string> Property = new KeyValuePair<string, string>();
 	}
 }

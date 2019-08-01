@@ -2,9 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
-    <ProjectView>ShowAllFiles</ProjectView>
-    <PublishUrlHistory>ftp://ftp.otb.expert/MemoDrops/</PublishUrlHistory>
-    <InstallUrlHistory>https://otb.expert/MemoDrops/</InstallUrlHistory>
+    <ProjectView>ProjectFiles</ProjectView>
+    <PublishUrlHistory>ftp://ftp.otb.expert/MemoNotes/|ftp://ftp.otb.expert/microdesk/|ftp://ftp.otb.expert/MemoDrops/</PublishUrlHistory>
+    <InstallUrlHistory>https://otb.expert/MemoNotes/|https://otb.expert/MemoDrops/</InstallUrlHistory>
     <SupportUrlHistory />
     <UpdateUrlHistory />
     <BootstrapperUrlHistory />

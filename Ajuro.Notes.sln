@@ -1,20 +1,47 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.28809.33
+VisualStudioVersion = 16.0.28822.285
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ajuro.Notes", "Ajuro.Notes\Ajuro.Notes.csproj", "{1C808026-1C9A-4019-908D-B9657ED58620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ajuro.WPF.Controls", "..\..\..\Cezar\Ajuro.WPF.Controls\Ajuro.WPF.Controls\Ajuro.WPF.Controls.csproj", "{E00796A0-7DF2-4B99-8C3C-8653E27244C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ajuro.Net.Util", "..\..\..\Cezar\Ajuro.Net.Util\Ajuro.Net.Util\Ajuro.Net.Util.csproj", "{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ajuro.Net.Template.Processor", "..\..\..\Cezar\Ajuro.Net.Templater\Ajuro.Net.Template.Processor\Ajuro.Net.Template.Processor.csproj", "{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Local|Any CPU = Local|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1C808026-1C9A-4019-908D-B9657ED58620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1C808026-1C9A-4019-908D-B9657ED58620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C808026-1C9A-4019-908D-B9657ED58620}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{1C808026-1C9A-4019-908D-B9657ED58620}.Local|Any CPU.Build.0 = Release|Any CPU
 		{1C808026-1C9A-4019-908D-B9657ED58620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C808026-1C9A-4019-908D-B9657ED58620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Local|Any CPU.Build.0 = Release|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00796A0-7DF2-4B99-8C3C-8653E27244C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Local|Any CPU.ActiveCfg = Local|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Local|Any CPU.Build.0 = Local|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0FE0C8-D511-45A5-BB58-596CA74DF9A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Local|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Local|Any CPU.Build.0 = Debug|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19AB1D4F-D7C6-4865-B55D-8E6AE3E205B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

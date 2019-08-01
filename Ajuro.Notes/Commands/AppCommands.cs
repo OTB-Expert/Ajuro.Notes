@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Ajuro.Net.Util.Models;
 using Ajuro.Net.Util.Resource;
 
-namespace MemoDrops.Commands
+namespace Ajuro.Notes.Commands
 	{
 		public class AppCommands
 		{

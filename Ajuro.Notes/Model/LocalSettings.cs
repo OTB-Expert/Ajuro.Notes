@@ -4,19 +4,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class LocalSettings
 	{
+		public LocalSettings()
+		{
+			LastDocumentNames = new List<string>();
+		}
+
 		private string profileName { get; set; }
 		public string ProfileName
 		{
-			get {
+			get
+			{
 				return profileName;
 			}
 			set
 			{
 				profileName = value;
+			}
+		}
+		private string lastDocumentName { get; set; }
+		public string LastDocumentName
+		{
+			get
+			{
+				return lastDocumentName;
+			}
+			set
+			{
+				lastDocumentName = value;
+			}
+		}
+		private List<string> lastDocumentNames { get; set; }
+		public List<string> LastDocumentNames
+		{
+			get
+			{
+				return lastDocumentNames;
+			}
+			set
+			{
+				lastDocumentNames = value;
+			}
+		}
+		private string lastFilterValue { get; set; }
+		public string LastFilterValue
+		{
+			get
+			{
+				return lastFilterValue;
+			}
+			set
+			{
+				lastFilterValue = value;
 			}
 		}
 	}

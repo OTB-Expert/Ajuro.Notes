@@ -1,4 +1,4 @@
-﻿using MemoDrops.View;
+﻿using Ajuro.Notes.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,17 +8,17 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class ItemList
 	{
-		public ObservableCollection<FileItem> Items { get; set; }
-		public FileItem CurrentItem { get; set; }
+		public ObservableCollection<MultiFileDocument> Items { get; set; }
+		public MultiFileDocument CurrentItem { get; set; }
 		public ICollectionView FileItemsView { get; set; }
 
-		public ItemList(IList<FileItem> items)
+		public ItemList(IList<MultiFileDocument> items)
 		{
-			Items = new ObservableCollection<FileItem>(items);
+			Items = new ObservableCollection<MultiFileDocument>(items);
 			InitialiseViews();
 		}
 
@@ -63,12 +63,12 @@ namespace MemoDrops.Model
 			return oldCriteria.Direction == ListSortDirection.Ascending;
 		}
 
-		internal void Add(FileItem currentItem)
+		internal void Add(MultiFileDocument currentItem)
 		{
 			Items.Add(currentItem);
 		}
 
-		internal void Remove(FileItem currentItem)
+		internal void Remove(MultiFileDocument currentItem)
 		{
 			Items.Remove(currentItem);
 		}
@@ -94,14 +94,14 @@ namespace MemoDrops.Model
 			FileNr++;
 			// if (response == MessageBoxResult.Yes)
 			{
-				CurrentItem = new FileItem()
+				CurrentItem = new MultiFileDocument()
 				{
 					Name = itemName,
 					Key = Guid.NewGuid().ToString(),
 					Label = "!!"
 				};
 				Items.Add(CurrentItem);
-				MainWindow.AllItems.Items.Add(CurrentItem);
+				MainModel.Instance.AllItems.Items.Add(CurrentItem);
 				ResourceContent.Document = new FlowDocument();
 			}
 		}

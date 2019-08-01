@@ -1,4 +1,4 @@
-﻿using MemoDrops.Model;
+﻿using Ajuro.Notes.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace MemoDrops.View
+namespace Ajuro.Notes.View
 {
 	/// <summary>
 	/// Interaction logic for AccountWindow.xaml

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Ajuro.Notes.Model
+namespace Ajuro.Notes.View
 {
-	public class SettingsProfile : INotifyPropertyChanged
+	public class AffectedFile: INotifyPropertyChanged
 	{
 		private string name { get; set; }
 		public string Name
@@ -16,8 +15,27 @@ namespace Ajuro.Notes.Model
 				NotifyPropertyChanged();
 			}
 		}
+		private string path { get; set; }
+		public string Path
+		{
+			get { return path; }
+			set
+			{
+				path = value;
+				NotifyPropertyChanged();
+			}
+		}
 
-		public List<KeyValuePair<string, string>> Properties { get; set; }
+		private long size { get; set; }
+		public long Size
+		{
+			get { return size; }
+			set
+			{
+				size = value;
+				NotifyPropertyChanged();
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

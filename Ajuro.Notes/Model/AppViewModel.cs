@@ -6,9 +6,9 @@ using System.Linq;
 using Ajuro.Net.Util.Helpers;
 using Ajuro.Net.Util.Models;
 using Ajuro.Net.Util.Resource;
-using MemoDrops.Commands;
+using Ajuro.Notes.Commands;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class AppViewModel
 	{
@@ -39,20 +39,10 @@ namespace MemoDrops.Model
 		{
 			if (newIdentity == null)
 			{
-				/*MessengerPresenterViewModel.Me.Name = "You are not logged in!";
-				MessengerPresenterViewModel.Me.Id = -1;
-				MessengerPresenterViewModel.Me.IsVisible = false;
-				MessengerPresenterViewModel.Me.Image = string.Empty;*/
 			}
 			else
 			{
 				UserPresenterViewModel.FacebookIdentity = newIdentity;
-				/*MessengerPresenterViewModel.Me.Name = newIdentity.FirstName + " " + newIdentity.LastName;
-				MessengerPresenterViewModel.Me.Id = newIdentity.Id;
-				MessengerPresenterViewModel.Me.IsVisible = true;
-				MessengerPresenterViewModel.Me.Image = newIdentity.Picture;
-
-				MessengerPresenterViewModel.Contacts.Remove(MessengerPresenterViewModel.Contacts.Where(p => p.Id == MessengerPresenterViewModel.Me.Id).FirstOrDefault());*/
 			}
 		}	               
 

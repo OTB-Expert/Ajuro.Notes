@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MemoDrops
+namespace Ajuro.Notes
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

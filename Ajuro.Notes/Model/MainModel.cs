@@ -1,17 +1,20 @@
-﻿using MemoDrops.Model;
+﻿using Ajuro.Notes.Model;
+using Ajuro.Notes.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoDrops
+namespace Ajuro.Notes
 {
 	public class MainModel : INotifyPropertyChanged
 	{
+		#region Singleton
 		private static MainModel instance { get; set; }
 		public static MainModel Instance
 		{
@@ -27,11 +30,70 @@ namespace MemoDrops
 
 		private static void CustomInitialize()
 		{
-			
+
 		}
 
 		private MainModel()
 		{
+			LastDocumentNames = new ObservableCollection<string>();
+		}
+		#endregion Singleton
+
+		#region MultifileDocuments
+
+		/// <summary>
+		/// Unfiltred collection
+		/// </summary>
+		public ItemList AllItems { get; set; }
+
+		/// <summary>
+		/// Filtred collection
+		/// </summary>
+		public ItemList FileItems { get; set; }
+
+		#endregion MultifileDocuments
+
+		private ObservableCollection<string> lastDocumentNames { get; set; }
+		public ObservableCollection<string> LastDocumentNames
+		{
+			get { return lastDocumentNames; }
+			set
+			{
+				lastDocumentNames = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+
+
+		private string selectedAffectedFileText { get; set; }
+		public string SelectedAffectedFileText
+		{
+			get { return selectedAffectedFileText; }
+			set
+			{
+				selectedAffectedFileText = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		private AffectedFile selectedAffectedFile { get; set; }
+		public AffectedFile SelectedAffectedFile
+		{
+			get { return selectedAffectedFile; }
+			set
+			{
+				if (value != null && File.Exists(value.Path))
+				{
+					SelectedAffectedFileText = File.ReadAllText(value.Path);
+				}
+				else
+				{
+					SelectedAffectedFileText = string.Empty;
+				}
+				selectedAffectedFile = value;
+				NotifyPropertyChanged();
+			}
 		}
 
 		private SettingsProfile selectedProfile { get; set; }

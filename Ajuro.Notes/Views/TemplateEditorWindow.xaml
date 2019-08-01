@@ -1,0 +1,118 @@
+﻿<Window x:Class="Ajuro.Notes.View.TemplateEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ajuro.Notes.View"
+        mc:Ignorable="d"
+        Title="Settings" Height="350" Width="900">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="5"></ColumnDefinition>
+			<ColumnDefinition MinWidth="150"></ColumnDefinition>
+			<ColumnDefinition Width="5"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="5"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition Width="5"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<DockPanel Grid.Column="0">
+			<RichTextBox HorizontalAlignment="Stretch" Name="OriginalCodeRichTextBox">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding OriginalCode, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+		</DockPanel>
+		<Separator Grid.Column="1" Width="3"></Separator>
+		<DockPanel Grid.Column="2">
+			<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+				<CheckBox Name="RealTimeUpdatesCheckBox" IsChecked="{Binding RealTimeUpdates}">Real time</CheckBox>
+				<Label>Fragment type</Label>
+				<RadioButton Name="RadioButtonRepeat">Repeat</RadioButton>
+				<RadioButton Name="RadioButtonReplace">Replace</RadioButton>
+				<DockPanel>
+					<Label>Name:</Label>
+					<TextBox Name="FragmentNameTextBox" Text="{Binding FragmentName}"></TextBox>
+				</DockPanel>
+				<DockPanel>
+					<Label>From:</Label>
+					<TextBox MinWidth="50" Name="SelectionFromTextBox" Text="{Binding SelectionStart}"></TextBox>
+					<Label>To:</Label>
+					<TextBox MinWidth="50" Name="SelectionToTextBox" Text="{Binding SelectionLength}"></TextBox>
+				</DockPanel>
+				<TextBox Name="ValueExampleTextBox" Text="{Binding ValueExample}"></TextBox>
+			</StackPanel>
+			<RichTextBox Name="RichTextBoxCodeFragment">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding CodeFragment, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+		</DockPanel>
+		<Separator Grid.Column="3" Width="3"></Separator>
+		<DockPanel Grid.Column="4">
+			<TreeView Name="FragmentsTreeView" ItemsSource="{Binding RootCodeFragment.Fragments}">
+
+				<!-- Specify the template that will display a node
+         from AnimalCategories.  I.e., one each for “Amphibians”
+         and “Spiders” in this sample.  It will get its nested
+         items from the "Animals" property of each item -->
+				<TreeView.ItemTemplate>
+					<HierarchicalDataTemplate ItemsSource="{Binding Path=Fragments}">
+
+						<!-- Display the AnimalCategory by showing it's Category string -->
+						<TextBlock FontWeight="Bold" Text="{Binding Path=Name}" />
+
+						<!-- Specify the nested template for the individual Animal items
+             that are within the AnimalCategories.  E.g. “California Newt”, etc. -->
+						<HierarchicalDataTemplate.ItemTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<TextBlock Text="ok"/>
+									<TextBlock Text="{Binding Path=Name}"/>
+								</StackPanel>
+							</DataTemplate>
+						</HierarchicalDataTemplate.ItemTemplate>
+
+					</HierarchicalDataTemplate>
+				</TreeView.ItemTemplate>
+			</TreeView>
+		</DockPanel>
+		<Separator Grid.Column="5" Width="3"></Separator>
+		<DockPanel Grid.Column="6">
+			<RichTextBox Visibility="Collapsed" Name="JsonEditorRichTextBox">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding JsonString, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+		</DockPanel>
+		<Separator Grid.Column="7" Width="3"></Separator>
+		<DockPanel Grid.Column="8">
+			<RichTextBox Name="RichTextBoxInflated">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding InflatedTemplate, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+		</DockPanel>
+		<Separator Width="3"></Separator>
+		<StackPanel Visibility="Collapsed" Orientation="Horizontal">
+			<RichTextBox Visibility="Collapsed" Name="RichTextBoxCodeStructurePreview">
+				<FlowDocument PageHeight="180">
+					<Paragraph>
+						<Run Text="{Binding RichTextBoxCodeStructurePreviewText, Mode=TwoWay}"/>
+					</Paragraph>
+				</FlowDocument>
+			</RichTextBox>
+			<WebBrowser Name="webBrowserPreview"></WebBrowser>
+		</StackPanel>
+	</Grid>
+</Window>

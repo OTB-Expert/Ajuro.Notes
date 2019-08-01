@@ -2,9 +2,9 @@
 using System.Windows.Input;
 using Ajuro.Net.User.Model;
 using Ajuro.Net.User;
-using MemoDrops.Commands;
+using Ajuro.Notes.Commands;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class UserPresenterViewModel : INotifyPropertyChanged
 	{

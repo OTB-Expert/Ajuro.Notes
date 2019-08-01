@@ -1,4 +1,4 @@
-﻿using MemoDrops.Model;
+﻿using Ajuro.Notes.Model;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace MemoDrops.View
+namespace Ajuro.Notes.View
 {
 	/// <summary>
 	/// Interaction logic for AccountWindow.xaml
@@ -154,10 +154,10 @@ namespace MemoDrops.View
 						response.RealName = response.PermalinkId;
 					}
 					Me = response;
-					if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account"))
+					if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account"))
 					{
-						Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account");
-						File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account/me.json", JsonConvert.SerializeObject(Me));
+						Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account");
+						File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account/me.json", JsonConvert.SerializeObject(Me));
 					}
 					Close();
 				}
@@ -169,9 +169,9 @@ namespace MemoDrops.View
 			else
 			{
 				Me.PermalinkId = null;
-				if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account"))
+				if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account"))
 				{
-					Directory.Delete(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/MemoDrops/Account", true);
+					Directory.Delete(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OTB/Ajuro.Notes/Account", true);
 				}
 				Me.RealName = string.Empty;
 				Me.Password = string.Empty;
@@ -195,11 +195,11 @@ namespace MemoDrops.View
 			sb.AppendLine("-------------------------------------------------------------");
 			sb.AppendLine(httpWebRequest.Method + " - " + DateTime.UtcNow.ToShortTimeString());
 			sb.AppendLine(JsonConvert.SerializeObject(entity, Formatting.Indented));
-			if(!Directory.Exists("C://Logs//OTB//MemoDrops"))
+			if(!Directory.Exists("C://Logs//OTB//Ajuro.Notes"))
 			{
-				Directory.CreateDirectory("C://Logs//OTB//MemoDrops");
+				Directory.CreateDirectory("C://Logs//OTB//Ajuro.Notes");
 			}
-			File.AppendAllText("C://Logs//OTB//MemoDrops//http_trace.txt", sb.ToString());
+			File.AppendAllText("C://Logs//OTB//Ajuro.Notes//http_trace.txt", sb.ToString());
 #endif
 
 			using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))

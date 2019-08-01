@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public enum VisibilityType { OnlyMe = 0, ByInvitation, WithLink, Public }
 	public class VisibilityLevel : INotifyPropertyChanged

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MemoDrops.Model
+namespace Ajuro.Notes.Model
 {
 	public class BusinessConfiguration
 	{
