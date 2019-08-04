@@ -509,6 +509,15 @@ namespace Ajuro.Notes.View
 				}
 				variables = File.ReadAllText(BasePath + itemVar.Key);
 			}
+
+			if(!File.Exists(templaterInstruction.Project + "\\data.json"))
+			{
+				var streamReader = File.Create(templaterInstruction.Project + "\\data.json");
+				streamReader.Close();
+				Log(new LogEntry() { Message = "Saving DATA json.", Name="data.json", Path = templaterInstruction.Project + "\\data.json", Size = variables.Length });
+			}
+			File.WriteAllText(templaterInstruction.Project + "\\data.json", variables);
+
 			var itemTemplate = MainModel.Instance.AllItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
 			if (itemTemplate != null && File.Exists(BasePath + itemTemplate.Key))
 			{
@@ -557,7 +566,7 @@ namespace Ajuro.Notes.View
 			File.WriteAllText(projectPath + "\\" + templatename + ".ready", templateReady);
 			Log(new LogEntry() { Message = "Ajuro Ready file created: " + templatePath, Name = templatename + ".ready", Path = projectPath + "\\" + templatename + ".ready", Size = templateReady.Length });
 
-			LogEntries.AddRange(templateProcessor.LogEntries);
+			// LogEntries.AddRange(templateProcessor.LogEntries);
 
 			if (string.IsNullOrEmpty(projectPath))
 			{
@@ -598,8 +607,17 @@ namespace Ajuro.Notes.View
 			{
 				Log(new LogEntry() { Message = "Processing fork template: " + item.TemplatePath });
 				logLevel++;
-				variables = File.ReadAllText(projectPath + "\\" + item.Data);
-				var childTemplateReady = ParseTemplate(projectPath, item.TemplatePath.Substring(item.TemplatePath.LastIndexOf("\\") + 1), item.TemplatePath, variables);
+				var data = variables;
+				if (!string.IsNullOrEmpty(item.Data))
+				{
+					Log(new LogEntry() { Message = "Collecting data from: " + projectPath + "\\" + item.Data });
+					data = File.ReadAllText(projectPath + "\\" + item.Data);
+				}
+				else
+				{
+					Log(new LogEntry() { Message = "No data provided for this fork. Use initial data." });
+				}
+				var childTemplateReady = ParseTemplate(projectPath, item.TemplatePath.Substring(item.TemplatePath.LastIndexOf("\\") + 1), item.TemplatePath, data);
 				logLevel--;
 			}
 			return templateReady;
@@ -1085,7 +1103,7 @@ namespace Ajuro.Notes.View
 					document = MainModel.Instance.FileItems.CurrentItem;
 				}
 				else
-				if (MainModel.Instance.FileItems.CurrentItem.Files.Count > 0)
+				if (MainModel.Instance.FileItems.CurrentItem.Files != null && MainModel.Instance.FileItems.CurrentItem.Files.Count > 0)
 				{
 					if(MainModel.Instance.FileItems.CurrentItem.Files[0].EndsWith(".rd"))
 					{
