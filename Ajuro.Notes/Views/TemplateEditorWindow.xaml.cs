@@ -1,5 +1,4 @@
-﻿using Ajuro.Notes.Model;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Ajuro.Net.Template.Processor;
+using Ajuro.WPF.Base.Model;
 
 namespace Ajuro.Notes.View
 {

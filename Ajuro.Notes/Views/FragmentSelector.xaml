@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ajuro.Notes.Views"
+        xmlns:models="clr-namespace:Ajuro.WPF.Base.Model;assembly=Ajuro.WPF.Base"
         xmlns:net="clr-namespace:Ajuro.Net.Template.Processor;assembly=Ajuro.Net.Template.Processor"
         mc:Ignorable="d"
         Title="FragmentSelector" Height="450" Width="800">

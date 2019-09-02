@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ajuro.Notes.Properties {
+namespace Ajuro.WPF.Notes.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,0 +1,46 @@
+﻿<table border="0">
+           <tr>
+               <td>Name</td>
+               <td><input type="text" name="name" value="<?php echo $name;?>"></td>
+           </tr>
+           <tr>
+               <td>Age</td>
+               <td><input type="text" name="age" value="<?php echo $age;?>"></td>
+           </tr>
+           <tr>
+               <td>Email</td>
+               <td><input type="text" name="email" value="<?php echo $email;?>"></td>
+           </tr>
+       </table>
+
+<script>
+       if(empty($name)) {
+           echo "<font color='red'>Name field is empty.</font><br/>";
+       }
+
+       if(empty($age)) {
+           echo "<font color='red'>Age field is empty.</font><br/>";
+       }
+
+       if(empty($email)) {
+           echo "<font color='red'>Email field is empty.</font><br/>";
+       }
+Items:
+{
+	[
+		"Text": "Name",
+		"Type": "text",
+		"Name": "name"
+	],
+	[
+		"Text": "Age",
+		"Type": "text",
+		"Name": "age"
+	],
+	[
+		"Text": "Email",
+		"Type": "text",
+		"Name": "email"
+	]
+}
+</script>

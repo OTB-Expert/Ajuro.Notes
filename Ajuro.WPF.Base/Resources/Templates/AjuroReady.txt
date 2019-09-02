@@ -1,0 +1,1613 @@
+﻿
+
+
+// Create API docs 
+
+FileAction: { "Path" : "../otb/api/docs/index.html", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Title.html", "Action" : "CreateIfNotExists" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+<center> 
+<h1>eCommerce Business Cloud</h1> 
+<h2>AJURO Unified API</h2> 
+<h3>Documentation</h3> 
+
+<!-- AJP-BEGIN: Documentation !--> 
+<!-- AJP-END: Documentation !--> 
+
+<h3>Postman</h3> 
+
+<!-- AJP-BEGIN: Postman !--> 
+<!-- AJP-END: Postman !--> 
+
+<h3>DataService</h3> 
+
+<!-- AJP-BEGIN: DataService !--> 
+<!-- AJP-END: DataService !--> 
+
+<h3>Travis</h3> 
+
+<!-- AJP-BEGIN: Travis !--> 
+<!-- AJP-END: Travis !--> 
+
+<h3>Database</h3> 
+
+<!-- AJP-BEGIN: Database !--> 
+<!-- AJP-END: Database !--> 
+
+
+<h3>Entity Relationship Diagram</h3> 
+
+<!-- AJP-BEGIN: ERD !--> 
+<!-- AJP-END: ERD !--> 
+
+
+<h3>Class Diagram</h3> 
+
+<!-- AJP-BEGIN: ERD !--> 
+<!-- AJP-END: ERD !--> 
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+</center> 
+
+FileAction: { "Path" : "../otb/api/docs/index.html", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Documentation", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+<a href="Generated_Title.html">Title</a><br> 
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Documentation --!> 
+
+FileAction: { "Path" : "../otb/api/docs/index.html", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Postman", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+<a href="Laravel_Title.generated_postman_collection.json">Title</a><br> 
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Postman --!> 
+
+FileAction: { "Path" : "../otb/api/docs/index.html", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "DataService", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+<a href="../../../ajuro-angular-data-seed/src/app/ajuro.data/services/ajuro.data.http.Title_service.ts">Title</a><br> 
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: DataService --!> 
+
+FileAction: { "Path" : "../otb/api/docs/index.html", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Travis", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+<a href="../../../ajuro-angular-data-seed/src/app/ajuro.data/ajuro.data.presenter/ajuro.data.Title_presenter.component.real.spec.ts">Title</a><br> 
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Travis --!> 
+
+
+
+FileAction: { "Path" : "../otb/api/docs/Generated_Title.html", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Title.html", "Action" : "CreateIfNotExists" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+<style> 
+h1{color:red} 
+.content{text-align:left} 
+.endpoint{color:blue; padding-left:50px} 
+.parameters{color:black; padding-left:50px} 
+.parameter{color:black; padding-left:50px} 
+.parameter_name{color:black} 
+.parameter_index{color:#CCF} 
+.parameter_type{color:blue} 
+.parameter_value{color:green} 
+</style> 
+<a href="./">Home</a><br> 
+
+<center> 
+<h1>eCommerce Business Cloud</h1> 
+<h2>Title</h2> 
+
+<div class='content'> 
+<!-- AJP-BEGIN: Content !--> 
+<!-- AJP-END: Content !--> 
+</div> 
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+</center> 
+
+FileAction: { "Path" : "../otb/api/docs/Generated_Title.html", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Content", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+<h1> <span class='parameter_index'> 1) </span> Id_Products</h1> 
+
+<h3 class='endpoint'> <span class='parameter_index'> 1.1) </span> list_Id_Products - gen_uni.Title.php</h3><div class='parameters'> 
+</div> 
+
+<h3 class='endpoint'> <span class='parameter_index'> 1.2) </span> read_Id_Products - gen_uni.Title.php</h3><div class='parameters'> 
+</div> 
+
+<h3 class='endpoint'> <span class='parameter_index'> 1.3) </span> create_Id_Products - gen_uni.Title.php</h3><div class='parameters'> 
+</div> 
+
+<h3 class='endpoint'> <span class='parameter_index'> 1.4) </span> update_Id_Products - gen_uni.Title.php</h3><div class='parameters'> 
+</div> 
+
+<h3 class='endpoint'> <span class='parameter_index'> 1.5) </span> delete_Id_Products - gen_uni.Title.php</h3><div class='parameters'> 
+</div> 
+
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+
+
+
+// Create DataService 
+
+
+
+
+FileAction: { "Path" : "../ajuro-angular-data-seed/src/app/ajuro.data/services/ajuro.data.http.Title_service.ts", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Title.html", "Action" : "CreateIfNotExists" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'; 
+import { Injectable } from '@angular/core'; 
+// HTTP specific imports 
+import { HttpClient, HttpParams, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http'; 
+import { RequestOptions, Headers } from '@angular/http'; 
+import { Observable } from 'rxjs/Observable'; 
+import 'rxjs/add/operator/map'; 
+
+// Data Acccess 
+@Injectable() 
+export class DataService { 
+public static apiHost = 'http://api.otb.expert/'; 
+private static that: DataService; 
+
+constructor( private http: HttpClient ) { 
+/* AJURO Create one instance only */ 
+if (DataService.that !== null) { 
+return DataService.that; 
+} else { 
+} 
+DataService.that = this; 
+} 
+
+/*-- AJP-BEGIN: Requests --*/ 
+/*-- AJP-END: Requests --*/ 
+
+} 
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+
+
+FileAction: { "Path" : "../ajuro-angular-data-seed/src/app/ajuro.data/services/ajuro.data.http.Title_service.ts", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Requests", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+public UnifiedApiCall_list_Id_Products(params) { 
+return this.http.post(DataService.apiHost + 'uni.php', params); 
+//, {responseType: 'text'}); 
+} 
+public UnifiedApiCall_read_Id_Products(params) { 
+return this.http.post(DataService.apiHost + 'uni.php', params); 
+//, {responseType: 'text'}); 
+} 
+public UnifiedApiCall_create_Id_Products(params) { 
+return this.http.post(DataService.apiHost + 'uni.php', params); 
+//, {responseType: 'text'}); 
+} 
+public UnifiedApiCall_update_Id_Products(params) { 
+return this.http.post(DataService.apiHost + 'uni.php', params); 
+//, {responseType: 'text'}); 
+} 
+public UnifiedApiCall_delete_Id_Products(params) { 
+return this.http.post(DataService.apiHost + 'uni.php', params); 
+//, {responseType: 'text'}); 
+} 
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Travis --!> 
+
+
+
+// Create Travis 
+
+
+
+
+FileAction: { "Path" : "../ajuro-angular-data-seed/src/app/ajuro.data/ajuro.data.presenter/ajuro.data.Title_presenter.component.real.spec.ts", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Title.html", "Action" : "CreateIfNotExists" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+import { DataService } from './../services/ajuro.data.http.Title_service'; 
+import { TestBed, async, inject } from '@angular/core/testing'; 
+import { HttpClientModule, HttpClient, HttpRequest, HttpParams, HttpResponse } from '@angular/common/http'; 
+import { HttpEvent, HttpEventType } from '@angular/common/http'; 
+
+// Containing describe block (or "suite"), usually named for an app feature. 
+describe('DataService', function() { 
+beforeEach(() => { 
+// 0. set up the test environment 
+TestBed.configureTestingModule({ 
+imports: [ 
+// no more boilerplate code w/ custom providers needed :-) 
+HttpClientModule 
+], 
+providers: [ 
+{provide: DataService, useClass: DataService } 
+] 
+}); 
+}); 
+
+afterEach(inject([DataService], (backend: HttpClient) => { 
+// backend.verify(); 
+})); 
+
+/*-- AJP-BEGIN: Requests --*/ 
+/*-- AJP-END: Requests --*/ 
+}); 
+
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+
+
+FileAction: { "Path" : "../ajuro-angular-data-seed/src/app/ajuro.data/ajuro.data.presenter/ajuro.data.Title_presenter.component.real.spec.ts", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Requests", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+it(`can request gen_uni.Title.php`, async(inject([DataService, HttpClient], 
+(service: DataService, backend: HttpClient) => { 
+service.UnifiedApiCall_list_Id_Products({ 
+uni_api: 'gen_uni.Title.php' }).subscribe((response: any) => { 
+console.log('result: '); 
+console.log((response)); 
+expect(response.data).not.toBeUndefined(); 
+}); 
+}))); 
+it(`can request gen_uni.Title.php`, async(inject([DataService, HttpClient], 
+(service: DataService, backend: HttpClient) => { 
+service.UnifiedApiCall_read_Id_Products({ 
+uni_api: 'gen_uni.Title.php' }).subscribe((response: any) => { 
+console.log('result: '); 
+console.log((response)); 
+expect(response.data).not.toBeUndefined(); 
+}); 
+}))); 
+it(`can request gen_uni.Title.php`, async(inject([DataService, HttpClient], 
+(service: DataService, backend: HttpClient) => { 
+service.UnifiedApiCall_create_Id_Products({ 
+uni_api: 'gen_uni.Title.php' }).subscribe((response: any) => { 
+console.log('result: '); 
+console.log((response)); 
+expect(response.data).not.toBeUndefined(); 
+}); 
+}))); 
+it(`can request gen_uni.Title.php`, async(inject([DataService, HttpClient], 
+(service: DataService, backend: HttpClient) => { 
+service.UnifiedApiCall_update_Id_Products({ 
+uni_api: 'gen_uni.Title.php' }).subscribe((response: any) => { 
+console.log('result: '); 
+console.log((response)); 
+expect(response.data).not.toBeUndefined(); 
+}); 
+}))); 
+it(`can request gen_uni.Title.php`, async(inject([DataService, HttpClient], 
+(service: DataService, backend: HttpClient) => { 
+service.UnifiedApiCall_delete_Id_Products({ 
+uni_api: 'gen_uni.Title.php' }).subscribe((response: any) => { 
+console.log('result: '); 
+console.log((response)); 
+expect(response.data).not.toBeUndefined(); 
+}); 
+}))); 
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Travis --!> 
+
+
+
+
+// Create postman 
+
+
+
+FileAction: { "Path" : "../api/docs/gen_postman_collection.Title.json", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Postman_Title.json", "Action" : "Overwrite" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+{ 
+"info": { 
+"_postman_id": "52625c7f-ca77-4c1c-8f10-c4018f02a210", 
+"name": "Generated_Title", 
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+}, 
+"item": [ 
+/*-- 0 AJP-BEGIN: Endpoints --*/ 
+/*-- AJP-END: Endpoints --*/ 
+] 
+} 
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Postman_Title.json --!> 
+
+
+
+
+
+FileAction: { "Path" : "../api/docs/gen_postman_collection.Title.json", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Endpoints", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+{ 
+"name": "T-list_Id_Products - gen_uni.Title.php", 
+"event": [ 
+{ 
+"listen": "test", 
+"script": { 
+"type": "text/javascript", 
+"exec": [ 
+"pm.test(\"Body matches string\", function () {", 
+" pm.expect(pm.response.text()).to.include(\"English\");", 
+"});" 
+] 
+} 
+} 
+], 
+"request": { 
+"method": "POST", 
+"header": [ 
+{ 
+"key": "Content-Type", 
+"value": "application/json" 
+} 
+], 
+"body": { 
+"mode": "raw", 
+"raw": "{\r\n\t\"uni_api\":\"list_Id_Products\"\r\n}" 
+}, 
+"url": { 
+"raw": "https://otb.expert/api/docs/gen_uni.Title.php", 
+"protocol": "https", 
+"host": [ 
+"otb", 
+"expert" 
+], 
+"path": [ 
+"api/docs/gen_uni.Title.php" 
+] 
+} 
+}, 
+"response": [] 
+}, 
+{ 
+"name": "T-read_Id_Products - gen_uni.Title.php", 
+"event": [ 
+{ 
+"listen": "test", 
+"script": { 
+"type": "text/javascript", 
+"exec": [ 
+"pm.test(\"Body matches string\", function () {", 
+" pm.expect(pm.response.text()).to.include(\"English\");", 
+"});" 
+] 
+} 
+} 
+], 
+"request": { 
+"method": "POST", 
+"header": [ 
+{ 
+"key": "Content-Type", 
+"value": "application/json" 
+} 
+], 
+"body": { 
+"mode": "raw", 
+"raw": "{\r\n\t\"uni_api\":\"read_Id_Products\"\r\n\t,\"Id\": 0\r\n}" 
+}, 
+"url": { 
+"raw": "https://otb.expert/api/docs/gen_uni.Title.php", 
+"protocol": "https", 
+"host": [ 
+"otb", 
+"expert" 
+], 
+"path": [ 
+"api/docs/gen_uni.Title.php" 
+] 
+} 
+}, 
+"response": [] 
+}, 
+{ 
+"name": "T-create_Id_Products - gen_uni.Title.php", 
+"event": [ 
+{ 
+"listen": "test", 
+"script": { 
+"type": "text/javascript", 
+"exec": [ 
+"pm.test(\"Body matches string\", function () {", 
+" pm.expect(pm.response.text()).to.include(\"English\");", 
+"});" 
+] 
+} 
+} 
+], 
+"request": { 
+"method": "POST", 
+"header": [ 
+{ 
+"key": "Content-Type", 
+"value": "application/json" 
+} 
+], 
+"body": { 
+"mode": "raw", 
+"raw": "{\r\n\t\"uni_api\":\"create_Id_Products\"\r\n\t,\"Title\": 10\r\n\t,\"Image\": 10\r\n\t,\"Price\": 10\r\n\t,\"Rating\": 10\r\n}" 
+}, 
+"url": { 
+"raw": "https://otb.expert/api/docs/gen_uni.Title.php", 
+"protocol": "https", 
+"host": [ 
+"otb", 
+"expert" 
+], 
+"path": [ 
+"api/docs/gen_uni.Title.php" 
+] 
+} 
+}, 
+"response": [] 
+}, 
+{ 
+"name": "T-update_Id_Products - gen_uni.Title.php", 
+"event": [ 
+{ 
+"listen": "test", 
+"script": { 
+"type": "text/javascript", 
+"exec": [ 
+"pm.test(\"Body matches string\", function () {", 
+" pm.expect(pm.response.text()).to.include(\"English\");", 
+"});" 
+] 
+} 
+} 
+], 
+"request": { 
+"method": "POST", 
+"header": [ 
+{ 
+"key": "Content-Type", 
+"value": "application/json" 
+} 
+], 
+"body": { 
+"mode": "raw", 
+"raw": "{\r\n\t\"uni_api\":\"update_Id_Products\"\r\n\t,\"Id\": 10\r\n\t,\"Title\": 10\r\n\t,\"Image\": 10\r\n\t,\"Price\": 10\r\n\t,\"Rating\": 10\r\n}" 
+}, 
+"url": { 
+"raw": "https://otb.expert/api/docs/gen_uni.Title.php", 
+"protocol": "https", 
+"host": [ 
+"otb", 
+"expert" 
+], 
+"path": [ 
+"api/docs/gen_uni.Title.php" 
+] 
+} 
+}, 
+"response": [] 
+}, 
+{ 
+"name": "T-delete_Id_Products - gen_uni.Title.php", 
+"event": [ 
+{ 
+"listen": "test", 
+"script": { 
+"type": "text/javascript", 
+"exec": [ 
+"pm.test(\"Body matches string\", function () {", 
+" pm.expect(pm.response.text()).to.include(\"English\");", 
+"});" 
+] 
+} 
+} 
+], 
+"request": { 
+"method": "POST", 
+"header": [ 
+{ 
+"key": "Content-Type", 
+"value": "application/json" 
+} 
+], 
+"body": { 
+"mode": "raw", 
+"raw": "{\r\n\t\"uni_api\":\"delete_Id_Products\"\r\n\t,\"Id\": 0\r\n}"
+}, 
+"url": { 
+"raw": "https://otb.expert/api/docs/gen_uni.Title.php", 
+"protocol": "https", 
+"host": [ 
+"otb", 
+"expert" 
+], 
+"path": [ 
+"api/docs/gen_uni.Title.php" 
+] 
+} 
+}, 
+"response": [] 
+} 
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Endpoints --!> 
+
+
+
+// Create UNI.PHP 
+
+
+
+FileAction: { "Path" : "../api/docs/gen_uni.Title.php", "Action" : "create" } 
+<!-- AJP-BEGIN: { "Section" : "Postman_Title.json", "Action" : "Overwrite" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/<?php 
+
+header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Methods: OPTION, POST, GET'); 
+header('Access-Control-Max-Age: 3600'); 
+header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'); 
+header('Content-Type: application/json'); // Only necessary if the request asks for it. The content will be send anyway. POSTMAN use this value to preset the viewer used to show the data 
+
+session_start(); 
+$_SESSION['uas_logging_file'] = 'log.json'; 
+$_SESSION['uas_write_log'] = 100; 
+
+$postdata = file_get_contents("php://input"); 
+// echo '---'.$postdata.'---'; 
+$_POST = json_decode($postdata); 
+/* 
+echo ('===================================<br>RawData:<br><pre>'); 
+print_r(file_get_contents("php://input")); 
+echo ('</pre><br>===================================<br>FormData:<br><pre>'); 
+print_r($_POST); 
+echo('</pre>'); 
+*/ 
+
+
+class DataAccess 
+{ 
+private $SanitizerStrig = '/[^,+\(\).=A-Za-z0-9\-_\/:\n\t\s]/'; 
+
+public function Execute($MyBusiness, $db, $query, $usings, $action) 
+{ 
+$data = []; 
+$variables = []; 
+
+// $query = strtr($query, $variables); 
+$success = false; 
+$message = ''; 
+
+//echo($db); 
+if(!isset($MyBusiness->Handlers[$db])) 
+{ 
+$message = "Unknown database [".$db."]"; 
+$success = false; 
+} 
+else 
+switch($MyBusiness->Handlers[$db]["Type"]) 
+{ 
+case "MySql": 
+$resource = $this->ExecuteMySql($MyBusiness, $db, $query); 
+if($resource === false) 
+{ 
+$message = mysqli_error($MyBusiness->Handlers[$db]["Connection"]); 
+$success = false; 
+} 
+else 
+{ 
+if($action == 'delete') 
+{ 
+return "{Id}"; 
+} 
+else 
+if($action != 'list' && $action != 'read') 
+{ 
+return $MyBusiness->Handlers[$db]["Connection"]->insert_id; 
+} 
+$data = $this->ExtractMySqlObjects($resource); 
+$success = true; 
+} 
+break; 
+case "SqlServer": 
+$resource = $this->ExecuteSqlServer($MyBusiness, $db, $query); 
+if($resource === false) 
+{ 
+$message = odbc_error($MyBusiness->Handlers[$db]["Connection"]); 
+$success = false; 
+} 
+else 
+{ 
+$data = $this->ExtractSqlServerObjects($resource); 
+$success = true; 
+} 
+break; 
+case "Postgres": 
+$resource = $this->ExecutePostgres($MyBusiness, $db, $query); 
+if($resource === false) 
+{ 
+$message = pg_result_error($MyBusiness->Handlers[$db]["Connection"]); 
+$success = false; 
+} 
+else 
+{ 
+$data = $this->ExtractPostgresObjects($resource); 
+$success = true; 
+} 
+break; 
+} 
+echo $message; 
+return $data; 
+} 
+
+public function ExecutePostgres($MyBusiness, $db, $query) 
+{ 
+$resource = null; 
+if($MyBusiness->Handlers[$db]["Connection"] == null) 
+{ 
+eval("\$MyBusiness->Handlers[\$db]['Connection'] = ".$MyBusiness->Handlers[$db]["ConnectionCommand"]); 
+} 
+$resource = pg_query($MyBusiness->Handlers[$db]["Connection"], $query); 
+
+return $resource; 
+} 
+
+public function ExecuteSqlServer($MyBusiness, $db, $query) 
+{ 
+$resource = null; 
+if($MyBusiness->Handlers[$db]["Connection"] == null) 
+{ 
+// echo($MyBusiness->Handlers[$db]["ConnectionCommand"]); 
+eval("\$MyBusiness->Handlers[\$db]['Connection'] = ".$MyBusiness->Handlers[$db]["ConnectionCommand"]); 
+} 
+$resource = odbc_exec($MyBusiness->Handlers[$db]["Connection"], $query); 
+return $resource; 
+} 
+
+public function ExecuteMySql($MyBusiness, $db, $query) 
+{ 
+$resource = null; 
+if($MyBusiness->Handlers[$db]["Connection"] == null) 
+{ 
+// echo($MyBusiness->Handlers[$db]["ConnectionCommand"]); 
+eval("\$MyBusiness->Handlers[\$db]['Connection'] = ".$MyBusiness->Handlers[$db]["ConnectionCommand"]); 
+} 
+$resource = mysqli_query($MyBusiness->Handlers[$db]["Connection"], $query); 
+return $resource; 
+} 
+
+
+
+/* 
+* Get all records as objects 
+*/ 
+public function ExtractPostgresObjects($resource) 
+{ 
+$data = []; 
+while($row = pg_fetch_object($resource)) 
+{ 
+$data[] = $row; 
+} 
+return $data; 
+}	 
+/* 
+* Get all records as objects 
+*/ 
+public function ExtractMySqlObjects($resource) 
+{ 
+$data = []; 
+while($row = mysqli_fetch_object($resource)) 
+{ 
+foreach($row as $key=>$val) 
+//for($r = 0; $r < count($row); $r++) 
+{ 
+//$row->$key = preg_replace('/[^@#$%\^&\=\-\+\:\,\;\*\?\!.\(\)\[\]A-Za-z0-9\-_\n\t ]/', '', $val); 
+$row->$key = $val;// preg_replace($this->SanitizerStrig, '', $val); 
+} 
+$data[] = $row; 
+} 
+return $data; 
+}	 
+/* 
+* Get all records as objects 
+*/ 
+public function ExtractSqlServerObjects($resource) 
+{ 
+$data = []; 
+odbc_fetch_row($resource, 0); 
+while($row = odbc_fetch_object($resource)) 
+{ 
+foreach($row as $key=>$val) 
+//for($r = 0; $r < count($row); $r++) 
+{ 
+//$row->$key = preg_replace('/[^@#$%\^&\=\-\+\:\,\;\*\?\!.\(\)\[\]A-Za-z0-9\-_\n\t ]/', '', $val); 
+$row->$key = preg_replace($this->SanitizerStrig, '', $val); 
+} 
+$data[] = $row; 
+} 
+return $data; 
+} 
+} 
+
+class MyBusiness{ 
+
+public $DefaultConnectionName = null; 
+public $Handlers; 
+public function __construct() 
+{ 
+$this->Handlers = array(); 
+$dbname = 'test'; 
+// $this->Handlers[$dbname] = [ "Type"=>"Postgres", "Connection"=> null, "ConnectionCommand"=>"" ]; 
+// $this->Handlers[$dbname] = [ "Type"=>"SqlServer", "Connection"=> null, "ConnectionCommand"=>"" ]; 
+$this->Handlers[$dbname] = [ "Type"=>"MySql", "Connection"=> null, "ConnectionCommand"=>'mysqli_connect("www.aju.ro","r50109aj_start", "Start1312!", "r50109aj_test");' ]; 
+if($this->DefaultConnectionName == null) 
+{ 
+$this->DefaultConnectionName = 'test'; 
+} 
+$this->TestConnections(); 
+// For Integrated Security use odbc_connect($database->Database, '', ''); 
+} 
+
+/* Not in use */ 
+public function TestConnections() 
+{ 
+foreach($this->Handlers as $handler) 
+{	
+switch($handler["Type"]) 
+{ 
+case "MySql": 
+if($handler["Connection"] == null) 
+{ 
+eval("\$handler['Connection'] = ".$handler["ConnectionCommand"]); 
+} 
+break; 
+case "SqlServer": 
+if($handler["Connection"] == null) 
+{ 
+eval("\$handler['Connection'] = ".$handler["ConnectionCommand"]); 
+} 
+$resource = odbc_exec($handler["Connection"], 'SELECT @@VERSION AS [SQL Server Version]'); 
+odbc_fetch_row($resource, 0); 
+while($row = odbc_fetch_object($resource)) 
+{ 
+$handler['Info']=[]; 
+foreach($row as $key=>$val) 
+{ 
+$handler['Info'][$key]=$val; 
+} 
+} 
+// print_r($handler); 
+break; 
+case "Postgres": 
+$resource = $this->ExecutePostgres($MyBusiness, $this->DefaultConnectionName, $query); 
+$data = $this->ExtractPostgresObjects($resource); 
+break; 
+} 
+} 
+// print_r($this->Handlers); 
+} 
+} 
+
+// http://localhost:86/my/api/RequestObject.php?PrintRequestObject=1 
+
+/* 
+* Request Object structure 
+*/ 
+class RequestObject implements JsonSerializable { 
+
+// Resource Identifier 
+public $Query; 
+
+// Resource Identifier 
+public $ResourceName; 
+// Resource Identifier 
+public $Data; 
+
+// Source Identifier (Might be a specific database or file known to the api) 
+public $PrefferedSource; 
+
+// Result data 
+public $ProcessedFields; 
+
+// Fields requested. by default all fields are requested 
+public $BuildOptions = Array(); 
+
+// Where conditions to apply 
+public $WhereConditions; 
+
+// Relations 
+public $Relations; 
+
+public function __construct() { 
+//$this->sql = $processed_sql_statement; 
+} 
+
+public function Pack($json) 
+{ 
+// $json = '{ "e": "Customers", "s": "2", "f": [ { "n": "Age", "i": -1, "o": 1, "x": 1 }, { "n": "Age", "i": -1, "o": 1, "x": 1 } ], "o": { "i" : ["ForeignId", "LongText"] }, "w": { "c": 0, "v": 10, "a": [], "o": [ ], "w": 20 }, "r": null }'; 
+$data = json_decode($json); 
+
+$this->ResourceName = $data->uni_api; 
+$this->Data = $data; 
+/*$this->PrefferedSource = $data->s; 
+$this->ProcessedFields = $data->f; 
+$this->BuildOptions = $data->o; 
+$this->WhereConditions = $data->w; */ 
+$this->Relations = null; 
+} 
+
+public function jsonSerialize() { 
+$this->content = 
+[ 
+'e' => $this->ResourceName, 
+'d' => $this->Data, 
+'s' => $this->PrefferedSource, 
+'f' => $this->ProcessedFields, 
+'o' => $this->BuildOptions, 
+'w' => $this->WhereConditions, 
+'r' => $this->Relations , 
+'q' => $this->Query 
+]; 
+return $this->content; 
+} 
+} 
+
+class DummyClass { } 
+
+class APIManager { 
+
+
+public function MakeAPIRequest_POST($RequestObject){
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/'.$_POST->uni_api; 
+$data = $_POST; 
+
+// use key 'http' even if you send the request to https://... 
+$options = array( 
+'http' => array( 
+'header' => "Content-type: application/json\r\n", 
+'method' => 'POST', 
+'content' => json_encode($_POST) 
+) 
+); 
+$context = stream_context_create($options); 
+$result = '{ "data": '. file_get_contents($url, false, $context) .'}'; 
+if ($result === FALSE) { /* Handle error */ } 
+
+return $result; 
+// echo json_encode($RequestObject, JSON_PRETTY_PRINT); 
+} 
+public function MakeAPIRequest_GET($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/'.$_POST->uni_api; 
+$data = array( 'ajuro_name' => 180 ); 
+
+// use key 'http' even if you send the request to https://... 
+$options = array( 
+'http' => array( 
+'header' => "Content-type: application/x-www-form-urlencoded", 
+'method' => 'GET', 
+'content' => http_build_query($data) 
+) 
+); 
+$context = stream_context_create($options); 
+$result = '{ "data": '. file_get_contents($url) .'}'; 
+if ($result === FALSE) { /* Handle error */ } 
+
+return $result; 
+// echo json_encode($RequestObject, JSON_PRETTY_PRINT); 
+} 
+
+/*-- AJP-BEGIN: Actions --*/ 
+
+
+
+/*-- AJP-END: Actions --*/ 
+
+
+
+public function InitializeRequest() 
+{ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$request = file_get_contents("php://input"); 
+// echo(($request)); 
+$RequestObject = new RequestObject(); 
+$RequestObject->Pack($request); 
+
+if(false) 
+{ 
+
+} 
+
+/*-- AJP-BEGIN: Routes --*/ 
+
+/*-- AJP-END: Routes --*/ 
+
+else 
+{ 
+echo "Unknown parameters!"; 
+print_r($_POST); 
+} 
+$original_response = json_decode($response); 
+if($original_response == null) 
+{ 
+echo($response); 
+} 
+
+// The response from underlaying API 
+$original_response->aju_request = $request; 
+$original_response->aju_after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response); 
+exit(); 
+} 
+} 
+
+// if(isset($_POST['e'])) { 
+$APIManager = new APIManager(); 
+$APIManager->InitializeRequest(); 
+// } 
+
+?> 
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Postman_Title.json --!> 
+
+
+
+
+
+FileAction: { "Path" : "../api/docs/gen_uni.Title.php", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Routes", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+
+else if($RequestObject->ResourceName == 'list_Id_Products') 
+{ 
+$response = $this->MakeAPIRequest_list_Id_Products($RequestObject); 
+} 
+
+else if($RequestObject->ResourceName == 'read_Id_Products') 
+{ 
+$response = $this->MakeAPIRequest_read_Id_Products($RequestObject); 
+} 
+
+else if($RequestObject->ResourceName == 'create_Id_Products') 
+{ 
+$response = $this->MakeAPIRequest_create_Id_Products($RequestObject); 
+} 
+
+else if($RequestObject->ResourceName == 'update_Id_Products') 
+{ 
+$response = $this->MakeAPIRequest_update_Id_Products($RequestObject); 
+} 
+
+else if($RequestObject->ResourceName == 'delete_Id_Products') 
+{ 
+$response = $this->MakeAPIRequest_delete_Id_Products($RequestObject); 
+} 
+
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 
+
+
+
+
+FileAction: { "Path" : "../api/docs/gen_uni.Title.php", "Action" : "default" } 
+<!-- AJP-BEGIN: { "Section" : "Actions", "Action" : "Replace" } --!> 
+/*=1*=1*=1*=1*=1*=1*=1*=1*/ 
+
+
+
+
+public function MakeAPIRequest_list_Id_Products($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/gen_uni.Title.php'; 
+$data = array( 'ajuro_name' => 'list_Id_Products' 
+
+); 
+
+$MyBusiness = new MyBusiness(); 
+$DataAccess = new DataAccess(); 
+$action = substr('list_Products', 0, strpos('list_Products', '_')); 
+$sql = "SELECT * FROM `Id_Products` LIMIT 30;";	
+// print_r($RequestObject->Data->Filters); 
+$whereCondition = "1=1"; 
+foreach($RequestObject->Data->Filters as $filter){ 
+// if(is_object($vlue)){break;} 
+// $sql = str_replace('{'.$key.'}', $vlue, $sql); 
+if($filter->Value != '%%') 
+{ 
+$whereCondition .= " AND LOWER(`".$filter->Field."`) ".$filter->Operator." LOWER('".$filter->Value."')"; 
+} 
+} 
+$sql = str_replace('1=1', $whereCondition, $sql); 
+if(isset($RequestObject->Data->data)) 
+{ 
+$otb_columns = ""; 
+$otb_values = ""; 
+$ob = $RequestObject->Data->data; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+if($key == 'Id' && intval($value) < 0) 
+{ 
+continue; 
+} 
+$otb_columns.=", `".$key."` "; 
+if($value !== null){ 
+$otb_values.=", '".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_values.=", null"; 
+} 
+} 
+} 
+if(strlen($otb_columns) > 0) 
+{ 
+$otb_columns = ' '.substr($otb_columns, 1).' '; 
+$otb_values = ' '.substr($otb_values, 1).' '; 
+} 
+
+$sql = str_replace(' otb_columns ', $otb_columns, $sql); 
+$sql = str_replace(' otb_values ', $otb_values, $sql); 
+
+$otb_properties = ""; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+$otb_properties.=", `".$key."` = "; 
+if($value !== null){ 
+$otb_properties.="'".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_properties.="null"; 
+} 
+} 
+} 
+if(strlen($otb_properties) > 0) 
+{ 
+$otb_properties = ' '.substr($otb_properties, 1).' '; 
+} 
+
+$sql = str_replace(' otb_properties ', $otb_properties, $sql); 
+} 
+$RequestObject->Query = $sql; 
+// echo($sql); 
+$response = $DataAccess->Execute($MyBusiness, 'test', $sql, null, $action); 
+if($action == 'update' || $action == 'delete') 
+{ 
+$response = $RequestObject->Data->Id; 
+} 
+$original_response = new DummyClass(); 
+$original_response->data = $response; 
+// The response from underlaying API 
+$original_response->request = $RequestObject; 
+$original_response->after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response, JSON_PRETTY_PRINT); 
+exit(); 
+} 
+
+
+public function MakeAPIRequest_read_Id_Products($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/gen_uni.Title.php'; 
+$data = array( 'ajuro_name' => 'read_Id_Products' 
+
+, 'Id' => '0' 
+
+); 
+
+$MyBusiness = new MyBusiness(); 
+$DataAccess = new DataAccess(); 
+$action = substr('read_Products', 0, strpos('read_Products', '_')); 
+$sql = "SELECT * FROM `Id_Products` WHERE `Id` = '{Id}' LIMIT 30;";	
+// print_r($RequestObject->Data->Filters); 
+$whereCondition = "1=1"; 
+foreach($RequestObject->Data->Filters as $filter){ 
+// if(is_object($vlue)){break;} 
+// $sql = str_replace('{'.$key.'}', $vlue, $sql); 
+if($filter->Value != '%%') 
+{ 
+$whereCondition .= " AND LOWER(`".$filter->Field."`) ".$filter->Operator." LOWER('".$filter->Value."')"; 
+} 
+} 
+$sql = str_replace('1=1', $whereCondition, $sql); 
+if(isset($RequestObject->Data->data)) 
+{ 
+$otb_columns = ""; 
+$otb_values = ""; 
+$ob = $RequestObject->Data->data; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+if($key == 'Id' && intval($value) < 0) 
+{ 
+continue; 
+} 
+$otb_columns.=", `".$key."` "; 
+if($value !== null){ 
+$otb_values.=", '".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_values.=", null"; 
+} 
+} 
+} 
+if(strlen($otb_columns) > 0) 
+{ 
+$otb_columns = ' '.substr($otb_columns, 1).' '; 
+$otb_values = ' '.substr($otb_values, 1).' '; 
+} 
+
+$sql = str_replace(' otb_columns ', $otb_columns, $sql); 
+$sql = str_replace(' otb_values ', $otb_values, $sql); 
+
+$otb_properties = ""; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+$otb_properties.=", `".$key."` = "; 
+if($value !== null){ 
+$otb_properties.="'".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_properties.="null"; 
+} 
+} 
+} 
+if(strlen($otb_properties) > 0) 
+{ 
+$otb_properties = ' '.substr($otb_properties, 1).' '; 
+} 
+
+$sql = str_replace(' otb_properties ', $otb_properties, $sql); 
+} 
+$RequestObject->Query = $sql; 
+// echo($sql); 
+$response = $DataAccess->Execute($MyBusiness, 'test', $sql, null, $action); 
+if($action == 'update' || $action == 'delete') 
+{ 
+$response = $RequestObject->Data->Id; 
+} 
+$original_response = new DummyClass(); 
+$original_response->data = $response; 
+// The response from underlaying API 
+$original_response->request = $RequestObject; 
+$original_response->after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response, JSON_PRETTY_PRINT); 
+exit(); 
+} 
+
+
+public function MakeAPIRequest_create_Id_Products($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/gen_uni.Title.php'; 
+$data = array( 'ajuro_name' => 'create_Id_Products' 
+
+, 'Title' => '10' 
+
+, 'Image' => '10' 
+
+, 'Price' => '10' 
+
+, 'Rating' => '10' 
+
+); 
+
+$MyBusiness = new MyBusiness(); 
+$DataAccess = new DataAccess(); 
+$action = substr('create_Products', 0, strpos('create_Products', '_')); 
+$sql = "INSERT INTO `Id_Products`( `Title` , `Image` , `Price` , `Rating`) VALUES ( '{Title}' , '{Image}' , '{Price}' , '{Rating}' );";	
+// print_r($RequestObject->Data->Filters); 
+$whereCondition = "1=1"; 
+foreach($RequestObject->Data->Filters as $filter){ 
+// if(is_object($vlue)){break;} 
+// $sql = str_replace('{'.$key.'}', $vlue, $sql); 
+if($filter->Value != '%%') 
+{ 
+$whereCondition .= " AND LOWER(`".$filter->Field."`) ".$filter->Operator." LOWER('".$filter->Value."')"; 
+} 
+} 
+$sql = str_replace('1=1', $whereCondition, $sql); 
+if(isset($RequestObject->Data->data)) 
+{ 
+$otb_columns = ""; 
+$otb_values = ""; 
+$ob = $RequestObject->Data->data; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+if($key == 'Id' && intval($value) < 0) 
+{ 
+continue; 
+} 
+$otb_columns.=", `".$key."` "; 
+if($value !== null){ 
+$otb_values.=", '".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_values.=", null"; 
+} 
+} 
+} 
+if(strlen($otb_columns) > 0) 
+{ 
+$otb_columns = ' '.substr($otb_columns, 1).' '; 
+$otb_values = ' '.substr($otb_values, 1).' '; 
+} 
+
+$sql = str_replace(' otb_columns ', $otb_columns, $sql); 
+$sql = str_replace(' otb_values ', $otb_values, $sql); 
+
+$otb_properties = ""; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+$otb_properties.=", `".$key."` = "; 
+if($value !== null){ 
+$otb_properties.="'".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_properties.="null"; 
+} 
+} 
+} 
+if(strlen($otb_properties) > 0) 
+{ 
+$otb_properties = ' '.substr($otb_properties, 1).' '; 
+} 
+
+$sql = str_replace(' otb_properties ', $otb_properties, $sql); 
+} 
+$RequestObject->Query = $sql; 
+// echo($sql); 
+$response = $DataAccess->Execute($MyBusiness, 'test', $sql, null, $action); 
+if($action == 'update' || $action == 'delete') 
+{ 
+$response = $RequestObject->Data->Id; 
+} 
+$original_response = new DummyClass(); 
+$original_response->data = $response; 
+// The response from underlaying API 
+$original_response->request = $RequestObject; 
+$original_response->after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response, JSON_PRETTY_PRINT); 
+exit(); 
+} 
+
+
+public function MakeAPIRequest_update_Id_Products($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/gen_uni.Title.php'; 
+$data = array( 'ajuro_name' => 'update_Id_Products' 
+
+, 'Id' => '10' 
+
+, 'Title' => '10' 
+
+, 'Image' => '10' 
+
+, 'Price' => '10' 
+
+, 'Rating' => '10' 
+
+); 
+
+$MyBusiness = new MyBusiness(); 
+$DataAccess = new DataAccess(); 
+$action = substr('update_Products', 0, strpos('update_Products', '_')); 
+$sql = "UPDATE `Id_Products` SET `Title`='{Title}' , `Image`='{Image}' , `Price`='{Price}' , `Rating`='{Rating}' WHERE `Id`='{Id}';";	
+// print_r($RequestObject->Data->Filters); 
+$whereCondition = "1=1"; 
+foreach($RequestObject->Data->Filters as $filter){ 
+// if(is_object($vlue)){break;} 
+// $sql = str_replace('{'.$key.'}', $vlue, $sql); 
+if($filter->Value != '%%') 
+{ 
+$whereCondition .= " AND LOWER(`".$filter->Field."`) ".$filter->Operator." LOWER('".$filter->Value."')"; 
+} 
+} 
+$sql = str_replace('1=1', $whereCondition, $sql); 
+if(isset($RequestObject->Data->data)) 
+{ 
+$otb_columns = ""; 
+$otb_values = ""; 
+$ob = $RequestObject->Data->data; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+if($key == 'Id' && intval($value) < 0) 
+{ 
+continue; 
+} 
+$otb_columns.=", `".$key."` "; 
+if($value !== null){ 
+$otb_values.=", '".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_values.=", null"; 
+} 
+} 
+} 
+if(strlen($otb_columns) > 0) 
+{ 
+$otb_columns = ' '.substr($otb_columns, 1).' '; 
+$otb_values = ' '.substr($otb_values, 1).' '; 
+} 
+
+$sql = str_replace(' otb_columns ', $otb_columns, $sql); 
+$sql = str_replace(' otb_values ', $otb_values, $sql); 
+
+$otb_properties = ""; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+$otb_properties.=", `".$key."` = "; 
+if($value !== null){ 
+$otb_properties.="'".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_properties.="null"; 
+} 
+} 
+} 
+if(strlen($otb_properties) > 0) 
+{ 
+$otb_properties = ' '.substr($otb_properties, 1).' '; 
+} 
+
+$sql = str_replace(' otb_properties ', $otb_properties, $sql); 
+} 
+$RequestObject->Query = $sql; 
+// echo($sql); 
+$response = $DataAccess->Execute($MyBusiness, 'test', $sql, null, $action); 
+if($action == 'update' || $action == 'delete') 
+{ 
+$response = $RequestObject->Data->Id; 
+} 
+$original_response = new DummyClass(); 
+$original_response->data = $response; 
+// The response from underlaying API 
+$original_response->request = $RequestObject; 
+$original_response->after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response, JSON_PRETTY_PRINT); 
+exit(); 
+} 
+
+
+public function MakeAPIRequest_delete_Id_Products($RequestObject){ 
+if(isset($_SESSION['uas_write_log']) && $_SESSION['uas_write_log'] > 0) file_put_contents($_SESSION['uas_logging_file'], ", " . 
+json_encode(Array( 
+"id"=>$_SESSION['uas_logging_id'], 
+"fp"=>__FILE__, 
+"ln"=>__LINE__, 
+"ns"=>__NAMESPACE__, 
+"class"=>__CLASS__, 
+"function"=>(__FUNCTION__ <> "" ? __FUNCTION__ : __METHOD__), 
+"variables"=>get_defined_vars(), 
+"stack"=>debug_backtrace(FALSE, 1), 
+"timestamp"=>time() 
+)) . PHP_EOL, FILE_APPEND | LOCK_EX); $_SESSION['uas_logging_id'] += 1; // TO DO: Do not forget to remove this line ! 
+
+$url = 'http://otb.expert/gen_uni.Title.php'; 
+$data = array( 'ajuro_name' => 'delete_Id_Products' 
+
+, 'Id' => '0' 
+
+); 
+
+$MyBusiness = new MyBusiness(); 
+$DataAccess = new DataAccess(); 
+$action = substr('delete_Products', 0, strpos('delete_Products', '_')); 
+$sql = "DELETE FROM `Id_Products` WHERE `Id` = '{Id}';";	
+// print_r($RequestObject->Data->Filters); 
+$whereCondition = "1=1"; 
+foreach($RequestObject->Data->Filters as $filter){ 
+// if(is_object($vlue)){break;} 
+// $sql = str_replace('{'.$key.'}', $vlue, $sql); 
+if($filter->Value != '%%') 
+{ 
+$whereCondition .= " AND LOWER(`".$filter->Field."`) ".$filter->Operator." LOWER('".$filter->Value."')"; 
+} 
+} 
+$sql = str_replace('1=1', $whereCondition, $sql); 
+if(isset($RequestObject->Data->data)) 
+{ 
+$otb_columns = ""; 
+$otb_values = ""; 
+$ob = $RequestObject->Data->data; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+if($key == 'Id' && intval($value) < 0) 
+{ 
+continue; 
+} 
+$otb_columns.=", `".$key."` "; 
+if($value !== null){ 
+$otb_values.=", '".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_values.=", null"; 
+} 
+} 
+} 
+if(strlen($otb_columns) > 0) 
+{ 
+$otb_columns = ' '.substr($otb_columns, 1).' '; 
+$otb_values = ' '.substr($otb_values, 1).' '; 
+} 
+
+$sql = str_replace(' otb_columns ', $otb_columns, $sql); 
+$sql = str_replace(' otb_values ', $otb_values, $sql); 
+
+$otb_properties = ""; 
+foreach($ob as $key=>$value){ 
+if (property_exists($ob, $key)) 
+{ 
+$otb_properties.=", `".$key."` = "; 
+if($value !== null){ 
+$otb_properties.="'".$value."'"; // Add '' conversion 
+} 
+else 
+{ 
+$otb_properties.="null"; 
+} 
+} 
+} 
+if(strlen($otb_properties) > 0) 
+{ 
+$otb_properties = ' '.substr($otb_properties, 1).' '; 
+} 
+
+$sql = str_replace(' otb_properties ', $otb_properties, $sql); 
+} 
+$RequestObject->Query = $sql; 
+// echo($sql); 
+$response = $DataAccess->Execute($MyBusiness, 'test', $sql, null, $action); 
+if($action == 'update' || $action == 'delete') 
+{ 
+$response = $RequestObject->Data->Id; 
+} 
+$original_response = new DummyClass(); 
+$original_response->data = $response; 
+// The response from underlaying API 
+$original_response->request = $RequestObject; 
+$original_response->after_mapping_timestamp = new DateTime(); 
+echo json_encode($original_response, JSON_PRETTY_PRINT); 
+exit(); 
+} 
+
+
+
+/*=2*=2*=2*=2*=2*=2*=2*=2*/ 
+<!-- AJP-END: Title.html --!> 

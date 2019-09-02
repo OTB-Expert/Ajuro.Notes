@@ -1,5 +1,6 @@
 ﻿using Ajuro.Net.Template.Processor;
 using Ajuro.Notes.View;
+using Ajuro.WPF.Base.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -318,12 +319,7 @@ namespace Ajuro.Notes.Views
 				}
 			}
 		}
-
-		private void StructureTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-		{
-
-		}
-
+		
 		private CodeFragment GetInnermostFragment(CodeFragment root, int selectionStart, int SelectionLength)
 		{
 			foreach (var fragment in root.Fragments)

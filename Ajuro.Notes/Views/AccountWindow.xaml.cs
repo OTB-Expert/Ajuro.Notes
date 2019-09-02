@@ -1,4 +1,5 @@
-﻿using Ajuro.Notes.Model;
+﻿using Ajuro.WPF.Base;
+using Ajuro.WPF.Base.Model;
 using Newtonsoft.Json;
 using System;
 using System.IO;

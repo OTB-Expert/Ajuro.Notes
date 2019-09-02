@@ -1,0 +1,182 @@
+{
+  "Type": 0,
+  "Name": null,
+  "SelectionStart": 0,
+  "SelectionLength": 0,
+  "Content": "<table border=\"0\">\n           <tr>\n               <td>Name</td>\n               <td><input type=\"text\" name=\"name\" value=\"<?php echo $name;?>\"></td>\n           </tr>\n           <tr>\n               <td>Age</td>\n               <td><input type=\"text\" name=\"age\" value=\"<?php echo $age;?>\"></td>\n           </tr>\n           <tr>\n               <td>Email</td>\n               <td><input type=\"text\" name=\"email\" value=\"<?php echo $email;?>\"></td>\n           </tr>\n       </table>\n\n<script>\n       if(empty($name)) {\n           echo \"<font color='red'>Name field is empty.</font><br/>\";\n       }\n\n       if(empty($age)) {\n           echo \"<font color='red'>Age field is empty.</font><br/>\";\n       }\n\n       if(empty($email)) {\n           echo \"<font color='red'>Email field is empty.</font><br/>\";\n       }\nItems:\n{\n\t[\n\t\t\"Text\": \"Name\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"name\"\n\t],\n\t[\n\t\t\"Text\": \"Age\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"age\"\n\t],\n\t[\n\t\t\"Text\": \"Email\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"email\"\n\t]\n}\n</script>",
+  "FormattedContent": "<table border=\"0\">\n           <tr>\n               <td>Name</td>\n               <td><input type=\"text\" name=\"name\" value=\"<?php echo $name;?>\"></td>\n           </tr>\n           <tr>\n               <td>Age</td>\n               <td><input type=\"text\" name=\"age\" value=\"<?php echo $age;?>\"></td>\n           </tr>\n           <tr>\n               <td>Email</td>\n               <td><input type=\"text\" name=\"email\" value=\"<?php echo $email;?>\"></td>\n           </tr>\n       </table>\n\n<script>\n       if(empty($name)) {\n           echo \"<font color='red'>Name field is empty.</font><br/>\";\n       }\n\n       if(empty($age)) {\n           echo \"<font color='red'>Age field is empty.</font><br/>\";\n       }\n\n       if(empty($email)) {\n           echo \"<font color='red'>Email field is empty.</font><br/>\";\n       }\nItems:\n{\n\t[\n\t\t\"Text\": \"Name\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"name\"\n\t],\n\t[\n\t\t\"Text\": \"Age\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"age\"\n\t],\n\t[\n\t\t\"Text\": \"Email\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"email\"\n\t]\n}\n</script>",
+  "Color": null,
+  "Fragments": [
+    {
+      "Type": 0,
+      "Name": "ItemsArray_2",
+      "SelectionStart": 808,
+      "SelectionLength": 179,
+      "Content": "\n\t[\n\t\t\"Text\": \"Name\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"name\"\n\t],\n\t[\n\t\t\"Text\": \"Age\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"age\"\n\t],\n\t[\n\t\t\"Text\": \"Email\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"email\"\n\t]",
+      "FormattedContent": "\n\t[\n\t\t\"Text\": \"Name\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"name\"\n\t],\n\t[\n\t\t\"Text\": \"Age\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"age\"\n\t],\n\t[\n\t\t\"Text\": \"Email\",\n\t\t\"Type\": \"text\",\n\t\t\"Name\": \"email\"\n\t]",
+      "Color": [
+        240,
+        228,
+        212
+      ],
+      "Fragments": [
+        {
+          "Type": 1,
+          "Name": "Property_10",
+          "SelectionStart": 823,
+          "SelectionLength": 4,
+          "Content": "Name",
+          "FormattedContent": null,
+          "Color": [
+            208,
+            237,
+            201
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_11",
+          "SelectionStart": 841,
+          "SelectionLength": 4,
+          "Content": "text",
+          "FormattedContent": null,
+          "Color": [
+            215,
+            207,
+            226
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_12",
+          "SelectionStart": 859,
+          "SelectionLength": 4,
+          "Content": "name",
+          "FormattedContent": null,
+          "Color": [
+            243,
+            209,
+            212
+          ],
+          "Fragments": []
+        }
+      ]
+    },
+    {
+      "Type": 0,
+      "Name": "ItemsArray_3",
+      "SelectionStart": 483,
+      "SelectionLength": 316,
+      "Content": "       if(empty($name)) {\n           echo \"<font color='red'>Name field is empty.</font><br/>\";\n       }\n\n       if(empty($age)) {\n           echo \"<font color='red'>Age field is empty.</font><br/>\";\n       }\n\n       if(empty($email)) {\n           echo \"<font color='red'>Email field is empty.</font><br/>\";\n       }",
+      "FormattedContent": "       if(empty($name)) {\n           echo \"<font color='red'>Name field is empty.</font><br/>\";\n       }\n\n       if(empty($age)) {\n           echo \"<font color='red'>Age field is empty.</font><br/>\";\n       }\n\n       if(empty($email)) {\n           echo \"<font color='red'>Email field is empty.</font><br/>\";\n       }",
+      "Color": [
+        249,
+        239,
+        207
+      ],
+      "Fragments": [
+        {
+          "Type": 1,
+          "Name": "Property_13",
+          "SelectionStart": 500,
+          "SelectionLength": 4,
+          "Content": "name",
+          "FormattedContent": null,
+          "Color": [
+            218,
+            225,
+            232
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_14",
+          "SelectionStart": 544,
+          "SelectionLength": 5,
+          "Content": "Name ",
+          "FormattedContent": null,
+          "Color": [
+            213,
+            202,
+            246
+          ],
+          "Fragments": []
+        }
+      ]
+    },
+    {
+      "Type": 0,
+      "Name": "ItemsArray_4",
+      "SelectionStart": 19,
+      "SelectionLength": 437,
+      "Content": "           <tr>\n               <td>Name</td>\n               <td><input type=\"text\" name=\"name\" value=\"<?php echo $name;?>\"></td>\n           </tr>\n           <tr>\n               <td>Age</td>\n               <td><input type=\"text\" name=\"age\" value=\"<?php echo $age;?>\"></td>\n           </tr>\n           <tr>\n               <td>Email</td>\n               <td><input type=\"text\" name=\"email\" value=\"<?php echo $email;?>\"></td>\n           </tr>",
+      "FormattedContent": "           <tr>\n               <td>Name</td>\n               <td><input type=\"text\" name=\"name\" value=\"<?php echo $name;?>\"></td>\n           </tr>\n           <tr>\n               <td>Age</td>\n               <td><input type=\"text\" name=\"age\" value=\"<?php echo $age;?>\"></td>\n           </tr>\n           <tr>\n               <td>Email</td>\n               <td><input type=\"text\" name=\"email\" value=\"<?php echo $email;?>\"></td>\n           </tr>",
+      "Color": [
+        246,
+        232,
+        208
+      ],
+      "Fragments": [
+        {
+          "Type": 1,
+          "Name": "Property_15",
+          "SelectionStart": 54,
+          "SelectionLength": 4,
+          "Content": "Name",
+          "FormattedContent": null,
+          "Color": [
+            210,
+            202,
+            208
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_16",
+          "SelectionStart": 96,
+          "SelectionLength": 4,
+          "Content": "text",
+          "FormattedContent": null,
+          "Color": [
+            250,
+            227,
+            211
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_17",
+          "SelectionStart": 108,
+          "SelectionLength": 4,
+          "Content": "name",
+          "FormattedContent": null,
+          "Color": [
+            209,
+            213,
+            209
+          ],
+          "Fragments": []
+        },
+        {
+          "Type": 1,
+          "Name": "Property_18",
+          "SelectionStart": 133,
+          "SelectionLength": 4,
+          "Content": "name",
+          "FormattedContent": null,
+          "Color": [
+            234,
+            240,
+            247
+          ],
+          "Fragments": null
+        }
+      ]
+    }
+  ]
+}

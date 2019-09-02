@@ -1,0 +1,317 @@
+{
+  "Title": "edit_agentdomain",
+  "info": "Entry Point",
+  "Id": "ui_edit_agentdomain",
+  "OTB": [
+    {
+      "Trigger": "https://otb.expert/tp/index.php?x=build&t=gen&f=../api/docs/gen_ui.edit_agentdomain.ajuro.json",
+      "Target": "https://otb.expert/gen/edit_agentdomain.html"
+    }
+  ],
+  "Layout": [
+    {
+      "Links": [
+        "LogIn",
+        "Post a job",
+        "UploadCV",
+        "Menu"
+      ]
+    }
+  ],
+  "SEO": [
+    {
+      "FbAppId": "1641916685886296",
+      "GoogleDomainVerify": "44babf77bfd1feae2029b16a61d347a8",
+      "OgUrl": "https://otb.expert",
+      "OgTitle": "Join our team at OTB Expert",
+      "OgImage": "http://otb.expert/img/OurProduct.png",
+      "OgDescription": "OTB Expert is looking for an IT passionate students to join our efforts on one of the most successful projects. You will have the opportunity to work with some of the best professionals around the world and explore amazing technologies. Our products are based on mixed technology in-house solutions that will open you the door for a bright career. Drop a line or send us a CV on office@otb.expert or cv@otb.expert",
+      "PageTitle": "CV - Euro Jobit"
+    }
+  ],
+  "Collections": [
+    {
+      "Title": "Recentagentdomain",
+      "Placeholder": "RecentagentdomainPanel",
+      "DefaultFilters": [
+        {
+          "Field": "Title",
+          "Operator": "LIKE",
+          "Value": "%%",
+          "Collector": "SearchTerm_agentdomainTitle"
+        }
+      ],
+      "DefaultOrder": [ "Created" ],
+      "Source": "agentdomain",
+      "DefaultPage": 0,
+      "Take": 3,
+      "DropId": "1",
+      "Type": "Card",
+      "RegenerateTable": "false",
+      "Id": "Recentagentdomain",
+      "Items": [
+        {
+          "Title": "agentdomain",
+          "Items": [
+            {
+              "Title": "Id",
+              "Value": "1",
+              "Type": "hidden"
+            },
+            {
+              "Title": "Info",
+              "Value": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Title": "Profile",
+      "Placeholder": "ProfilePanel",
+      "DefaultFilters": [
+        {
+          "Field": "AuthorId",
+          "Operator": "=",
+          "Value": null,
+          "Collector": "SearchTerm_AuthorId"
+        }
+      ],
+      "DefaultOrder": [],
+      "DefaultPage": 0,
+      "Source": "Profile",
+      "Take": 1,
+      "DropId": "2",
+      "Type": "CardSequence",
+      "RegenerateTable": "false",
+      "Id": "Profile",
+      "Items": [
+        {
+          "Title": "Profile",
+          "Items": [
+            {
+              "Title": "Id",
+              "Value": "1",
+              "Type": "hidden"
+            },
+            {
+              "Title": "Name",
+              "Value": "test"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Components": [
+    {
+      "Action": [
+        {
+          "Sort": {
+            "Layout": "Radio"
+          }
+        }
+      ]
+    },
+    {
+      "PaginatedList": {
+        "Layout": "Paginated",
+        "Actions": [
+          "View",
+          "Save",
+          "Related"
+        ],
+        "Items": [
+          {
+            "Name": "Id",
+            "INFO": "Id",
+            "Layout": "Important",
+            "Type": "hidden"
+          },
+          {
+            "Name": "Title",
+            "INFO": "Job title",
+            "Layout": "Important",
+            "Type": "text"
+          }
+        ]
+      }
+    },
+    {
+      "SmallFilter": {
+        "Layout": "Section",
+        "Action": "Search",
+        "Items": [
+          {
+            "Name": "Skill",
+            "Model": "Skill",
+            "Layout": "Autocomplete"
+          }
+        ]
+      }
+    },
+    {
+      "DetailedFilter": {
+        "Layout": "Left",
+        "Action": "Search",
+        "Items": [
+          {
+            "Name": "What",
+            "Model": "Skill",
+            "Layout": "Autocomplete"
+          },
+          {
+            "Name": "Where",
+            "Model": "Location",
+            "Layout": "Autocomplete"
+          }
+        ]
+      }
+    },
+    {
+      "List": {
+        "Filters": [
+
+        ],
+        "Collection": [
+
+        ]
+      }
+    }
+  ],
+  "Translates": {
+    "Generated": {
+      "form_width": "100",
+      "form_begin": "<form>",
+      "form_end": "</form>",
+      "table_begin": "<table>",
+      "table_end": "</table>",
+      "my_style": "<style>body{background-color:#EFF} .generic_title{color: red} .label_style{text-align: right; width: 150px; color: blue; background-color: #FFD; border: 1px solid gray }</style>",
+      "closed_div": "</div>",
+      "open_title": "<div class='generic_title'>"
+    }
+  },
+  "Items": [
+    {
+      "Name": "Header",
+      "Title": "Header",
+      "Layout": "bsp_header_01",
+      "Items": [
+        {
+          "Name": "Social",
+          "Title": "Get connected with us on social networks!",
+          "Items": [
+            {
+              "Name": "Facebook",
+              "Title": "Facebook",
+              "Class": "fab fa-facebook-f",
+              "Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Static",
+      "Title": "Static",
+      "Layout": "bsp_static_01",
+      "Items": [
+        {
+          "Name": "Profile",
+          "Title": "Get connected with us on social networks!",
+          "Items": [
+            {
+              "Name": "Molly Marshall",
+              "Title": "BUSINESS LAWYER",
+              "Class": "fab fa-facebook-f",
+              "Img": "https://mdbootstrap.com/img/Photos/Avatars/avatar-11.jpg"
+            }
+          ]
+        },
+        {
+          "Name": "Social",
+          "Title": "Get connected with us on social networks!",
+          "Items": [
+            {
+              "Name": "Facebook",
+              "Title": "Facebook",
+              "Class": "fab fa-facebook-f",
+              "Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Footer",
+      "Title": "Footer",
+      "Layout": "bsp_footer_01",
+      "Items": [
+        {
+          "Name": "Social",
+          "Title": "Get connected with us on social networks!",
+          "Items": [
+            {
+              "Name": "LinkedIn",
+              "Title": "LinkedIn",
+              "Class": "fab fa-linkedin-in",
+              "Value": "https://www.linkedin.com/company/otb-expert/"
+            }
+          ]
+        },
+        {
+          "Name": "Slogan",
+          "Title": "OTB Expert",
+          "Items": [
+            {
+              "Name": "Address",
+              "Title": "Address",
+              "Class": "home",
+              "Value": "Next genertion websites.<br>Ready for business?"
+            }
+          ]
+        },
+        {
+          "Name": "Products",
+          "Title": "Products",
+          "Items": [
+            {
+              "Name": "Facebook",
+              "Title": "Facebook",
+              "Class": "fab fa-facebook",
+              "Value": "Social Marketing"
+            }
+          ]
+        },
+        {
+          "Name": "Links",
+          "Title": "USEFUL LINKS",
+          "Items": [
+            {
+              "Name": "Facebook",
+              "Value": "https://otb.exert",
+              "Class": "facebook",
+              "Title": "https://otb.exert"
+            }
+          ]
+        },
+        {
+          "Name": "Contact",
+          "Title": "Contact",
+          "Items": [
+            {
+              "Name": "Facebook",
+              "Title": "OTB-Expert",
+              "Class": "fab fa-facebook-f",
+              "Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"
+            }
+          ]
+        },
+        {
+          "Name": "Copyright",
+          "Title": "OTB Expert"
+        }
+      ]
+    }
+  ]
+}

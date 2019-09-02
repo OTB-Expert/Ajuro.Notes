@@ -1,0 +1,47 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:View="clr-namespace:Ajuro.WPF.Desk.Views"
+    x:Class="Ajuro.WPF.Desk.Views.SplashScreen"
+    mc:Ignorable="d"
+    d:DataContext="{x:Static dx:SplashScreenViewModel.DesignTimeData}" ToolTip="MicroDesk is loading"
+    >
+    <UserControl.DataContext>
+        <View:MainWindow/>
+    </UserControl.DataContext>
+    <Grid x:Name="LayoutRoot">
+        <Grid x:Name="Splash" Width="450" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0">
+            <Grid x:Name="Back">
+                <Border Background="Black" CornerRadius="3" Opacity="0.15"/>
+                <Border CornerRadius="2" Margin="1" Background="White"/>
+            </Grid>
+            <Grid x:Name="Content_Area" Margin="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Image x:Name="Image" Source="../Resources/img/MicroDesk.png" Width="Auto" Stretch="UniformToFill"/>
+                <TextBlock x:Name="Info" TextWrapping="Wrap" Text="{Binding State}" Grid.Row="1" Margin="12,0,12,0" Foreground="#FF2D2D2D"/>
+                <ProgressBar x:Name="progressBar"
+                             Height="12"
+                             Grid.Row="2"
+                             Margin="12"
+                             IsIndeterminate="{Binding IsIndeterminate}"
+                             Value="{Binding Progress}"
+                             Maximum="{Binding MaxProgress}"/>
+                <!--DockPanel x:Name="Footer" Grid.Row="3" Margin="12,20,12,4" HorizontalAlignment="Center">
+                    <Image x:Name="Logotype1" DockPanel.Dock="Right" Margin="12" Source="../Resources/img/OTB-Dev-Logo.png" Width="72" Stretch="UniformToFill" HorizontalAlignment="Right"  />
+                    <Image x:Name="Logotype3" DockPanel.Dock="Right" Margin="12" Source="../Resources/img/OTB-Time-Logo.png" Width="72" Stretch="UniformToFill" HorizontalAlignment="Right"  />
+                    <Image x:Name="Logotype4" DockPanel.Dock="Right" Margin="12" Source="../Resources/img/OTB-SEO-Logo.png" Width="72" Stretch="UniformToFill" HorizontalAlignment="Right"  />
+                    <Image x:Name="Logotype2" DockPanel.Dock="Right" Margin="12" Source="../Resources/img/OTB-Market-Logo.png" Width="72" Stretch="UniformToFill" HorizontalAlignment="Right"  />
+                </-->
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

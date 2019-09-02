@@ -1,0 +1,845 @@
+{                              
+        "Title": "ui.edit_cv",            
+  "info": "Entry Point",                  
+	"Id": "ui_edit_cv",    
+  "OTB": [
+	{
+		"Trigger":"https://otb.expert/tp/index.php?x=build&t=gen&f=../api/docs/gen_ui.edit_agentcondition.ajuro.json",
+		"Target":"https://otb.expert/gen/edit_agentcondition.html"
+	}
+  ],                          
+	"Layout":                              
+	[                              
+		{                              
+			"Links":                              
+			[                              
+				"LogIn",                              
+				"Post a job",                              
+				"UploadCV",                              
+				"Menu"                              
+			]                              
+		}                              
+	],         
+  "SEO": [
+	{
+		"FbAppId" : "1641916685886296",
+		"GoogleDomainVerify" : "44babf77bfd1feae2029b16a61d347a8",
+		"OgUrl" : "https://otb.expert",
+		"OgTitle" : "Join our team at OTB Expert",
+		"OgImage" : "http://otb.expert/img/OurProduct.png",
+		"OgDescription" : "OTB Expert is looking for an IT passionate students to join our efforts on one of the most successful projects. You will have the opportunity to work with some of the best professionals around the world and explore amazing technologies. Our products are based on mixed technology in-house solutions that will open you the door for a bright career. Drop a line or send us a CV on office@otb.expert or cv@otb.expert",
+		"PageTitle" : "CV - Euro Jobit"
+	}
+  ],                     
+	"Collections":                               
+	[                              
+		{       
+      "Placeholder": "ExperiencePanel",
+      "DefaultFilters": "[ {\"AuthorId\": 0, \"Field\": \"Title\", \"Operator\": \"LIKE\", \"Value\": \"%%\", \"Collector\": \"SearchTerm_agentconditionTitle\" } ]",
+      "DefaultOrder": "[ \"Created\" ]",
+	  "AuthorId": 0,
+	  "DefaultPage": 0,
+      "Take": 3,
+      "DropId": "1",
+      "Type": "Card",
+			"Generate": 6,
+			"RegenerateTable": "true", 
+			"Source": "Experience",      
+			"Title": "Experience",                          
+			"Id": "Experience",                          
+			"Items":                               
+			[                              
+				{                              
+					"Title": "Experience", 
+					"Items":                              
+					[                              
+						{                              
+							"Title": "Author",                              
+							"Value": "1",                              
+							"Type": "hidden"         
+						},                         
+						{                              
+							"Title": "Parent",                              
+							"Value": "1",
+							"DataType": "Increment",                              
+							"Type": "hidden"                          
+						},                         
+						{                              
+							"Title": "Id",                              
+							"Value": "1",
+							"DataType": "Increment",                              
+"Type": "hidden"         
+						},                         
+						{                              
+							"Title": "Title",
+							"DataType": "Headline",
+               "Value": "test"                              
+						},                         
+						{                              
+							"Title": "Image",
+							"DataType": "Image",               
+							"Value": "test"                              
+						},                         
+						{                              
+							"Title": "Price",                      				"DataType": "Decimal",                      
+							"Value": "test"                              
+						},                              
+						{                              
+							"Title": "Company",                  				"DataType": "Company",                          
+							"Value": "Fortech"                              
+						},                              
+						{                              
+							"Title": "Location",                    				"DataType": "City",                        
+							"Value": "Cluj"                              
+						},                              
+						{                              
+							"Title": "From",                     				"DataType": "Year",                       
+							"Value": "2008",                              
+							"Type": "date"                              
+						},                              
+						{                              
+							"Title": "To",                       				"DataType": "Year",                     
+							"Value": "2009" ,                              
+							"Type": "date"                              
+						},                              
+						{                              
+							"Title": "Headline",                              
+							"Value": "All sort of coding" ,                              
+							"Type": "multiline"                              
+						},                              
+						{                              
+							"Title": "Description",                              
+							"Value": "All sort of coding" ,                              
+							"Type": "multiline"                              
+						},                              
+						{                              
+							"Title": "View",
+							"Value": "55",
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Like",                          
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Share",
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Comment",                          
+							"Value": "[{\\\"Id\\\":\\\"596\\\", \\\"Date\\\":\\\"2018-09-02\\\", \\\"Likes\\\":[3,8,67], \\\"Comments\\\":3, \\\"UserId\\\":12, \\\"UserName\\\":\\\"Marcel\\\"}]", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Edit",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Delete",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						}                   
+					]                             
+				}                        
+			]                              
+		},                           
+		{
+		"Placeholder": "EducationPanel",
+      "DefaultFilters": "[ {\"AuthorId\": 0, \"Field\": \"Title\", \"Operator\": \"LIKE\", \"Value\": \"%%\", \"Collector\": \"SearchTerm_agentconditionTitle\" } ]",
+      "DefaultOrder": "[ \"Created\" ]",
+	  "AuthorId": 0,
+	  "DefaultPage": 0,
+      "Take": 3,
+      "DropId": "1",
+      "Type": "Card",
+		      
+			"RegenerateTable": "true", 
+			"Generate": 6,
+			"Source": "Education",                      
+			"Title": "Education",                          
+			"Id": "Education",                          
+			"Items":                               
+			[                              
+				{                              
+					"Title": "Education",                              
+					"Items":                              
+					[                              
+						{                              
+							"Title": "Author",                              
+							"Value": "1",                              
+							"Type": "hidden"         
+						},                         
+						{                              
+							"Title": "Parent",                              
+							"Value": "1",                              
+							"Type": "hidden"                          
+						},                         
+						{                              
+							"Title": "Id",                              
+							"Value": "1",                              
+							"Type": "hidden"         
+						},                          
+						{                              
+							"Title": "Title",
+							"DataType": "Headline",                              
+							"Value": "test"                              
+						},                         
+						{                              
+							"Title": "Image", 
+							"DataType": "Image",                             
+							"Value": "test"                              
+						},                         
+						{                              
+							"Title": "Price",                              
+							"Value": "test"                              
+						},                           
+						{                              
+							"Title": "School",                              
+							"Value": "test"                              
+						},                              
+						{                              
+							"Title": "Degree",                              
+							"Value": "Fortech"                              
+						},                              
+						{                              
+							"Title": "Field of study",                              
+							"Value": "Cluj"                              
+						},                              
+						{                              
+							"Title": "Grade",                              
+							"Value": "2008" ,                              
+							"Type": "text"                              
+						},                              
+						{                              
+							"Title": "Activities and societies",                              
+							"Value": "2009" ,                              
+							"Type": "multiline"                              
+						},                              
+						{                              
+							"Title": "To Year",                              
+							"Value": "All sort of coding" ,                              
+							"Type": "date"                              
+						},                              
+						{                              
+							"Title": "From Year",                              
+							"Value": "All sort of coding" ,                              
+							"Type": "date"                              
+						},                              
+						{                              
+							"Title": "Description",
+							"Value": "All sort of coding",
+							"Type": "multiline"
+						},                              
+						{                              
+							"Title": "View",
+							"Value": "55",
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Like",                          
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Share",
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Comment",                           
+							"Value": "[{\\\"Id\\\":\\\"596\\\", \\\"Date\\\":\\\"2018-09-02\\\", \\\"Likes\\\":[3,8,67], \\\"Comments\\\":3, \\\"UserId\\\":12, \\\"UserName\\\":\\\"Marcel\\\"}]", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Edit",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Delete",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						}
+					]                             
+				}                          
+			]                              
+		},                            
+		{   "Placeholder": "VolunteerExperiencePanel",
+      "DefaultFilters": "[ {\"AuthorId\": 0, \"Field\": \"Title\", \"Operator\": \"LIKE\", \"Value\": \"%%\", \"Collector\": \"SearchTerm_agentconditionTitle\" } ]",
+      "DefaultOrder": "[ \"Created\" ]",
+	  
+	  "DefaultPage": 0,
+      "Take": 3,
+      "DropId": "1",
+      "Type": "Card",
+		
+			"RegenerateTable": "true", 
+			"Generate": 6,
+			"Source": "VolunteerExperience",                               
+			"Title": "Volunteer Experience",                          
+			"Id": "VolunteerExperience",                          
+			"Items":                               
+			[                              
+				{                              
+					"Title": "VolunteerExperience",                              
+					"Items":                              
+					[                              
+						{                              
+							"Title": "Author",                              
+							"Value": "1",                              
+							"Type": "hidden"         
+						},                         
+						{                              
+							"Title": "Parent",                              
+							"Value": "1",                              
+							"Type": "hidden"                          
+						},                         
+						{                              
+							"Title": "Id",                              
+							"Value": "1",                              
+							"Type": "hidden"         
+						},                       
+						{                              
+							"Title": "Title", 
+							"DataType": "Headline",                             
+							"Value": "test"                              
+						},                         
+						{                              
+							"Title": "Image",   
+							"DataType": "Image",                           
+							"Value": "test"                              
+						},                         
+						{                              
+							"Title": "Price",                              
+							"Value": "test"                              
+						},                              
+						{                              
+							"Title": "Organization",                              
+							"Value": "test"                              
+						},                              
+						{                              
+							"Title": "Role",                              
+							"Value": "Fortech"                              
+						},                              
+						{                              
+							"Title": "Cause",                              
+							"Value": "Cluj"                              
+						},                              
+						{                              
+							"Title": "Start date",                              
+							"Value": "2008" ,                              
+							"Type": "date"                              
+						},                              
+						{                              
+							"Title": "End date",                              
+							"Value": "2009" ,                              
+							"Type": "date"                         
+						},                              
+						{                              
+							"Title": "Description",                              
+							"Value": "All sort of coding" ,                              
+							"Type": "multiline"                              
+						},                              
+						{                              
+							"Title": "View",
+							"Value": "55",
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Like",                          
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Share",
+							"Value": "55", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Comment",                                
+							"Value": "[{\\\"Id\\\":\\\"596\\\", \\\"Date\\\":\\\"2018-09-02\\\", \\\"Likes\\\":[3,8,67], \\\"Comments\\\":3, \\\"UserId\\\":12, \\\"UserName\\\":\\\"Marcel\\\"}]", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Edit",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						},                              
+						{                              
+							"Title": "Delete",                          
+							"Value": "2018-03-04", 
+							"Type": "hidden"                              
+						}
+					]                             
+				}                          
+			]                              
+		}                             
+	],                              
+	"Components":                               
+	[                              
+		{                              
+			"Action":                               
+			[                              
+				{                              
+					"Sort":                               
+					{                              
+						"Layout": "Radio"                              
+					}                              
+				}                              
+			]                              
+		},                              
+		{                              
+			"PaginatedList":                              
+			{                              
+				"Layout": "Paginated",                              
+				"Actions":                              
+				[                              
+					"View",                              
+					"Save",                              
+					"Related"                              
+				],                              
+				"Items":                               
+				[                           
+					{                        
+						"Name": "Id",                              
+						"INFO": "Id",                              
+						"Layout": "Important",                              
+						"Type": "hidden"                              
+					},                        
+					{                        
+						"Name": "Title",                              
+						"INFO": "Job title",                              
+						"Layout": "Important",                              
+						"Type": "text"                              
+					},                        
+					{                        
+						"Name": "Company",                              
+						"INFO": "Compay name",                              
+						"Layout": "Insignificant",                              
+						"Type": "text"                              
+					},                        
+					{                        
+						"Name": "Location",                              
+						"INFO": "Job City and postcode",                              
+						"Layout": "Insignificant",                              
+						"Type": "text"                              
+					},                              
+					{                              
+						"Name": "From",                              
+						"INFO": "Starting date",                              
+						"Layout": "Insignificant",                              
+						"Type": "date"                              
+					},                              
+					{                              
+						"Name": "To",                              
+						"INFO": "Starting date",                              
+						"Layout": "Insignificant",                              
+						"Type": "date"                              
+					},                              
+					{                              
+						"Name": "Headline",                              
+						"INFO": "Something short",                              
+						"Layout": "Insignificant",                              
+						"Type": "multiline"                              
+					},                              
+					{                              
+						"Name": "Description",                              
+						"INFO": "Free text",                              
+						"Layout": "Insignificant",                              
+						"Type": "multiline"                              
+					}                              
+				]                              
+			}                              
+		},                              
+		{                              
+			"SmallFilter":                              
+			{                              
+				"Layout": "Section",                              
+				"Action": "Search",                              
+				"Items": [                              
+					{                              
+						"Name": "Skill",                              
+						"Model": "Skill",                              
+						"Layout": "Autocomplete"                              
+					},                              
+					{                              
+						"Name": "Location",                              
+						"Model": "Location",                              
+						"Layout": "Autocomplete"                              
+					},                              
+					{                              
+						"Name": "Distance",                              
+						"Model": "Distance",                              
+						"Layout": "Autocomplete"                              
+					}                              
+				]                              
+			}                              
+		},                              
+		{                              
+			"DetailedFilter":                              
+			{                              
+				"Layout": "Left",                              
+				"Action": "Search",                              
+				"Items": [                              
+					{                              
+						"Name": "What",                              
+						"Model": "Skill",                              
+						"Layout": "Autocomplete"                              
+					},                              
+					{                              
+						"Name": "Where",                              
+						"Model": "Location",                              
+						"Layout": "Autocomplete"                              
+					},                              
+					{                              
+						"Name": "Location",                              
+						"Model": "Location",                              
+						"Layout": "TreeView"                              
+					},                              
+					{                              
+						"Name": "Radius",                              
+						"Model": "Distance",                              
+						"Layout": "Radio"                              
+					},                              
+					{                              
+						"Name": "Salary",                              
+						"Model": "Salary",                              
+						"Layout": "Groupped"                              
+					},                              
+					{                              
+						"Name": "Date Posted",                              
+						"Model": "Salary",                              
+						"Layout": "Groupped"                              
+					},                              
+					{                              
+						"Name": "Job Types",                              
+						"Model": "Salary",                              
+						"Layout": "Groupped"                              
+					},                              
+					{                              
+						"Name": "Related Jobs",                              
+						"Model": "Salary",                              
+						"Layout": "Groupped"                              
+					}                              
+				]                              
+			}                              
+		},                              
+		{                              
+			"List":                              
+			{                              
+				"Filters": [],                              
+				"Collection": []                              
+			}                              
+		}                              
+	],                                  
+	"Translates":                                  
+	{                                  
+		"Generated" :                                  
+		{                                  
+			"form_width" : "100",                                  
+			"form_begin" : "<form>",                                  
+			"form_end"   : "</form>",                                  
+			"table_begin" : "<table>",                                  
+			"table_end"   : "</table>",                                  
+			"my_style"   : "<style>body{background-color:#EFF} .generic_title{color: red} .label_style{text-align: right; width: 150px; color: blue; background-color: #FFD; border: 1px solid gray }</style>",                                  
+			"closed_div" : "</div>",                                  
+			"open_title" : "<div class='generic_title'>"                             
+        }                                  
+	},                       
+        "Items" : [               
+		{                      
+			"Name": "Header",                      
+			"Title": "Header",                      
+			"Layout": "gen_header",                      
+			"Items":                      
+			[                      
+				{                      
+					"Name": "Social",                      
+					"Title": "Get connected with us on social networks!",                      
+					"Items":                       
+					[                                
+						{                                
+							"Name": "Address",                                
+							"Title": "Chisinau, MD",                                
+							"Class": "fas fa-home",                                
+							"Value": "https://www.google.com/maps/place/Chisinau,+Moldova/@46.9998477,28.7881372,12z"                                
+						},                                
+						{                                
+							"Name": "Email",                                
+							"Title": "Email",                                
+							"Class": "fas fa-envelope",                                
+							"Value": "mailto:office@otb.expert"                                
+						},                                
+						{                                
+							"Name": "Phone",                                
+							"Title": "+44(0)7773.016.016",                                
+							"Class": "fas fa-phone",                                
+							"Value": "skype:office@otb.expert?call"                                
+						},                                
+						{                                
+							"Name": "Facebook",                                
+							"Title": "Facebook",                                
+							"Class": "fab fa-facebook-f",                                
+							"Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"                                
+						}                      
+					]                      
+				}                
+ 			]                
+		},             
+                {                               
+			"Name": "Static",                                
+			"Title": "Static",                                
+			"Layout": "gen_static",                                
+			"Items":                                
+			[                                
+				{                                
+					"Name": "Profile",                                
+					"Title": "Get connected with us on social networks!",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Molly Marshall",                                
+							"Title": "BUSINESS LAWYER",                                
+							"Class": "fab fa-facebook-f",                        
+							"Img": "https://mdbootstrap.com/img/Photos/Avatars/avatar-11.jpg"                                
+						}       
+					]                      
+				},      
+                                {                      
+					"Name": "Social",                      
+					"Title": "Get connected with us on social networks!",                      
+					"Items":                       
+					[                                
+						{                                
+							"Name": "Email",                                
+							"Title": "Email",                                
+							"Class": "fas fa-envelope",                                
+							"Value": "mailto:office@otb.expert"                                
+						},                                
+						{                                
+							"Name": "Phone",                                
+							"Title": "+44(0)7773.016.016",                                
+							"Class": "fas fa-phone",                                
+							"Value": "skype:office@otb.expert?call"                                
+						},                                
+						{                                
+							"Name": "Facebook",                                
+							"Title": "Facebook",                                
+							"Class": "fab fa-facebook-f",                                
+							"Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"                                
+						}                      
+					]                      
+				}              
+ 			]                
+		},             
+                {                               
+			"Name": "Footer",                                
+			"Title": "Footer",                                
+			"Layout": "gen_footer",                                
+			"Items":                                
+			[                                
+				{                                
+					"Name": "Social",                                
+					"Title": "Get connected with us on social networks!",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Facebook",                                
+							"Title": "Facebook",                                
+							"Class": "fab fa-facebook-f",                        
+							"Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"                                
+						},                                
+						{                                
+							"Name": "Twitter",                                
+							"Title": "Twitter",                                
+							"Class": "fab fa-twitter",                          
+							"Value": "https://twitter.com/otb_expert"                                
+						},                                
+						{                                
+							"Name": "Pinterest",                                
+							"Title": "Pinterest",                                
+							"Class": "fab fa-pinterest",                                
+							"Value": "https://www.pinterest.co.uk/otb_expert/"                                
+						},                                
+						{                                
+							"Name": "LinkedIn",                                
+							"Title": "LinkedIn",                                
+							"Class": "fab fa-linkedin-in",                                
+							"Value": "https://www.linkedin.com/company/otb-expert/"                                
+						}                                
+					]                                
+				},                                
+				{                                
+					"Name": "Slogan",                                
+					"Title": "OTB Expert",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Address",                                
+							"Title": "Address",                                
+							"Class": "home",                                
+							"Value": "Next genertion websites.<br>Ready for business?"                           
+						}                                
+					]                                
+				},                                
+				{                                
+					"Name": "Products",                                
+					"Title": "Products",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Address",                                
+							"Title": "Address",                                
+							"Class": "fas fa-home",                                
+							"Value": "Online Shopping"                                
+						},                                
+						{                                
+							"Name": "Email",                                
+							"Title": "Email",                                
+							"Class": "fas fa-envelope",                                
+							"Value": "Resources Management"                                
+						},                                
+						{                                
+							"Name": "Phone",                                
+							"Title": "Phone Number",                                
+							"Class": "fas fa-phone",                                
+							"Value": "Product Migration"                                
+						},                                
+						{                                
+							"Name": "Facebook",                                
+							"Title": "Facebook",                                
+							"Class": "fab fa-facebook",                                
+							"Value": "Social Marketing"                                
+						}                                
+					]                                
+				},                                
+				{                                
+					"Name": "Links",                                
+					"Title": "USEFUL LINKS",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Account",                                
+							"Value": "https://otb.expert/any.company",                                
+							"Class": "home",                                
+							"Title": "https://any.company"                                
+						},                                
+						{                                
+							"Name": "Email",                                
+							"Value": "https://otb.expert/eurojobit.com",                                
+							"Class": "envelope",                                
+							"Title": "https://eurojobit.com"                                
+						},                                
+						{                                
+							"Name": "Phone",                                
+							"Value": "https://otb.expert/they.network",                                
+							"Class": "phone",                                
+							"Title": "https://they.network"                                
+						},                                
+						{                                
+							"Name": "Facebook",                                
+							"Value": "https://otb.expert/otb.exert",                                
+							"Class": "facebook",                                
+							"Title": "https://otb.exert"                                
+						}                                
+					]                                
+				},                                
+				{                                
+					"Name": "Contact",                                
+					"Title": "Contact",                                
+					"Items":                                 
+					[                                
+						{                                
+							"Name": "Address",                                
+							"Title": "Chisinau, MD",                                
+							"Class": "fas fa-home",                                
+							"Value": "https://www.google.com/maps/place/Chisinau,+Moldova/@46.9998477,28.7881372,12z"                                
+						},                                
+						{                                
+							"Name": "Email",                                
+							"Title": "office@otb.expert",                                
+							"Class": "fas fa-envelope",                                
+							"Value": "mailto:office@otb.expert"                                
+						},                                
+						{                                
+							"Name": "Phone",                                
+							"Title": "+44(0)7773.016.016",                                
+							"Class": "fas fa-phone",                                
+							"Value": "skype:office@otb.expert?call"                                
+						},                                
+						{                                
+							"Name": "Facebook",                                
+							"Title": "OTB-Expert",                                
+							"Class": "fab fa-facebook-f",                                
+							"Value": "https://www.facebook.com/OTB-Expert-1788685408094083/"                                
+						}                                
+					]                                
+				},                                
+				{                                
+					"Name": "Copyright",                                
+					"Title": "OTB Expert"                                
+				}                                
+			]                                
+		}                       
+        ]                       
+                       
+}                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

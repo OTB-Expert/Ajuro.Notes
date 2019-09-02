@@ -1,16 +1,6 @@
-﻿using Ajuro.Notes.Model;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Ajuro.Notes.View
 {

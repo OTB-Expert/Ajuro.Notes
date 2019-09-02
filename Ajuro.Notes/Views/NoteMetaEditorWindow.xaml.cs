@@ -1,5 +1,4 @@
-using Ajuro.Notes.Model;
-using Ajuro.Notes.View;
+using Ajuro.WPF.Base.Model;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
