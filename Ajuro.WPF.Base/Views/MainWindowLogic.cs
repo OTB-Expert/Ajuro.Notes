@@ -1,5 +1,6 @@
 ﻿using Ajuro.Net.Template.Processor;
 using Ajuro.WPF.Base.DataAccess;
+using Ajuro.WPF.Base.Logic;
 using Ajuro.WPF.Base.Model;
 using Markdig;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ namespace Ajuro.WPF.Base.Views
 	public class MainWindowLogic
 	{
 		public string ScriptErrorSuppressor = "<script>window.onerror = function(msg,url,line){return true;}</script>";
+		private MultyFileDocumentManager documentManager = new MultyFileDocumentManager();
 		public List<LogEntry> LogEntries = new List<LogEntry>();
 		//AccountWindow accountWindow = new AccountWindow();
 		//NoteMetaEditorWindow editorWindow = new NoteMetaEditorWindow();
@@ -53,10 +55,13 @@ namespace Ajuro.WPF.Base.Views
 			return sb.ToString();
 		}
 
+		public string MarkdownToHtml(string content)
+		{
+			return Markdown.ToHtml(content);
+		}
 
 		public readonly AppViewModel view = new AppViewModel();
 
-		private FileDataAccess FileDataAccess { get; set; }
 		private TemplateInterpreter templateInterpreter = null;
 		private TemplateProcessor templateProcessor = null;
 
@@ -79,7 +84,7 @@ namespace Ajuro.WPF.Base.Views
 		/// <summary>
 		/// Where all notes are stored?
 		/// </summary>
-		string BasePath = @"C:\\Work\\Resources\\"; // test
+		// string BasePath = @"C:\\Work\\Resources\\"; // test
 
 		/// <summary>
 		/// Last selected note item.
@@ -135,6 +140,35 @@ namespace Ajuro.WPF.Base.Views
 			{
 				Process.Start(MainModel.Instance.TemplateItems.SelectedItem.TemplaterInstruction.Project);
 			}
+		}
+
+		public void EditItem(VersionModel item)
+		{
+		}
+
+		public void EditItem(ProjectModel item)
+		{
+		}
+
+		public void EditItem(MultiFileDocument item)
+		{
+		}
+
+		public void DeleteItem(VersionModel item)
+		{
+			documentManager.DeleteVersion(item);
+			FilterVersions(null);
+		}
+
+		public void DeleteItem(ProjectModel item)
+		{
+			documentManager.DeleteProject(item);
+			FilterProjects(MainModel.Instance.ProjectFilter);
+		}
+
+		public void DeleteItem(MultiFileDocument item)
+		{
+			documentManager.DeleteMultyFile(item);
 		}
 
 		public void Button_Click_Compile()
@@ -385,6 +419,28 @@ namespace Ajuro.WPF.Base.Views
 			}
 		}
 
+		public void RelatedFiles_SelectionChanged()
+		{
+			var document = GeDocumentByName(MainModel.Instance.SelectedRelatedFile);
+			if (document != null)
+			{
+				/*if (File.Exists(BasePath + document.Key))
+				{
+					var content = File.ReadAllText(BasePath + document.Key);
+					MainModel.Instance.ResourceContentDocument = content;
+				}
+				else
+				{
+					MainModel.Instance.ResourceContentDocument = string.Empty;
+				}*/
+				MainModel.Instance.TemplateItems.SelectedItem = document;
+			}
+			else
+			{
+				// MainModel.Instance.ResourceContentDocument = string.Empty;
+			}
+		}
+
 		public void Browser_OnLoadCompleted()
 		{
 			// MainModel.Instance.PreviewHtmlText = "ok";
@@ -404,16 +460,16 @@ namespace Ajuro.WPF.Base.Views
 				else
 				if (MainModel.Instance.TemplateItems.SelectedItem.Files != null && MainModel.Instance.TemplateItems.SelectedItem.Files.Count > 0)
 				{
-					if (MainModel.Instance.TemplateItems.SelectedItem.Files[0].EndsWith(".rd"))
+					if (MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name.EndsWith(".rd"))
 					{
-						document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0]);
+						document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name);
 					}
 					else
 					{
-						var fName = MainModel.Instance.TemplateItems.SelectedItem.Files.Where(p => p.EndsWith(".rd")).FirstOrDefault();
-						if (!string.IsNullOrEmpty(fName))
+						var file = MainModel.Instance.TemplateItems.SelectedItem.Files.Where(p => p.Name.EndsWith(".rd")).FirstOrDefault();
+						if (!string.IsNullOrEmpty(file.Name))
 						{
-							document = GeDocumentByName(fName);
+							document = GeDocumentByName(file.Name);
 						}
 					}
 				}
@@ -426,9 +482,9 @@ namespace Ajuro.WPF.Base.Views
 					isCompilable = true;
 					if(isCompilable)
 					{
-						if (File.Exists(BasePath + document.Key + ".snap"))
+						if (File.Exists(documentManager.GetPathByKey(document.Key + ".snap")))
 						{
-							MainModel.Instance.TemplateItems.SelectedItem.AffectedFiles = JsonConvert.DeserializeObject<ObservableCollection<AffectedFile>>(File.ReadAllText(BasePath + document.Key + ".snap"));
+							MainModel.Instance.TemplateItems.SelectedItem.AffectedFiles = JsonConvert.DeserializeObject<ObservableCollection<AffectedFile>>(File.ReadAllText(documentManager.GetPathByKey(document.Key) + ".snap"));
 						}
 					}
 
@@ -439,7 +495,7 @@ namespace Ajuro.WPF.Base.Views
 					MainModel.Instance.Button_Template_Visibility = Visibility.Visible;
 					MainModel.Instance.Button_Data_Visibility = Visibility.Visible;
 
-					var executionPlan = File.ReadAllText(BasePath + document.Key);
+					var executionPlan = File.ReadAllText(documentManager.GetPathByKey(document.Key));
 					MainModel.Instance.TemplateItems.SelectedItem.TemplaterInstruction = JsonConvert.DeserializeObject<TemplaterInstruction>(executionPlan.Replace("\\", "\\\\"));
 				}
 				
@@ -492,28 +548,50 @@ namespace Ajuro.WPF.Base.Views
 					}
 				}
 				*/
-				if (!File.Exists(BasePath + MainModel.Instance.TemplateItems.SelectedItem.Key))
+				var filePath = documentManager.GetPathByKey(MainModel.Instance.TemplateItems.SelectedItem.Key);
+				if (!File.Exists(filePath))
 				{
 					MainModel.Instance.TemplateItems.SelectedItem.Label = "!";
 					MainModel.Instance.ResourceContentDocument = string.Empty;
 					MainModel.Instance.DataTabControl_SelectedIndex = 1;
 
-					if (MainModel.Instance.TemplateItems.SelectedItem.Files != null && File.Exists(MainModel.Instance.TemplateItems.SelectedItem.Files[0]))
+					if (MainModel.Instance.TemplateItems.SelectedItem.Files != null && File.Exists(MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name))
 					{
-						string resourceContent = File.ReadAllText(MainModel.Instance.TemplateItems.SelectedItem.Files[0]);
+						string resourceContent = File.ReadAllText(MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name);
 						LinksReaderParagraph.Inlines.Add(new Run(resourceContent));
 						LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
 						MainModel.Instance.LinksReader_Document = LinksReaderDocument;
 					}
 					return;
 				}
-				string content = File.ReadAllText(BasePath + MainModel.Instance.TemplateItems.SelectedItem.Key);
+				string content = File.ReadAllText(documentManager.GetPathByKey(MainModel.Instance.TemplateItems.SelectedItem.Key)); ;
+				
 				// ResourceContentParagraph.Inlines.Add(new Run(content));
 				LinksReaderParagraph.Inlines.Add(new Run(content));
 
 				// ResourceContentDocument.Blocks.Add(ResourceContentParagraph);
 				MainModel.Instance.ResourceContentDocument = content;
-				MainModel.Instance.PreviewHtmlText = content;
+				if (MainModel.Instance.TemplateItems.SelectedItem.Name.ToLower().EndsWith(".rd"))
+				{
+					FilterVersions(string.Empty);
+					FilterProjects(string.Empty);
+					var docFile = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Name.ToLower().Replace(".rd", ".md"));
+
+					var docFilePath = documentManager.GetPathByKey(docFile.Key);
+					if (docFile != null && File.Exists(docFilePath))
+					{
+						var docContent = File.ReadAllText(docFilePath);
+						MainModel.Instance.PreviewHtmlText = docContent;
+					}
+					else
+					{
+						MainModel.Instance.PreviewHtmlText = "-";
+					}
+				}
+				else
+				{
+					MainModel.Instance.PreviewHtmlText = "-";
+				}
 
 				LinksReaderDocument.Blocks.Add(LinksReaderParagraph);
 				MainModel.Instance.LinksReader_Document = LinksReaderDocument;
@@ -547,7 +625,7 @@ namespace Ajuro.WPF.Base.Views
 			var response = MessageBox.Show("Delete file [" + MainModel.Instance.TemplateItems.SelectedItem.Name + "] ?", "Question", MessageBoxButton.YesNo);
 			if (response == MessageBoxResult.Yes)
 			{
-				File.Delete(BasePath + MainModel.Instance.TemplateItems.SelectedItem.Name);
+				File.Delete(documentManager.GetPathByKey(MainModel.Instance.TemplateItems.SelectedItem.Name));
 				MainModel.Instance.TemplateItems.Remove(MainModel.Instance.TemplateItems.SelectedItem);
 				MainModel.Instance.AllTemplateItems.Remove(MainModel.Instance.TemplateItems.SelectedItem);
 			}
@@ -556,7 +634,7 @@ namespace Ajuro.WPF.Base.Views
 
 		private void ReloadItems(ResourceFolder rootFolder)
 		{
-			var rawItemsList = FileDataAccess.GetItems(rootFolder.Path);
+			var rawItemsList = documentManager.GetItems(rootFolder.Path);
 			bool hasMetadata = rootFolder.Type == "notes";
 
 			MainModel.Instance.AllTemplateItems.Clear();
@@ -570,7 +648,7 @@ namespace Ajuro.WPF.Base.Views
 					}
 					else
 					{
-						var meta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(BasePath + item.Name));
+						var meta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(documentManager.GetPathByKey(item.Name)));
 						MainModel.Instance.AllTemplateItems.Add(new MultiFileDocument()
 						{
 							Tags = meta.Tags,
@@ -584,10 +662,10 @@ namespace Ajuro.WPF.Base.Views
 				}
 				else
 				{
-					ObservableCollection<string> files = new ObservableCollection<string>();
+					ObservableCollection<VersionedFile> files = new ObservableCollection<VersionedFile>();
 					if (File.Exists(item.Path))
 					{
-						files.Add(item.Path);
+						files.Add(new VersionedFile() { Name = item.Path });
 					}
 					else
 					{
@@ -623,12 +701,12 @@ namespace Ajuro.WPF.Base.Views
 				foreach (var item in items)
 				{
 					found++;
-					if (!File.Exists(BasePath + item.RowKey))
+					if (!File.Exists(documentManager.GetPathByKey(item.RowKey)))
 					{
 						//// File.WriteAllText(BasePath + item.Title, item.Content);
-						File.WriteAllText(BasePath + item.RowKey, item.Content);
+						File.WriteAllText(documentManager.GetPathByKey(item.RowKey), item.Content);
 						item.Content = string.Empty;
-						File.WriteAllText(BasePath + item.RowKey + ".meta", JsonConvert.SerializeObject(item));
+						File.WriteAllText(documentManager.GetPathByKey(item.RowKey + ".meta"), JsonConvert.SerializeObject(item));
 						MainModel.Instance.AllTemplateItems.Add(new MultiFileDocument()
 						{
 							Name = item.RowKey,
@@ -665,10 +743,10 @@ namespace Ajuro.WPF.Base.Views
 				foreach (var item in items)
 				{
 					found++;
-					if (!File.Exists(BasePath + item.RowKey))
+					if (!File.Exists(documentManager.GetPathByKey(item.RowKey)))
 					{
 						//// File.WriteAllText(BasePath + item.Title, item.Content);
-						File.WriteAllText(BasePath + item.RowKey, item.Content);
+						File.WriteAllText(documentManager.GetPathByKey(item.RowKey), item.Content);
 
 						added++;
 					}
@@ -693,10 +771,14 @@ namespace Ajuro.WPF.Base.Views
 			System.Diagnostics.Process.Start("http://otb.expert/Ajuro.Notes/mail_template_invitation.html");
 		}
 
-		public void FilterTemplateItems_KeyUp(Key key)
+		public void TemplatesFilterKeyUp(Key key)
 		{
 			if (key == Key.Down)
 			{
+				if(MainModel.Instance.TemplateItems.SelectedItem == null)
+				{
+					return;
+				}
 				ItemsSelectedIndex += 1;
 				if (ItemsSelectedIndex >= MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Items.Count)
 				{
@@ -717,7 +799,7 @@ namespace Ajuro.WPF.Base.Views
 			}
 			if (key == Key.Enter && MainModel.Instance.TemplateItems.Items.Count == 0)
 			{
-				MainModel.Instance.TemplateItems.NewItem(BasePath, ref FileNr, MainModel.Instance.TemplateFilter);
+				documentManager.Create(MainModel.Instance.TemplateFilter);
 			}
 
 			FilterTemplates(MainModel.Instance.TemplateFilter);
@@ -745,9 +827,16 @@ namespace Ajuro.WPF.Base.Views
 				MainModel.Instance.MultyFileDocumentsList_SelectedIndex = ItemsSelectedIndex;
 				return;
 			}
+			if (key == Key.Delete && MainModel.Instance.TemplateItems.SelectedItem.VersionItems.SelectedItem != null)
+			{
+				MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Remove(MainModel.Instance.TemplateItems.SelectedItem.VersionItems.SelectedItem);
+			}
 			if (key == Key.Enter && MainModel.Instance.TemplateItems.SelectedItem.VersionItems.Items.Count == 0)
 			{
-				MainModel.Instance.TemplateItems.SelectedItem.VersionItems.NewItem(BasePath, ref FileNr , MainModel.Instance.VersionFilter);
+				documentManager.CreateVersion(MainModel.Instance.VersionFilter);
+				MainModel.Instance.ResourceContentDocument = JsonConvert.SerializeObject(MainModel.Instance.TemplateItems.SelectedItem);
+
+				documentManager.SaveItem(MainModel.Instance.TemplateItems.SelectedItem);
 			}
 
 			FilterVersions(MainModel.Instance.VersionFilter);
@@ -777,7 +866,9 @@ namespace Ajuro.WPF.Base.Views
 			}
 			if (key == Key.Enter && MainModel.Instance.TemplateItems.SelectedItem.ProjectItems.Items.Count == 0)
 			{
-				MainModel.Instance.TemplateItems.SelectedItem.ProjectItems.NewItem(BasePath, ref FileNr, MainModel.Instance.ProjectFilter);
+				documentManager.CreateFile(MainModel.Instance.ProjectFilter);
+				MainModel.Instance.ResourceContentDocument = JsonConvert.SerializeObject(MainModel.Instance.TemplateItems.SelectedItem);
+				documentManager.SaveItem(MainModel.Instance.TemplateItems.SelectedItem);
 			}
 
 			FilterProjects(MainModel.Instance.ProjectFilter);
@@ -816,7 +907,7 @@ namespace Ajuro.WPF.Base.Views
 					var result = streamReader.ReadToEnd();
 					MainModel.Instance.TemplateItems.SelectedItem.Synced = DateTime.Now;
 					MainModel.Instance.TemplateItems.SelectedItem.Author = Me.RowKey;
-					SaveItem(entity);
+					documentManager.SaveItem(MainModel.Instance.TemplateItems.SelectedItem);
 					MainModel.Instance.StatusBartextBlock_Text = DateTime.Now.ToShortTimeString() + ": Uploaded [" + MainModel.Instance.TemplateItems.SelectedItem.Name + "]";
 					MainModel.Instance.TemplateItems.SelectedItem.Status = 2;
 				}
@@ -921,32 +1012,6 @@ namespace Ajuro.WPF.Base.Views
 		/// <summary>
 		/// Work in progress gets saved in the same file if the note name has not changes. If the name changed, a new file is created and the old file is deleted.
 		/// </summary>
-		private void SaveItem(string entity)
-		{
-			if (MainModel.Instance.TemplateItems.SelectedItem.Key == null)
-			{
-				MainModel.Instance.TemplateItems.SelectedItem.Key = Guid.NewGuid().ToString();
-			}
-			File.WriteAllText(BasePath + MainModel.Instance.TemplateItems.SelectedItem.Key, MainModel.Instance.ResourceContentDocument);
-			MainModel.Instance.TemplateItems.SelectedItem.Name = MainModel.Instance.Resource_Name_Text;
-			MainModel.Instance.TemplateItems.SelectedItem.LastUpdated = DateTime.UtcNow;
-			FileDataAccess.SaveItemMeta(BasePath, MainModel.Instance.TemplateItems.SelectedItem);
-			/*SelectedItem.Label = "";
-			SelectedItem.Name = Resource_Name.Text;
-			if (SelectedItem.Name.ToLower() != SelectedItem.NameOriginal.ToLower())
-			{
-				if (File.Exists(BasePath + Resource_Name.Text))
-				{
-					File.Delete(BasePath + SelectedItem.NameOriginal);
-				}
-			}*/
-			MainModel.Instance.TemplateItems.SelectedItem.Status = 0;
-		}
-
-		public void Image_MouseUp(MultiFileDocument item)
-		{
-			ShareItem(item);
-		}
 
 		public void Window_Closing()
 		{
@@ -997,6 +1062,20 @@ namespace Ajuro.WPF.Base.Views
 
 		private void FilterVersions(string filterString)
 		{
+			if (MainModel.Instance.TemplateItems.SelectedItem == null)
+			{
+				return;
+			}
+			if(MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Items == null)
+			{
+				MainModel.Instance.TemplateItems.SelectedItem.Versions = new ObservableCollection<VersionModel>();
+				var collectionItems = new ObservableCollection<BaseModel>();
+				foreach (var collectionItem in MainModel.Instance.TemplateItems.SelectedItem.Versions)
+				{
+					collectionItems.Add((BaseModel)collectionItem);
+				}
+				MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Items = collectionItems;
+			}
 			if (string.IsNullOrEmpty(filterString))
 			{
 				MainModel.Instance.TemplateItems.SelectedItem.VersionItems.Clear();
@@ -1011,7 +1090,7 @@ namespace Ajuro.WPF.Base.Views
 				filterString = filterString.Trim().ToLower();
 				if(MainModel.Instance.TemplateItems.SelectedItem.VersionItems == null)
 				{
-					MainModel.Instance.TemplateItems.SelectedItem.VersionItems = new VersionList(new List<VersionModel>());
+					MainModel.Instance.TemplateItems.SelectedItem.VersionItems = new VersionList(new ObservableCollection<VersionModel>());
 				}
 				MainModel.Instance.TemplateItems.SelectedItem.VersionItems.Clear();
 				var items = MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Items.Where(p => p.Name.ToLower().Contains(filterString));
@@ -1029,6 +1108,16 @@ namespace Ajuro.WPF.Base.Views
 
 		private void FilterProjects(string filterString)
 		{
+			if (MainModel.Instance.TemplateItems.SelectedItem.AllProjectItems.Items == null)
+			{
+				MainModel.Instance.TemplateItems.SelectedItem.Projects = new ObservableCollection<ProjectModel>();
+				var collectionItems = new ObservableCollection<BaseModel>();
+				foreach (var collectionItem in MainModel.Instance.TemplateItems.SelectedItem.Projects)
+				{
+					collectionItems.Add((BaseModel)collectionItem);
+				}
+				MainModel.Instance.TemplateItems.SelectedItem.AllProjectItems.Items = collectionItems;
+			}
 			if (string.IsNullOrEmpty(filterString))
 			{
 				MainModel.Instance.TemplateItems.SelectedItem.ProjectItems.Clear();
@@ -1043,7 +1132,7 @@ namespace Ajuro.WPF.Base.Views
 				filterString = filterString.Trim().ToLower();
 				if (MainModel.Instance.TemplateItems.SelectedItem.ProjectItems == null)
 				{
-					MainModel.Instance.TemplateItems.SelectedItem.ProjectItems = new ProjectList(new List<ProjectModel>());
+					MainModel.Instance.TemplateItems.SelectedItem.ProjectItems = new ProjectList(new ObservableCollection<ProjectModel>());
 				}
 				MainModel.Instance.TemplateItems.SelectedItem.ProjectItems.Clear();
 				var items = MainModel.Instance.TemplateItems.SelectedItem.AllProjectItems.Items.Where(p => p.Name.ToLower().Contains(filterString));
@@ -1173,11 +1262,11 @@ namespace Ajuro.WPF.Base.Views
 				*/
 				if (MainModel.Instance.TemplateItems.SelectedItem.Files == null)
 				{
-					MainModel.Instance.TemplateItems.SelectedItem.Files = new ObservableCollection<string>();
+					MainModel.Instance.TemplateItems.SelectedItem.Files = new ObservableCollection<VersionedFile>();
 				}
-				MainModel.Instance.TemplateItems.SelectedItem.Files.Add(MainModel.Instance.RelatedFileFilter.Trim());
+				MainModel.Instance.TemplateItems.SelectedItem.Files.Add(new VersionedFile() { Name = MainModel.Instance.RelatedFileFilter.Trim() });
 				MainModel.Instance.RelatedFileFilter = string.Empty;
-				FileDataAccess.SaveItemMeta(BasePath, MainModel.Instance.TemplateItems.SelectedItem);
+				documentManager.SaveItemMeta(MainModel.Instance.TemplateItems.SelectedItem);
 			}
 		}
 
@@ -1211,7 +1300,7 @@ namespace Ajuro.WPF.Base.Views
 		{
 			if (key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
 			{
-				MainModel.Instance.TemplateItems.NewItem(BasePath, ref FileNr);
+				documentManager.Create();
 			}
 			if (MainModel.Instance.TemplateItems.SelectedItem != null)
 			{
@@ -1219,13 +1308,13 @@ namespace Ajuro.WPF.Base.Views
 				if (key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
 				{
 					consumed = true;
-					SaveItem("notes");
+					documentManager.SaveItem(MainModel.Instance.TemplateItems.SelectedItem);
 				}
 				if (key == Key.F6 && Keyboard.Modifiers == ModifierKeys.Control)
 				{
-					if (MainModel.Instance.TemplateItems.SelectedItem.Files[0].EndsWith(".rd"))
+					if (MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name.EndsWith(".rd"))
 					{
-						MultiFileDocument document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0]);
+						MultiFileDocument document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name);
 						/*FragmentSelector templateEditorWindow = new FragmentSelector();
 						templateEditorWindow.BasePath = BasePath;
 						templateEditorWindow.LoadTemplateFromPath(File.ReadAllText(BasePath + document.Key));
@@ -1244,7 +1333,7 @@ namespace Ajuro.WPF.Base.Views
 				if (key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
 				{
 					consumed = true;
-					MainModel.Instance.TemplateItems.NewItem(BasePath, ref FileNr);
+					MainModel.Instance.TemplateItems.NewItem(documentManager.BasePath, ref FileNr);
 				}
 				if (key == Key.D && Keyboard.Modifiers == ModifierKeys.Control)
 				{
@@ -1304,7 +1393,7 @@ namespace Ajuro.WPF.Base.Views
 
 		private void CreateDocument(string name)
 		{
-			File.Create(BasePath + name);
+			File.Create(documentManager.GetPathByKey(name));
 			var multiFileDocument = new MultiFileDocument()
 			{
 				Key = Guid.NewGuid().ToString(),
@@ -1421,7 +1510,7 @@ namespace Ajuro.WPF.Base.Views
 		{
 			if (string.IsNullOrEmpty(itemName))
 			{
-				while (File.Exists(BasePath + "NewItem_" + FileNr + ".txt"))
+				while (File.Exists(documentManager.BasePath + "NewItem_" + FileNr + ".txt"))
 				{
 					FileNr++;
 				}
@@ -1454,6 +1543,82 @@ namespace Ajuro.WPF.Base.Views
 			return null;
 		}
 
+		public string EditConfigurationJson(KnownCommands str)
+		{
+			switch (str)
+			{
+				case KnownCommands.EditTemplate:
+					EditConfigurationJson("C:\\OTB\\templates\\profile.json", "Resources\\meta_profile.json");
+					break;
+				case KnownCommands.EditConfiguration:
+					if (Ajuro.WPF.Base.Model.MainModel.Instance.TemplateItems.SelectedItem == null)
+					{
+						return null;
+					}
+					EditConfigurationJson(documentManager.GetPathByKey(Ajuro.WPF.Base.Model.MainModel.Instance.TemplateItems.SelectedItem.Key), "Resources\\meta_config.json");
+					break;
+			}
+			return string.Empty;
+		}
+
+		private void EditConfigurationJson(string dataJsonPath, string metaJsonPath)
+		{
+			JObject SampleJson = null;
+
+			// InitializeComponent();
+			var MainViewModel = WizardModel.Instance;
+			WizardModel.DataJsonPath = dataJsonPath;
+			WizardModel.MetaJsonPath = metaJsonPath;
+			if (!File.Exists(WizardModel.DataJsonPath))
+			{
+				var file = File.Create(WizardModel.DataJsonPath);
+				file.Close();
+				File.WriteAllText(WizardModel.DataJsonPath, "{}");
+			}
+			if (!File.Exists(WizardModel.MetaJsonPath))
+			{
+				var file = File.Create(WizardModel.MetaJsonPath);
+				file.Close();
+				File.WriteAllText(WizardModel.MetaJsonPath, "{}");
+			}
+
+
+			if (File.Exists(WizardModel.DataJsonPath))
+			{
+				MainViewModel.SampleJson = File.ReadAllText(WizardModel.DataJsonPath);
+				SampleJson = JObject.Parse(MainViewModel.SampleJson);
+				MainViewModel.SampleTree = UniversalTreeNode.CreateTree(SampleJson);
+				MainViewModel.SampleJson = JsonConvert.SerializeObject(SampleJson, Formatting.Indented);
+				SampleJson = JObject.Parse(MainViewModel.SampleJson);
+			}
+
+			if (!File.Exists(WizardModel.MetaJsonPath))
+			{
+				var stream = File.Create(WizardModel.MetaJsonPath);
+				stream.Close();
+				File.WriteAllText(WizardModel.MetaJsonPath, "{}");
+			}
+
+			if (File.Exists(WizardModel.MetaJsonPath))
+			{
+				MainViewModel.MetaJson = File.ReadAllText(WizardModel.MetaJsonPath);
+				var metaJson = JObject.Parse(MainViewModel.MetaJson);
+				MainViewModel.MetaJson = JsonConvert.SerializeObject(metaJson, Formatting.Indented);
+			}
+
+			var steps = Newtonsoft.Json.JsonConvert.DeserializeObject<WizardStep>(MainViewModel.MetaJson).Children;
+			if (steps == null)
+			{
+				steps = new ObservableCollection<WizardStep>();
+			}
+			WizardModel.Instance.WizardSteps.Clear();
+			foreach (var step in steps)
+			{
+				WizardModel.Instance.WizardSteps.Add(step);
+			}
+		}
+
+
 		public void ExecuteQuery(Key key, bool openWindow)
 		{
 			Base.DataAccess.DataAccess dataAccess = new Base.DataAccess.DataAccess();
@@ -1475,13 +1640,13 @@ namespace Ajuro.WPF.Base.Views
 				return;
 			}
 
-			if (MainModel.Instance.TemplateItems.SelectedItem.Files != null && MainModel.Instance.TemplateItems.SelectedItem.Files.Count > 0 && MainModel.Instance.TemplateItems.SelectedItem.Files[0].EndsWith(".rd"))
+			if (MainModel.Instance.TemplateItems.SelectedItem.Files != null && MainModel.Instance.TemplateItems.SelectedItem.Files.Count > 0 && MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name.EndsWith(".rd"))
 			{
-				SaveItem("notes");
-				MultiFileDocument document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0]);
+				documentManager.SaveItem(MainModel.Instance.TemplateItems.SelectedItem);
+				MultiFileDocument document = GeDocumentByName(MainModel.Instance.TemplateItems.SelectedItem.Files[0].Name);
 				if (document != null)
 				{
-					ExecuteTemplate(File.ReadAllText(BasePath + document.Key));
+					ExecuteTemplate(File.ReadAllText(documentManager.GetPathByKey(document.Key)));
 				}
 				return;
 			}
@@ -1549,9 +1714,9 @@ namespace Ajuro.WPF.Base.Views
 			if (!string.IsNullOrEmpty(templaterInstruction.CSV))
 			{
 				var itemCSV = MainModel.Instance.AllTemplateItems.Items.Where(p => p.Name.Equals(templaterInstruction.CSV)).FirstOrDefault();
-				string variablesCSV = File.ReadAllText(BasePath + itemCSV.Key);
+				string variablesCSV = File.ReadAllText(documentManager.GetPathByKey(itemCSV.Key));
 				var itemVar = MainModel.Instance.AllTemplateItems.Items.Where(p => p.Name.Equals(templaterInstruction.Model)).FirstOrDefault();
-				variables = File.ReadAllText(BasePath + itemVar.Key);
+				variables = File.ReadAllText(documentManager.GetPathByKey(itemVar.Key));
 				variables = RecreateVariables(variables, variablesCSV);
 			}
 			else
@@ -1561,7 +1726,7 @@ namespace Ajuro.WPF.Base.Views
 				{
 					return;
 				}
-				variables = File.ReadAllText(BasePath + itemVar.Key);
+				variables = File.ReadAllText(documentManager.GetPathByKey(itemVar.Key));
 			}
 
 			if (!File.Exists(templaterInstruction.Project + "\\data.json"))
@@ -1574,13 +1739,13 @@ namespace Ajuro.WPF.Base.Views
 
 			var itemTemplate = MainModel.Instance.AllTemplateItems.Items.Where(p => p.Name.Equals(templaterInstruction.Template)).FirstOrDefault();
 			
-			if (itemTemplate != null && File.Exists(BasePath + itemTemplate.Key))
+			if (itemTemplate != null && File.Exists(documentManager.GetPathByKey(itemTemplate.Key)))
 			{
 				LogEntries.Clear();
 				Log(new LogEntry() { Message = "Processing template: " + itemTemplate.Name });
 
 				logLevel++;
-				var result0 = ParseTemplate(templaterInstruction.Project, itemTemplate.Name, BasePath + itemTemplate.Key, variables);
+				var result0 = ParseTemplate(templaterInstruction.Project, itemTemplate.Name, documentManager.GetPathByKey(itemTemplate.Key), variables);
 				//// AffectedFilesList.ItemsSource = MainModel.Instance.TemplateItems.SelectedItem.AffectedFiles;
 
 				logLevel--;
@@ -1600,7 +1765,7 @@ namespace Ajuro.WPF.Base.Views
 			}
 			AffectedFilesTab.IsSelected = true;
 			LogsTab.IsSelected = true;*/
-			File.WriteAllText(BasePath + MainModel.Instance.TemplateItems.SelectedItem.Key + ".snap", JsonConvert.SerializeObject(MainModel.Instance.TemplateItems.SelectedItem.AffectedFiles));
+			File.WriteAllText(documentManager.GetPathByKey(MainModel.Instance.TemplateItems.SelectedItem.Key + ".snap"), JsonConvert.SerializeObject(MainModel.Instance.TemplateItems.SelectedItem.AffectedFiles));
 		}
 
 		private string ParseTemplate(string projectPath, string templatename, string templatePath, string variables)
@@ -1694,6 +1859,8 @@ namespace Ajuro.WPF.Base.Views
 			}
 		}
 
+		// private FileDataAccess FileDataAccess { get; set; }
+
 
 		/// <summary>
 		/// All custom window initialization maintained by developers.
@@ -1701,7 +1868,7 @@ namespace Ajuro.WPF.Base.Views
 		public void CustomInitialize()
 		{
 			MainModel.Instance.ChannelSelector_Items = new ObservableCollection<string>();
-			FileDataAccess = new FileDataAccess();
+			// FileDataAccess = new FileDataAccess();
 			MainModel.Instance.LoginWithFacebookButton_Visibility = Visibility.Visible;
 
 
@@ -1776,12 +1943,12 @@ namespace Ajuro.WPF.Base.Views
 			MainModel.Instance.ChannelSelector_SelectedIndex = 0;
 			MainModel.Instance.TemplateItems.Items = new ObservableCollection<MultiFileDocument>();
 			// Don't be invasive, ask user for permission to ctreate stuffs on his disk if is not in your app folder.
-			if (!Directory.Exists(BasePath))
+			if (!Directory.Exists(documentManager.BasePath))
 			{
-				var s = MessageBox.Show("Folder is expected. Create [" + BasePath + "] ?", "Startup", MessageBoxButton.YesNo);
+				var s = MessageBox.Show("Folder is expected. Create [" + documentManager.BasePath + "] ?", "Startup", MessageBoxButton.YesNo);
 				if (s == MessageBoxResult.Yes)
 				{
-					Directory.CreateDirectory(BasePath);
+					Directory.CreateDirectory(documentManager.BasePath);
 				}
 				else
 				{
@@ -1790,14 +1957,14 @@ namespace Ajuro.WPF.Base.Views
 			}
 
 			// Colect notes from disk
-			var files = Directory.GetFiles(BasePath).ToList();
+			var files = Directory.GetFiles(documentManager.BasePath).ToList();
 			ObservableCollection<MultiFileDocument> items = new ObservableCollection<MultiFileDocument>();
 			foreach (string filePath in files)
 			{
 				if (filePath.EndsWith(".meta"))
 				{
 					NoteEntity noteMeta = JsonConvert.DeserializeObject<NoteEntity>(File.ReadAllText(filePath));
-					if (!noteMeta.Title.EndsWith(".rd"))
+					if (noteMeta.Title.EndsWith("profile.rd"))
 					{
 						// continue;
 					}
@@ -1813,6 +1980,8 @@ namespace Ajuro.WPF.Base.Views
 						Name = noteMeta.Title,
 						Synced = noteMeta.Synced,
 						Label = string.Empty,
+						Versions = noteMeta.Versions,
+						Projects = noteMeta.Projects,
 						Visibility = VisibilityLevels[0]
 					};
 					items.Add(item);
@@ -1821,8 +1990,20 @@ namespace Ajuro.WPF.Base.Views
 					{
 
 					}
-					item.AllVersionItems.Items = noteMeta.Versions;
-					item.AllProjectItems.Items = noteMeta.Projects;
+
+					var versions = new ObservableCollection<BaseModel>();
+					foreach (var collectionItem in noteMeta.Versions)
+					{
+						versions.Add((BaseModel)collectionItem);
+					}
+					var projects = new ObservableCollection<BaseModel>();
+					foreach (var collectionItem in noteMeta.Projects)
+					{
+						projects.Add((BaseModel)collectionItem);
+					}
+
+					item.AllVersionItems.Items = versions;
+					item.AllProjectItems.Items = projects;
 				}
 			}
 			MainModel.Instance.AllTemplateItems.Items = items;

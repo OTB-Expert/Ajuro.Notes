@@ -15,7 +15,13 @@ using System.Windows.Input;
 
 namespace Ajuro.WPF.Base.Model
 {
-	public enum KnownCommands { ExecuteTemplate, EditTemplate }
+	public enum KnownCommands {
+		ExecuteTemplate,
+		EditTemplate,
+		EditConfiguration,
+		ShowHelp,
+		EditorSaveDocument
+	}
 	public delegate string CommandRequestedDelegate(KnownCommands str);
 	public class MainModel : INotifyPropertyChanged
 	{
@@ -31,9 +37,22 @@ namespace Ajuro.WPF.Base.Model
 				if (instance == null)
 				{
 					instance = new MainModel();
+					instance.WizardDataContext = WizardModel.Instance;
 					instance.ShowTemplateEditor = false;
 				}
 				return instance;
+			}
+		}
+
+		
+		public WizardModel wizardDataContext { get; set; }
+		public WizardModel WizardDataContext
+		{
+			get { return wizardDataContext; }
+			set
+			{
+				wizardDataContext = value;
+				NotifyPropertyChanged();
 			}
 		}
 
@@ -48,6 +67,17 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
+		public string selectedRelatedFile { get; set; }
+		public string SelectedRelatedFile
+		{
+			get { return selectedRelatedFile; }
+			set
+			{
+				selectedRelatedFile = value;
+				NotifyPropertyChanged();
+			}
+		}
+
 		public bool showRemoteContent { get; set; }
 		public bool ShowRemoteContent
 		{
@@ -58,7 +88,7 @@ namespace Ajuro.WPF.Base.Model
 				NotifyPropertyChanged();
 			}
 		}
-		
+
 		public bool showGeneratedCode { get; set; }
 		public bool ShowGeneratedCode
 		{
@@ -103,24 +133,90 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
-		public string templateFilter { get; set; }
+		public bool showEditorLayout { get; set; }
+		public bool ShowEditorLayout
+		{
+			get { return showEditorLayout; }
+			set
+			{
+				showEditorLayout = value;
+
+				ShowRemoteContent = value;
+				ShowFileContent = value;
+				ShowGeneratedCode = value;
+				ShowTemplateEditor = !value;
+
+				NotifyPropertyChanged();
+			}
+		}
+
+		public bool showAdvancedLayout { get; set; }
+		public bool ShowAdvancedLayout
+		{
+			get { return showAdvancedLayout; }
+			set
+			{
+				showAdvancedLayout = value;
+				NotifyPropertyChanged();
+			}
+		}
+		private bool showVersions { get; set; }
+		public bool ShowVersions
+		{
+			get { return showVersions; }
+			set
+			{
+				showVersions = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		private bool showProjects { get; set; }
+		public bool ShowProjects
+		{
+			get { return showProjects; }
+			set
+			{
+				showProjects = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		private string templateFilter { get; set; }
 		public string TemplateFilter
 		{
 			get { return templateFilter; }
 			set
 			{
-				templateFilter = value;
-				NotifyPropertyChanged();
+				if (templateFilter != value)
+				{
+					templateFilter = value;
+					NotifyPropertyChanged();
+				}
 			}
 		}
-
-		public string versionFilter { get; set; }
+		
+		private string versionFilter { get; set; }
 		public string VersionFilter
 		{
 			get { return versionFilter; }
 			set
 			{
-				versionFilter = value;
+				if (versionFilter != value)
+				{
+					versionFilter = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+		
+		private bool isEditingDocument { get; set; }
+		public bool IsEditingDocument
+		{
+			get { return isEditingDocument; }
+			set
+			{
+				isEditingDocument = value;
 				NotifyPropertyChanged();
 			}
 		}
@@ -180,6 +276,32 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
+		private ICommand saveContentCommand;
+		public ICommand SaveContentCommand
+		{
+			get
+			{
+				return saveContentCommand;
+			}
+			set
+			{
+				saveContentCommand = value;
+			}
+		}
+
+		private ICommand editContentCommand;
+		public ICommand EditContentCommand
+		{
+			get
+			{
+				return editContentCommand;
+			}
+			set
+			{
+				editContentCommand = value;
+			}
+		}
+
 		private ICommand processTemplateCommand;
 		public ICommand ProcessTemplateCommand
 		{
@@ -203,6 +325,74 @@ namespace Ajuro.WPF.Base.Model
 			set
 			{
 				editTemplateCommand = value;
+			}
+		}
+
+		private ICommand editConfigurationCommand;
+		public ICommand EditConfigurationCommand
+		{
+			get
+			{
+				return editConfigurationCommand;
+			}
+			set
+			{
+				editConfigurationCommand = value;
+			}
+		}
+
+		private ICommand switchLayoutCommand;
+		public ICommand SwitchLayoutCommand
+		{
+			get
+			{
+				return switchLayoutCommand;
+			}
+			set
+			{
+				switchLayoutCommand = value;
+			}
+		}
+
+
+		private ICommand switchHelpFileCommand;
+		public ICommand SwitchHelpFileCommand
+		{
+			get
+			{
+				return switchHelpFileCommand;
+			}
+			set
+			{
+				switchHelpFileCommand = value;
+			}
+		}
+
+
+		private ICommand switchVersionsCommand;
+		public ICommand SwitchVersionsCommand
+		{
+			get
+			{
+				return switchVersionsCommand;
+			}
+			set
+			{
+				switchVersionsCommand = value;
+			}
+		}
+
+
+		private ICommand switchProjectsCommand;
+		public ICommand SwitchProjectsCommand
+		{
+			get
+			{
+				return switchProjectsCommand;
+			}
+			set
+			{
+				switchProjectsCommand = value;
 			}
 		}
 
@@ -250,13 +440,38 @@ namespace Ajuro.WPF.Base.Model
 		{
 			LastDocumentNames = new ObservableCollection<string>();
 			SwitchTemplatesCommand = new RelayCommand(SwitchTemplates, param => true);
+			SwitchLayoutCommand = new RelayCommand(SwitchLayout, param => true);
+			SwitchVersionsCommand = new RelayCommand(SwitchVersions, param => true);
+			switchProjectsCommand = new RelayCommand(SwitchProjects, param => true);
 			SwitchFileContentCommand = new RelayCommand(SwitchFileContent, param => true);
 			ProcessTemplateCommand = new RelayCommand(ProcessTemplate, param => true);
+			EditContentCommand = new RelayCommand(EditContent, param => true);
+			SaveContentCommand = new RelayCommand(SaveContent, param => true);
 			SwitchTemplateEditorCommand = new RelayCommand(SwitchTemplateEditor, param => true);
 			SwitchGeneratedCodeCommand = new RelayCommand(SwitchGeneratedCode, param => true);
 			EditTemplateCommand = new RelayCommand(EditTemplate, param => true);
+			EditConfigurationCommand = new RelayCommand(EditConfiguration, param => true);
 			SwitchAffectedFilesCommand = new RelayCommand(SwitchAffectedFiles, param => true);
 			SwitchRemoteContentCommand = new RelayCommand(SwitchRemoteContent, param => true);
+			SwitchHelpFileCommand = new RelayCommand(SwitchHelpFile, param => true);
+		}
+
+		public void SwitchHelpFile(object obj)
+		{
+			if (CommandRequestedEvent != null)
+			{
+				ContentEditorText = "";
+				switch (obj)
+				{
+					case "Interface":
+						ContentEditorPath = "Resources\\Help\\index.md";
+						break;
+					case "Documents":
+						ContentEditorPath = "Resources\\Help\\EmailBasedSelfRegistration.md";
+						break;
+				}
+				CommandRequestedEvent(KnownCommands.ShowHelp);
+			}
 		}
 
 		public void SwitchGeneratedCode(object obj)
@@ -287,6 +502,20 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
+		public void EditContent(object obj)
+		{
+			IsEditingDocument = !IsEditingDocument;
+		}
+
+		public void SaveContent(object obj)
+		{
+			if (CommandRequestedEvent != null)
+			{
+				CommandRequestedEvent(KnownCommands.EditorSaveDocument);
+			}
+			IsEditingDocument = false;
+		}
+
 		public void EditTemplate(object obj)
 		{
 			if (CommandRequestedEvent != null)
@@ -295,9 +524,40 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
+		public void EditConfiguration(object obj)
+		{
+			if (CommandRequestedEvent != null)
+			{
+				CommandRequestedEvent(KnownCommands.EditConfiguration);
+			}
+		}
+
 		public void SwitchTemplates(object obj)
 		{
 			ShowTemplates = !ShowTemplates;
+		}
+
+		public void SwitchVersions(object obj)
+		{
+			ShowVersions = !ShowVersions;
+		}
+
+		public void SwitchLayout(object obj)
+		{
+			switch(obj)
+			{
+				case "Editor":
+					ShowEditorLayout = !ShowEditorLayout;
+					break;
+				case "Advanced":
+					ShowAdvancedLayout = !ShowAdvancedLayout;
+					break;
+			}
+		}
+
+		public void SwitchProjects(object obj)
+		{
+			ShowProjects = !ShowProjects;
 		}
 
 		public void SwitchFileContent(object obj)
@@ -339,6 +599,38 @@ namespace Ajuro.WPF.Base.Model
 			set
 			{
 				selectedAffectedFileText = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		private string contentEditorText { get; set; }
+		public string ContentEditorText
+		{
+			get { return contentEditorText; }
+			set
+			{
+				contentEditorText = value;
+				NotifyPropertyChanged();
+			}
+		}
+		
+		private string documentEditorContent { get; set; }
+		public string DocumentEditorContent
+		{
+			get { return documentEditorContent; }
+			set
+			{
+				documentEditorContent = value;
+				NotifyPropertyChanged();
+			}
+		}
+		private string contentEditorPath { get; set; }
+		public string ContentEditorPath
+		{
+			get { return contentEditorPath; }
+			set
+			{
+				contentEditorPath = value;
 				NotifyPropertyChanged();
 			}
 		}

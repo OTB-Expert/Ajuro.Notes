@@ -10,19 +10,26 @@ using System.Windows.Documents;
 
 namespace Ajuro.WPF.Base.Model
 {
-	public class ProjectList : BaseList, INotifyPropertyChanged
+	public class BaseList : INotifyPropertyChanged
 	{
+		public ObservableCollection<BaseModel> Items { get; set; }
+		
+		public BaseModel selectedItem { get; set; }
+		public BaseModel SelectedItem
+		{
+			get { return selectedItem; }
+			set
+			{
+				selectedItem = value;
+				NotifyPropertyChanged();
+			}
+		}
 
 		public ICollectionView FileItemsView { get; set; }
-		
-		public ProjectList(ObservableCollection<ProjectModel> items)
+
+		public void Add(ObservableCollection<BaseModel> items)
 		{
-			var collectionItems = new ObservableCollection<BaseModel>();
-			foreach (var collectionItem in items)
-			{
-				collectionItems.Add((BaseModel)collectionItem);
-			}
-			Add(collectionItems);
+			Items = items;
 			InitialiseViews();
 		}
 
@@ -67,12 +74,13 @@ namespace Ajuro.WPF.Base.Model
 			return oldCriteria.Direction == ListSortDirection.Ascending;
 		}
 
-		public void Add(ProjectModel currentItem)
+		public void Add(BaseModel currentItem)
 		{
+			
 			Items.Add(currentItem);
 		}
 
-		public void Remove(ProjectModel currentItem)
+		public void Remove(BaseModel currentItem)
 		{
 			Items.Remove(currentItem);
 		}
@@ -81,32 +89,7 @@ namespace Ajuro.WPF.Base.Model
 		{
 			Items.Clear();
 		}
-
-		/// <summary>
-		/// Add a new note
-		/// </summary>
-		public void NewItem(string BasePath, ref int FileNr, string itemName = null)
-		{
-			if (string.IsNullOrEmpty(itemName))
-			{
-				while (File.Exists(BasePath + "NewItem_" + FileNr + ".txt"))
-				{
-					FileNr++;
-				}
-				itemName = "NewItem_" + FileNr + ".txt"; // Microsoft.VisualBasic.Interaction.InputBox("Question?", "Title", "Default Text");
-			}
-			FileNr++;
-			// if (response == MessageBoxResult.Yes)
-			{
-				SelectedItem = new ProjectModel()
-				{
-					Name = itemName
-				};
-				Items.Add(SelectedItem);
-				// SMainModel.Instance.TemplateItems.SelectedItem.AllProjectItems.Items.Add(SelectedItem);
-			}
-		}
-
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 		{

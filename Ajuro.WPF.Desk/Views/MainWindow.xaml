@@ -14,36 +14,59 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
         xmlns:Controls="clr-namespace:Ajuro.WPF.Controls;assembly=Ajuro.WPF.Controls"
 		x:Class="Ajuro.WPF.Desk.Views.MainWindow"
+		WindowState="Maximized"
         mc:Ignorable="d"
 		dx:DXSplashScreen.SplashScreenType="{x:Type local:SplashScreen}"
         Title="MicroDesk" Height="580.603" Width="800" Icon="../Resources/img/MicroDesk3.png" UseLayoutRounding="False">
 	<Window.Resources>
 		<converters:StatusToColorConverter x:Key="StatusToColorConverter" />
 		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+		<Style x:Key="TransparentStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Background="White" BorderThickness="2" CornerRadius="5" Padding="2" BorderBrush="Gray">
+							<ContentPresenter/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="130"/>
+			<RowDefinition Height="150"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<dxr:RibbonControl Grid.Row="0" RibbonStyle="Office2010" ToolbarShowMode="ShowAbove" ShowApplicationButton="True">
 			<dxr:RibbonPage Caption="Layout">
 				<dxr:RibbonPageGroup Caption="View">
-					<dxb:BarButtonItem x:Name="btnPaste" Content="Library" LargeGlyph="{dx:DXImage Image=Paste_32x32.png}" Glyph="{dx:DXImage Image=Paste_16x16.png}"/>
-					<dxb:BarButtonItem x:Name="SwitchTemplatesButton" ToolTip="Switch Templates" Content="Templates" Command="{Binding SwitchTemplatesCommand}" Glyph="{dx:DXImage Image=Copy_16x16.png}"/>
-					<dxb:BarButtonItem x:Name="SwitchVersionsButton" ToolTip="Switch Versions" Content="Versions" Command="{Binding SwitchVersionsCommand}" Glyph="{dx:DXImage Image=Copy_16x16.png}"/>
-					<dxb:BarButtonItem x:Name="SwitchProjectsButton" ToolTip="Switch Projects" Content="Projects" Command="{Binding SwitchProjectsCommand}" Glyph="{dx:DXImage Image=Copy_16x16.png}"/>
-					<dxb:BarButtonItem x:Name="SwitchAffectedFilesButton" ToolTip="Switch Affected Files" Content="AffectedFiles" Command="{Binding SwitchAffectedFilesCommand}" Glyph="{dx:DXImage Image=Copy_16x16.png}"/>
-					<dxb:BarButtonItem x:Name="SwitchRemoteContentButton" ToolTip="Switch Remote Content" Content="Content" Command="{Binding SwitchRemoteContentCommand}" LargeGlyph="{dx:DXImage Image=Cut_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" />
-					<dxb:BarButtonItem x:Name="SwitchFileContentButton" ToolTip="Switch File Content" Content="Content" Command="{Binding SwitchFileContentCommand}" LargeGlyph="{dx:DXImage Image=Cut_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" />
-					<dxb:BarButtonItem x:Name="SwitchTemplateEditorButton" ToolTip="Switch Template Editor" Content="Content" Command="{Binding SwitchTemplateEditorCommand}" LargeGlyph="{dx:DXImage Image=Cut_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" />
-					<dxb:BarButtonItem x:Name="SwitchGeneratedCodeButton" ToolTip="Switch Generated Code" Content="Content" Command="{Binding SwitchGeneratedCodeCommand}" LargeGlyph="{dx:DXImage Image=Cut_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" />
+					<!-- C:\Program Files (x86)\DevExpress 18.2\Components\Sources\DevExpress.Images\Images -->
+					<dxb:BarButtonItem x:Name="SwitchEditorLayoutButton" Content="Editor" Command="{Binding SwitchLayoutCommand}" CommandParameter="Editor" LargeGlyph="{dx:DXImage Image=Paste_32x32.png}" Glyph="{dx:DXImage Image=Paste_16x16.png}"/>
+					<dxb:BarButtonItem x:Name="SwitchAdvancedLayoutButton" Content="Advanced" Command="{Binding SwitchLayoutCommand}" CommandParameter="Advanced" LargeGlyph="{dx:DXImage Image=Paste_32x32.png}" Glyph="{dx:DXImage Image=Paste_16x16.png}"/>
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchTemplatesButton" ToolTip="Switch Templates" Content="Templates" Command="{Binding SwitchTemplatesCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchVersionsButton" ToolTip="Switch Versions" Content="Versions" Command="{Binding SwitchVersionsCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchProjectsButton" ToolTip="Switch Projects" Content="Projects" Command="{Binding SwitchProjectsCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchAffectedFilesButton" ToolTip="Switch Affected Files" Content="AffectedFiles" Command="{Binding SwitchAffectedFilesCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchRemoteContentButton" ToolTip="Switch Remote Content" Content="Remote Content" Command="{Binding SwitchRemoteContentCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchFileContentButton" ToolTip="Switch File Content" Content="File Content" Command="{Binding SwitchFileContentCommand}" />
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchTemplateEditorButton" ToolTip="Switch Template Editor" Content="Template Editor" Command="{Binding SwitchTemplateEditorCommand}"/>
+					<dxb:BarButtonItem IsVisible="{Binding ShowAdvancedLayout}" LargeGlyph="{dx:DXImage Image=AlignHorizontalTop_32x32.png}"  Glyph="{dx:DXImage Image=Cut_16x16.png}" x:Name="SwitchGeneratedCodeButton" ToolTip="Switch Generated Code" Content="Generated Code" Command="{Binding SwitchGeneratedCodeCommand}" />
 				</dxr:RibbonPageGroup>
 			</dxr:RibbonPage>
 			<dxr:RibbonPage Caption="Processor">
 				<dxr:RibbonPageGroup Caption="Template">
 					<dxb:BarButtonItem x:Name="Run" Content="RUN" Command="{Binding ProcessTemplateCommand}" LargeGlyph="{dx:DXImage Image=Cut_16x16.png}" />
 					<dxb:BarButtonItem x:Name="Edit" Content="EDIT" Command="{Binding EditTemplateCommand}" LargeGlyph="{dx:DXImage Image=Paste_16x16.png}" />
+				</dxr:RibbonPageGroup>
+				<dxr:RibbonPageGroup Caption="Configuration">
+					<dxb:BarButtonItem x:Name="EditConfiguration" Content="EDIT" Command="{Binding EditConfigurationCommand}" LargeGlyph="{dx:DXImage Image=Paste_16x16.png}" />
+				</dxr:RibbonPageGroup>
+			</dxr:RibbonPage>
+			<dxr:RibbonPage Caption="Help">
+				<dxr:RibbonPageGroup Caption="Documentation">
+					<dxb:BarButtonItem x:Name="InterfaceHelpFile" Content="Interface" Command="{Binding SwitchHelpFileCommand}" CommandParameter="Interface" LargeGlyph="{dx:DXImage Image=Question_16x16.png}" />
+					<dxb:BarButtonItem x:Name="DocumentsHelpFile" Content="Documents" Command="{Binding SwitchHelpFileCommand}" CommandParameter="Documents"  LargeGlyph="{dx:DXImage Image=Question_16x16.png}" />
 				</dxr:RibbonPageGroup>
 			</dxr:RibbonPage>
 		</dxr:RibbonControl>
@@ -108,54 +131,27 @@
 				<dxdo:LayoutGroup Caption="LayoutRoot" Orientation="Vertical" ItemWidth="300">
 					<dxdo:LayoutPanel Visibility="{Binding ShowTemplates, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" Caption="Templates" AllowClose="True" ItemHeight="200">
 						<DockPanel>
-							<TextBox DockPanel.Dock="Top"  x:Name="FilterTemplates" Text="{Binding TemplateFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="FilterTemplateItems_KeyUp" HorizontalAlignment="Stretch" Background="AliceBlue" Margin="4"/>
-							<ListView DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="MultyFileDocumentsList"
-				  ItemsSource="{Binding TemplateItems.Items}" 
-								  SelectedItem="{Binding TemplateItems.SelectedItem}"
-				  SelectionChanged="FilesList_SelectionChanged" 
-				  MouseDoubleClick="FilesList_MouseDoubleClick"
-								  HorizontalAlignment="Stretch"
-								  MinWidth="200"
-				  Grid.ColumnSpan="2">
-								<ListView.ItemTemplate>
-									<DataTemplate>
-										<!--DataType="{x:Type local:FileItem}"-->
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="20"/>
-												<ColumnDefinition Width="Auto"/>
-												<ColumnDefinition Width="20"/>
-											</Grid.ColumnDefinitions>
-											<Rectangle Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="8px" Height="8px" Margin="5px, 0px, 5px, 0px"
-                       Visibility="Visible">
-												<Rectangle.Fill>
-													<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
-												</Rectangle.Fill>
-												<Rectangle.OpacityMask>
-													<ImageBrush ImageSource="../Resources/img/white.png" />
-												</Rectangle.OpacityMask>
-												<Rectangle.Effect>
-													<DropShadowEffect ShadowDepth="2" />
-												</Rectangle.Effect>
-											</Rectangle>
-											<TextBlock Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
-											<!--Button Name="ShareButton" Click="ShareButton_Click" Tag="{Binding}"></Button-->
-											<Image Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch"  Source="../Resources/img/white.png" Height="16" Width="16" Tag="{Binding}" MouseUp="Image_MouseUp"/>
-										</Grid>
-									</DataTemplate>
-								</ListView.ItemTemplate>
-							</ListView>
+							<Controls:AjuroList DataContext="{Binding TemplateItems}" x:Name="TemplatesSmart" DockPanel.Dock="Top" Filter="{Binding TemplateFilter}" Items="{Binding Path=TemplateItems.Items, Mode=TwoWay}"></Controls:AjuroList>
 						</DockPanel>
+					</dxdo:LayoutPanel>
+					<dxdo:LayoutPanel Caption="Related" AllowClose="True">
+						<ListView ItemsSource="{Binding TemplateItems.SelectedItem.Files, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedRelatedFile}" SelectionChanged="RelatedFiles_SelectionChanged" MouseDoubleClick="ListView_MouseDoubleClick"  >
+							<ListView.View>
+								<GridView >
+									<GridViewColumn Header="Template" DisplayMemberBinding="{Binding Name}" />
+								</GridView>
+							</ListView.View>
+						</ListView>
 					</dxdo:LayoutPanel>
 					<dxdo:LayoutPanel Visibility="{Binding ShowVersions, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" Caption="Versions" AllowClose="True" ItemHeight="200">
 						<DockPanel>
+							<Controls:AjuroList  DataContext="{Binding TemplateItems.SelectedItem.VersionItems}" x:Name="VersionsSmart" DockPanel.Dock="Top" Filter="{Binding TemplateFilter}" Items="{Binding Path=TemplateItems.Items, Mode=TwoWay}"></Controls:AjuroList>
 							<TextBox DockPanel.Dock="Top"  x:Name="VersionItems" Text="{Binding VersionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="FilterVersionItems_KeyUp" HorizontalAlignment="Stretch" Background="AliceBlue" Margin="4"/>
-							<ListView DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="VersionList"
+							<Label DockPanel.Dock="Bottom" MinHeight="20" Content="{Binding TemplateItems.SelectedItem.VersionItems.SelectedItem.Name}"></Label>
+							<ListView DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="VersionList" VerticalAlignment="Stretch"
 				  ItemsSource="{Binding TemplateItems.SelectedItem.VersionItems.Items}" 
 								  SelectedItem="{Binding TemplateItems.SelectedItem.VersionItems.SelectedItem}"
-				  SelectionChanged="FilesList_SelectionChanged" 
-				  MouseDoubleClick="FilesList_MouseDoubleClick"
-								  HorizontalAlignment="Stretch"
+				  				  HorizontalAlignment="Stretch"
 								  MinWidth="200"
 				  Grid.ColumnSpan="2">
 								<ListView.ItemTemplate>
@@ -165,10 +161,10 @@
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="20"/>
 												<ColumnDefinition Width="Auto"/>
-												<ColumnDefinition Width="20"/>
+												<ColumnDefinition Width="10"/>
+												<ColumnDefinition Width="Auto"/>
 											</Grid.ColumnDefinitions>
-											<Rectangle Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="8px" Height="8px" Margin="5px, 0px, 5px, 0px"
-                       Visibility="Visible">
+											<Rectangle Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="8px" Height="8px" Margin="5px, 0px, 5px, 0px" Visibility="Visible">
 												<Rectangle.Fill>
 													<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
 												</Rectangle.Fill>
@@ -179,9 +175,12 @@
 													<DropShadowEffect ShadowDepth="2" />
 												</Rectangle.Effect>
 											</Rectangle>
-											<TextBlock Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
+											<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
 											<!--Button Name="ShareButton" Click="ShareButton_Click" Tag="{Binding}"></Button-->
-											<Image Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch"  Source="../Resources/img/white.png" Height="16" Width="16" Tag="{Binding}" MouseUp="Image_MouseUp"/>
+											<StackPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch"   Orientation="Horizontal">
+												<Image Source="../Resources/img/white.png" Height="16" Width="16" ToolTip="Save" Tag="{Binding}" MouseUp="SaveImage_MouseUp"></Image>
+												<Image Source="../Resources/img/bin.png" Height="16" Width="16" ToolTip="Delete" Tag="{Binding}" MouseUp="DeleteImage_MouseUp"></Image>
+											</StackPanel>
 										</Grid>
 									</DataTemplate>
 								</ListView.ItemTemplate>
@@ -191,10 +190,11 @@
 					<dxdo:LayoutPanel Visibility="{Binding ShowProjects, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" Caption="Projects" AllowClose="True" ItemHeight="200">
 						<DockPanel>
 							<TextBox DockPanel.Dock="Top"  x:Name="ProjectItems" Text="{Binding ProjectFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="FilterProjectItems_KeyUp" HorizontalAlignment="Stretch" Background="AliceBlue" Margin="4"/>
+							<Label DockPanel.Dock="Bottom" MinHeight="20" Content="{Binding TemplateItems.SelectedItem.ProjectItems.SelectedItem.Name}"></Label>
 							<ListView DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="ProjectsList"
 				  ItemsSource="{Binding TemplateItems.SelectedItem.ProjectItems.Items}" 
-								  SelectedItem="{Binding TemplateItems.SelectedItem.ProjectItems.SelectedProject}"
-				  SelectionChanged="FilesList_SelectionChanged" 
+								  SelectedItem="{Binding TemplateItems.SelectedItem.ProjectItems.SelectedItem}"
+				  SelectionChanged="ProjectsList_SelectionChanged" 
 				  MouseDoubleClick="FilesList_MouseDoubleClick"
 								  HorizontalAlignment="Stretch"
 								  MinWidth="200"
@@ -204,9 +204,10 @@
 										<!--DataType="{x:Type local:FileItem}"-->
 										<Grid>
 											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="20"/>
 												<ColumnDefinition Width="Auto"/>
 												<ColumnDefinition Width="20"/>
+												<ColumnDefinition Width="Auto"/>
+												<ColumnDefinition Width="10"/>
 											</Grid.ColumnDefinitions>
 											<Rectangle Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="8px" Height="8px" Margin="5px, 0px, 5px, 0px"
                        Visibility="Visible">
@@ -220,9 +221,12 @@
 													<DropShadowEffect ShadowDepth="2" />
 												</Rectangle.Effect>
 											</Rectangle>
-											<TextBlock Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
 											<!--Button Name="ShareButton" Click="ShareButton_Click" Tag="{Binding}"></Button-->
-											<Image Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch"  Source="../Resources/img/white.png" Height="16" Width="16" Tag="{Binding}" MouseUp="Image_MouseUp"/>
+											<StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch"   Orientation="Horizontal">
+												<Image Source="../Resources/img/bin.png" Height="16" Width="16" ToolTip="Delete" Tag="{Binding}" MouseUp="DeleteImage_MouseUp"></Image>
+												<Image Source="../Resources/img/white.png" Height="16" Width="16" ToolTip="Save" Tag="{Binding}" MouseUp="SaveImage_MouseUp"></Image>
+											</StackPanel>
+											<TextBlock Grid.Column="2" Text="{Binding Name, Mode=TwoWay}"/>
 										</Grid>
 									</DataTemplate>
 								</ListView.ItemTemplate>
@@ -263,7 +267,7 @@
 							</ListView.View>
 						</ListView>
 					</dxdo:LayoutPanel>
-					<dxdo:LayoutPanel Visibility="Collapsed" Caption="Tags" AllowClose="True">
+					<dxdo:LayoutPanel Caption="Tags" AllowClose="True">
 						<ListView ItemsSource="{Binding TemplateItems.SelectedItem.Tags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  SelectionChanged="ListView_SelectionChanged" MouseDoubleClick="ListView_MouseDoubleClick"  >
 							<ListView.View>
 								<GridView >
@@ -310,8 +314,40 @@
 						</ListView>
 					</dxdo:LayoutPanel>
 				</dxdo:LayoutGroup>
-				<dxdo:LayoutPanel Visibility="{Binding ShowRemoteContent, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}"  Caption="Generated Content" AllowClose="True" UseLayoutRounding="False">
-					<WebBrowser LoadCompleted="Browser_OnLoadCompleted" baseView:WebBrowserHelper.Body="{Binding PreviewHtmlText}" HorizontalAlignment="Stretch" Name="PreviewHtml"></WebBrowser>
+				<dxdo:LayoutPanel IsHitTestVisible="True" Visibility="{Binding ShowRemoteContent, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}"  Caption="Documentation" AllowClose="True" UseLayoutRounding="False">
+					<!--dxdo:LayoutPanel.CaptionTemplate>
+						<DataTemplate>
+							<DockPanel IsHitTestVisible="True">
+								<Button Style="{StaticResource TransparentStyle}" MouseDown="Label_MouseUp"  Click="Button_Click" Name="EditContentButton" Command="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.EditContentCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=dxdo:LayoutPanel}, Path=Control}">
+									<StackPanel>
+										<Image IsHitTestVisible="True" Visibility="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.IsEditingDocument, RelativeSource={RelativeSource Self}, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Stretch"  Source="../Resources/img/PenColor_32x32.png" Height="16" Width="16" Tag="Start editing document" MouseUp="Image_MouseUp"/>
+										<Image Visibility="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.IsEditingDocument, RelativeSource={RelativeSource Self}, ConverterParameter=true, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Stretch"  Source="../Resources/img/Save_32x32.png" Height="16" Width="16" Tag="Save document" MouseUp="Image_MouseUp"/>
+									</StackPanel>
+								</Button>
+								<TextBlock Text="  "></TextBlock>
+								<TextBlock Text="{Binding}" DockPanel.Dock="Left"/>
+							</DockPanel>
+						</DataTemplate>
+					</-->
+					<dxdo:LayoutPanel.ControlBoxContent>
+						<DockPanel>
+							<Button Visibility="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.IsEditingDocument, ConverterParameter=true, Converter={StaticResource BoolToVisibilityConverter}}" Style="{StaticResource TransparentStyle}" MouseDown="Label_MouseUp" Name="SaveContentButton" Command="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.SaveContentCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=dxdo:LayoutPanel}, Path=Control}">
+								<StackPanel Orientation="Horizontal">
+									<Image HorizontalAlignment="Stretch" Source="../Resources/img/Save_32x32.png" Height="16" Width="16" Tag="Start editing document" MouseUp="Image_MouseUp"/>
+								</StackPanel>
+							</Button>
+							<Button Style="{StaticResource TransparentStyle}" MouseDown="Label_MouseUp"  Click="Button_Click" Name="EditContentButton" Command="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.EditContentCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=dxdo:LayoutPanel}, Path=Control}">
+								<StackPanel Orientation="Horizontal">
+									<Image Visibility="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.IsEditingDocument, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Stretch"  Source="../Resources/img/PenColor_32x32.png" Height="16" Width="16" Tag="Start editing document" MouseUp="Image_MouseUp"/>
+									<Image Visibility="{Binding Path=(dxdo:DockLayoutManager.DockLayoutManager).DataContext.IsEditingDocument, ConverterParameter=true, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Stretch"  Source="../Resources/img/Cancel_32x32.png" Height="16" Width="16" Tag="Cancel document" MouseUp="Image_MouseUp"/>
+								</StackPanel>
+							</Button>
+						</DockPanel>
+					</dxdo:LayoutPanel.ControlBoxContent>
+					<DockPanel>
+						<WebBrowser Visibility="{Binding IsEditingDocument, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}" LoadCompleted="Browser_OnLoadCompleted" baseView:WebBrowserHelper.Body="{Binding PreviewHtmlText}" HorizontalAlignment="Stretch" Name="PreviewHtml"></WebBrowser>
+						<TextBox AcceptsReturn="True" Visibility="{Binding IsEditingDocument, ConverterParameter=true, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="DocumentEditorTextBox" Text="{Binding DocumentEditorContent, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
+					</DockPanel>
 				</dxdo:LayoutPanel>
 				<dxdo:LayoutPanel Visibility="{Binding ShowFileContent, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}"  Caption="Predefined Content" AllowClose="True" UseLayoutRounding="False">
 					<RichTextBox x:Name="ResourceContentTextBox" MouseDoubleClick="LinksReader_MouseDoubleClick"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,0,0">
@@ -332,7 +368,7 @@
 					</RichTextBox>
 				</dxdo:LayoutPanel>
 				<dxdo:LayoutPanel Visibility="{Binding ShowTemplateEditor, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}"  Caption="Template Editor" AllowClose="True" UseLayoutRounding="False">
-					<Controls:AjuroJsonEditor  Name="AjuroJsonEditor" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+					<Controls:AjuroJsonEditor  DataContext="{Binding WizardDataContext}"  Name="AjuroJsonEditor" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 				</dxdo:LayoutPanel>
 				<dxdo:LayoutPanel Visibility="{Binding ShowGeneratedCode, ConverterParameter=false, Converter={StaticResource BoolToVisibilityConverter}}"  Caption="Generated Code" AllowClose="True" UseLayoutRounding="False">
 					<Grid>

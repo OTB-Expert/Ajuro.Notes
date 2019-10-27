@@ -1,25 +1,25 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Ajuro.WPF.Base.Model
 {
-	public class VersionModel: INotifyPropertyChanged
+	public class VersionModel: BaseModel, INotifyPropertyChanged
 	{
-		private string name { get; set; }
-		public string Name
+		public VersionModel()
 		{
-			get { return name; }
-			set
-			{
-				name = value;
-				NotifyPropertyChanged();
-			}
+			Files = new ObservableCollection<VersionedFile>();
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+		private ObservableCollection<VersionedFile> files { get; set; }
+		public ObservableCollection<VersionedFile> Files
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			get { return files; }
+			set
+			{
+				files = value;
+				NotifyPropertyChanged();
+			}
 		}
 	}
 }

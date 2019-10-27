@@ -44,8 +44,46 @@ namespace Ajuro.WPF.Desk.Views
 		{
 			switch(str)
 			{
+				case KnownCommands.EditorSaveDocument:
+					File.WriteAllText(Ajuro.WPF.Base.Model.MainModel.Instance.ContentEditorPath, Ajuro.WPF.Base.Model.MainModel.Instance.DocumentEditorContent);
+					Ajuro.WPF.Base.Model.MainModel.Instance.PreviewHtmlText = logic.MarkdownToHtml(Ajuro.WPF.Base.Model.MainModel.Instance.DocumentEditorContent);
+					break;
+				case KnownCommands.ShowHelp:
+					if (string.IsNullOrEmpty(Ajuro.WPF.Base.Model.MainModel.Instance.ContentEditorPath) || !File.Exists(Ajuro.WPF.Base.Model.MainModel.Instance.ContentEditorPath))
+					{
+						Ajuro.WPF.Base.Model.MainModel.Instance.PreviewHtmlText = "<br/>";
+					}
+					else
+					{
+						var docContent = File.ReadAllText(Ajuro.WPF.Base.Model.MainModel.Instance.ContentEditorPath);
+						Ajuro.WPF.Base.Model.MainModel.Instance.DocumentEditorContent = docContent;
+						if (Ajuro.WPF.Base.Model.MainModel.Instance.ContentEditorPath.EndsWith(".md"))
+						{
+							Ajuro.WPF.Base.Model.MainModel.Instance.PreviewHtmlText = logic.MarkdownToHtml(docContent);
+						}
+						else
+						{
+							Ajuro.WPF.Base.Model.MainModel.Instance.PreviewHtmlText = docContent;
+						}
+					}
+					break;
+				case KnownCommands.EditConfiguration:
+					if (Ajuro.WPF.Base.Model.MainModel.Instance.TemplateItems.SelectedItem == null)
+					{
+						return null;
+					}
+					logic.EditConfigurationJson(str);
+					// this.AjuroJsonEditor.DataContext = null;
+					// this.AjuroJsonEditor.DataContext = WizardModel.Instance;
+					break;
 				case KnownCommands.EditTemplate:
-					EditTemplate();
+					if (Ajuro.WPF.Base.Model.MainModel.Instance.TemplateItems.SelectedItem == null)
+					{
+						return null;
+					}
+					logic.EditConfigurationJson(str);
+					// this.AjuroJsonEditor.DataContext = null;
+					// this.AjuroJsonEditor.DataContext = WizardModel.Instance;
 					break;
 				case KnownCommands.ExecuteTemplate:
 					logic.ExecuteQuery(Key.F5, false);
@@ -53,53 +91,7 @@ namespace Ajuro.WPF.Desk.Views
 			}
 			return string.Empty;
 		}
-
-		private void EditTemplate()
-		{
-			JObject SampleJson = null;
-
-			   // InitializeComponent();
-			var MainViewModel = WizardModel.Instance;
-			WizardModel.DataJsonPath = "C:\\OTB\\templates\\profile.json";
-			if (!File.Exists(WizardModel.DataJsonPath))
-			{
-				WizardModel.DataJsonPath = "Resources\\data.json";
-			}
-
-
-			if (File.Exists(WizardModel.DataJsonPath))
-			{
-				MainViewModel.SampleJson = File.ReadAllText(WizardModel.DataJsonPath);
-				SampleJson = JObject.Parse(MainViewModel.SampleJson);
-				MainViewModel.SampleTree = UniversalTreeNode.CreateTree(SampleJson);
-				MainViewModel.SampleJson = JsonConvert.SerializeObject(SampleJson, Formatting.Indented);
-			}
-
-			if (!File.Exists("Resources\\meta2.json"))
-			{
-				var stream = File.Create("Resources\\meta2.json");
-				stream.Close();
-				File.WriteAllText("Resources\\meta2.json", "{}");
-			}
-
-			if (File.Exists("Resources\\meta2.json"))
-			{
-				MainViewModel.MetaJson = File.ReadAllText("Resources\\meta2.json");
-				var metaJson = JObject.Parse(MainViewModel.MetaJson);
-				MainViewModel.MetaJson = JsonConvert.SerializeObject(metaJson, Formatting.Indented);
-			}
-			var steps = Newtonsoft.Json.JsonConvert.DeserializeObject<WizardStep>(MainViewModel.MetaJson).Children;
-			if (steps == null)
-			{
-				steps = new ObservableCollection<WizardStep>();
-			}
-			foreach (var step in steps)
-			{
-				WizardModel.Instance.WizardSteps.Add(step);
-			}
-			this.AjuroJsonEditor.DataContext = MainViewModel;
-		}
-
+		
 		// DataContext = view;
 		// mv = view.MainModel;
 
@@ -140,8 +132,50 @@ namespace Ajuro.WPF.Desk.Views
 
 		private void Image_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			MultiFileDocument item = (MultiFileDocument)((Image)sender).Tag;
-			logic.Image_MouseUp(item);
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				// logic.Save((MultiFileDocument)((Image)sender).Tag);
+			}
+		}
+
+		private void SaveImage_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				// logic.Save((MultiFileDocument)((Image)sender).Tag);
+			}
+		}
+
+		private void EditorImage_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (((Image)sender).Tag is VersionModel)
+			{
+				logic.EditItem((VersionModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is ProjectModel)
+			{
+				logic.EditItem((ProjectModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				logic.EditItem((MultiFileDocument)((Image)sender).Tag);
+			}
+		}
+
+		private void DeleteImage_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (((Image)sender).Tag is VersionModel)
+			{
+				logic.DeleteItem((VersionModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is ProjectModel)
+			{
+				logic.DeleteItem((ProjectModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				logic.DeleteItem((MultiFileDocument)((Image)sender).Tag);
+			}
 		}
 
 		private void FilesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -149,9 +183,9 @@ namespace Ajuro.WPF.Desk.Views
 			logic.FilesList_MouseDoubleClick();
 		}
 
-		private void FilterTemplateItems_KeyUp(object sender, KeyEventArgs e)
+		private void TemplatesFilter_KeyUp(object sender, KeyEventArgs e)
 		{
-			logic.FilterTemplateItems_KeyUp(e.Key);
+			logic.TemplatesFilterKeyUp(e.Key);
 		}
 
 		private void FilterVersionItems_KeyUp(object sender, KeyEventArgs e)
@@ -333,6 +367,16 @@ namespace Ajuro.WPF.Desk.Views
 		private void Browser_OnLoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			logic.Browser_OnLoadCompleted();
+		}
+
+		private void RelatedFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			logic.RelatedFiles_SelectionChanged();
+		}
+
+		private void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
 		}
 	}
 }

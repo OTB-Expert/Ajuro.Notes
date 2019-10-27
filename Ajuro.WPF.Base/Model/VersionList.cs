@@ -10,83 +10,16 @@ using System.Windows.Documents;
 
 namespace Ajuro.WPF.Base.Model
 {
-	public class VersionList : INotifyPropertyChanged
+	public class VersionList : BaseList, INotifyPropertyChanged
 	{
-		public ObservableCollection<VersionModel> Items { get; set; }
-		
-		public VersionModel selectedItem { get; set; }
-		public VersionModel SelectedItem
+		public VersionList(ObservableCollection<VersionModel> items)
 		{
-			get { return selectedItem; }
-			set
+			var collectionItems = new ObservableCollection<BaseModel>();
+			foreach (var collectionItem in items)
 			{
-				selectedItem = value;
-				NotifyPropertyChanged();
+				collectionItems.Add((BaseModel)collectionItem);
 			}
-		}
-
-		public ICollectionView FileItemsView { get; set; }
-		
-		public VersionList(IList<VersionModel> items)
-		{
-			Items = new ObservableCollection<VersionModel>(items);
-			InitialiseViews();
-		}
-
-		private void InitialiseViews()
-		{
-			InitialiseFileItemsView();
-		}
-
-		private void InitialiseFileItemsView()
-		{
-			FileItemsView = CollectionViewSource.GetDefaultView(Items);
-			FileItemsView.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-		}
-
-		public bool OrderByName(string criteria)
-		{
-			FileItemsView = CollectionViewSource.GetDefaultView(Items);
-			FileItemsView.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-
-			SortDescription oldCriteria = new SortDescription();
-			foreach(var existentCriteria in FileItemsView.SortDescriptions)
-			{
-				if(existentCriteria.PropertyName == criteria)
-				{
-					oldCriteria = existentCriteria;
-				}
-			}
-			if (!string.IsNullOrEmpty(oldCriteria.PropertyName))
-			{
-				// Revers sorting
-				oldCriteria = new SortDescription(criteria, oldCriteria.Direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending);
-				FileItemsView.SortDescriptions.Clear();
-				FileItemsView.SortDescriptions.Add(oldCriteria);
-			}
-			else
-			{
-				// Ascending by default
-				FileItemsView.SortDescriptions.Clear();
-				oldCriteria = new SortDescription(criteria, ListSortDirection.Ascending);
-				FileItemsView.SortDescriptions.Add(oldCriteria);
-			}
-			return oldCriteria.Direction == ListSortDirection.Ascending;
-		}
-
-		public void Add(VersionModel currentItem)
-		{
-			Items.Add(currentItem);
-		}
-
-		public void Remove(VersionModel currentItem)
-		{
-			Items.Remove(currentItem);
-		}
-
-		public void Clear()
-		{
-			Items.Clear();
+			Add(collectionItems);
 		}
 
 		/// <summary>
@@ -109,15 +42,9 @@ namespace Ajuro.WPF.Base.Model
 				{
 					Name = itemName
 				};
-				Items.Add(SelectedItem);
+				// Items.Add(SelectedItem);
 				MainModel.Instance.TemplateItems.SelectedItem.AllVersionItems.Add(SelectedItem);
 			}
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

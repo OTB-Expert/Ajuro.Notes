@@ -1,5 +1,6 @@
 ﻿using Ajuro.WPF.Base.Commands;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -25,6 +26,7 @@ namespace Ajuro.WPF.Base.Model
 		}
 
 		public static string DataJsonPath { get; set; }
+		public static string MetaJsonPath { get; set; }
 
 		private static void CustomInitialize()
 		{
@@ -302,8 +304,15 @@ namespace Ajuro.WPF.Base.Model
 			set
 			{
 				wizardSteps = value;
+				wizardSteps.CollectionChanged += OnCollectionChanged;
 				NotifyPropertyChanged();
 			}
+		}
+
+
+		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			NotifyPropertyChanged("WizardSteps");
 		}
 
 		private UniversalTreeNode sampleTree { get; set; }

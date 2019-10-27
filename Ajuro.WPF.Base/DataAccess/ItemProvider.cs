@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,16 @@ namespace Ajuro.WPF.Base.DataAccess
 		/// <param name="item">The file item to save. It is the current item of the main model.</param>
 		public void SaveItemMeta(string basePath, MultiFileDocument item)
 		{
+			var versions = new ObservableCollection<VersionModel>();
+			foreach (var collectionItem in item.AllVersionItems.Items)
+			{
+				versions.Add((VersionModel)collectionItem);
+			}
+			var projects = new ObservableCollection<ProjectModel>();
+			foreach (var collectionItem in item.AllProjectItems.Items)
+			{
+				projects.Add((ProjectModel)collectionItem);
+			}
 			File.WriteAllText(basePath + item.Key + ".meta", JsonConvert.SerializeObject(
 			   new NoteEntity()
 			   {
@@ -27,7 +38,9 @@ namespace Ajuro.WPF.Base.DataAccess
 				   RowKey = item.Key,
 				   Synced = item.Synced,
 				   Content = string.Empty,
-				   Title = item.Name
+				   Title = item.Name,
+				   Versions = versions,
+				   Projects = projects
 			   }));
 		}
 

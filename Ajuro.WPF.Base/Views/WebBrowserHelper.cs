@@ -25,6 +25,10 @@ namespace Ajuro.WPF.Base.Views
 
 		private static void OnBodyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
+			if(e.NewValue == null)
+			{
+				return;
+			}
 			var webBrowser = (WebBrowser)d;
 			webBrowser.NavigateToString((string)e.NewValue);
 		}

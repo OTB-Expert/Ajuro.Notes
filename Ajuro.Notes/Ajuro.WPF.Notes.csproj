@@ -257,6 +257,7 @@
     </Resource>
     <Resource Include="Images\MicroDesk.png" />
     <Resource Include="Resources\img\MicroDesk2.png" />
+    <Resource Include="Resources\img\bin.png" />
     <Content Include="Resources\Template\InputExample.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

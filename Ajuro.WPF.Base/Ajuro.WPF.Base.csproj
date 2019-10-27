@@ -97,7 +97,10 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="DataAccess\DataAccess.cs" />
+    <Compile Include="Logic\MultyFileDocumentManager.cs" />
     <Compile Include="Model\ProjectList.cs" />
+    <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\BaseList.cs" />
     <Compile Include="Model\VersionModel.cs" />
     <Compile Include="Model\ProjectModel.cs" />
     <Compile Include="Model\AjuroTemplate.cs" />
@@ -140,7 +143,7 @@
     <Compile Include="Model\AppViewModel.cs" />
     <Compile Include="Model\BusinessConfiguration.cs" />
     <Compile Include="Model\DirectoryItem.cs" />
-    <Compile Include="Model\FileItem.cs" />
+    <Compile Include="Model\MultiFileDocument.cs" />
     <Compile Include="Model\TemplateList.cs" />
     <Compile Include="Model\LocalSettings.cs" />
     <Compile Include="Model\MainModel.cs" />
@@ -182,6 +185,7 @@
     <None Include="Resources\Template\JsonObject.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Resource Include="Resources\bin.png" />
     <Content Include="Resources\Template\meta2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

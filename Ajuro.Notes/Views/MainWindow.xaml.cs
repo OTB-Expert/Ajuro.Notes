@@ -108,9 +108,9 @@ namespace Ajuro.Notes.View
 		}
 
 
-		private void FilterTemplateItems_KeyUp(object sender, KeyEventArgs e)
+		private void TemplatesFilter_KeyUp(object sender, KeyEventArgs e)
 		{
-			logic.FilterTemplateItems_KeyUp(e.Key);
+			logic.TemplatesFilterKeyUp(e.Key);
 		}
 
 		private void FilterVersionItems_KeyUp(object sender, KeyEventArgs e)
@@ -154,11 +154,37 @@ namespace Ajuro.Notes.View
 		{
 			logic.MenuItemSettings_Click();
 		}
-		
+
 		private void Image_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			MultiFileDocument item = (MultiFileDocument)((Image)sender).Tag;
-			logic.Image_MouseUp(item);
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				// logic.Save((MultiFileDocument)((Image)sender).Tag);
+			}
+		}
+
+		private void SaveImage_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				// logic.Save((MultiFileDocument)((Image)sender).Tag);
+			}
+		}
+
+		private void DeleteImage_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (((Image)sender).Tag is VersionModel)
+			{
+				logic.DeleteItem((VersionModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is ProjectModel)
+			{
+				logic.DeleteItem((ProjectModel)((Image)sender).Tag);
+			}
+			if (((Image)sender).Tag is MultiFileDocument)
+			{
+				logic.DeleteItem((MultiFileDocument)((Image)sender).Tag);
+			}
 		}
 
 		private void InputBox_Answered(InputBox sender, string answer)
@@ -270,6 +296,11 @@ namespace Ajuro.Notes.View
 		private void Button_Click_Data(object sender, RoutedEventArgs e)
 		{
 			logic.Button_Click_Data();
+		}
+
+		private void RelatedFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			logic.RelatedFiles_SelectionChanged();
 		}
 	}
 

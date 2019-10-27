@@ -13,7 +13,22 @@ namespace Ajuro.WPF.Base.Model
 	public class TemplateList : INotifyPropertyChanged
 	{
 		public ObservableCollection<MultiFileDocument> Items { get; set; }
-		
+
+		private string filter { get; set; }
+		public string Filter
+		{
+			get { return filter; }
+			set
+			{
+				if (filter != value)
+				{
+					filter = value;
+					FilterItems(filter);
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
 		public MultiFileDocument selectedItem { get; set; }
 		public MultiFileDocument SelectedItem
 		{
@@ -113,6 +128,31 @@ namespace Ajuro.WPF.Base.Model
 				};
 				Items.Add(SelectedItem);
 				MainModel.Instance.AllTemplateItems.Items.Add(SelectedItem);
+			}
+		}
+		private void FilterItems(string filterString)
+		{
+			if (string.IsNullOrEmpty(filterString))
+			{
+				MainModel.Instance.TemplateItems.Clear();
+
+				foreach (var item in MainModel.Instance.AllTemplateItems.Items)
+				{
+					MainModel.Instance.TemplateItems.Add(item);
+				}
+			}
+			else
+			{
+				filterString = filterString.Trim().ToLower();
+				MainModel.Instance.TemplateItems.Clear();
+
+				foreach (var item in MainModel.Instance.AllTemplateItems.Items)
+				{
+					if (item.Name.ToLower().Contains(filterString))
+					{
+						MainModel.Instance.TemplateItems.Add(item);
+					}
+				}
 			}
 		}
 

@@ -11,8 +11,16 @@ namespace Ajuro.WPF.Base.Model
 	{
 		public string RowKey { get; set; }
 		public ObservableCollection<string> Tags { get; set; }
-		public ObservableCollection<string> Files { get; set; }
-		public ObservableCollection<VersionModel> versions { get; set; }
+		private ObservableCollection<VersionedFile> files { get; set; }
+		public ObservableCollection<VersionedFile> Files
+		{
+			get { return files; }
+			set
+			{
+				files = value;
+			}
+		}
+		private ObservableCollection<VersionModel> versions { get; set; }
 		public ObservableCollection<VersionModel> Versions
 		{
 			get { return versions; }
@@ -21,7 +29,7 @@ namespace Ajuro.WPF.Base.Model
 				versions = value;
 			}
 		}
-		public ObservableCollection<ProjectModel> projects { get; set; }
+		private ObservableCollection<ProjectModel> projects { get; set; }
 		public ObservableCollection<ProjectModel> Projects
 		{
 			get { return projects; }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ajuro.WPF.Base.Model
 {
@@ -14,40 +11,34 @@ namespace Ajuro.WPF.Base.Model
 	/// <summary>
 	/// The structure of a note
 	/// </summary>
-	public class MultiFileDocument : INotifyPropertyChanged
+	public class MultiFileDocument : BaseModel, INotifyPropertyChanged
 	{
 		public MultiFileDocument()
 		{
 			Tags = new ObservableCollection<string>();
 			AffectedFiles = new ObservableCollection<AffectedFile>();
 
-			VersionItems = new VersionList(
-				new List<VersionModel>
-				{ }
-				);
-			AllVersionItems = new VersionList(
-				new List<VersionModel>
-				{ }
-				);
-			ProjectItems = new ProjectList(
-				new List<ProjectModel>
-				{ }
-				);
-			AllProjectItems = new ProjectList(
-				new List<ProjectModel>
-				{ }
-				);
+			Versions = new ObservableCollection<VersionModel>();
+			VersionItems = new VersionList(new ObservableCollection<VersionModel>{ });
+			AllVersionItems = new VersionList(Versions);
+			Projects = new ObservableCollection<ProjectModel>();
+			ProjectItems = new ProjectList(new ObservableCollection<ProjectModel>{ });
+			AllProjectItems = new ProjectList(Projects);
 		}
 
 
+		[JsonIgnore]
 		public VersionList AllVersionItems { get; set; }
+		[JsonIgnore]
 		public ProjectList AllProjectItems { get; set; }
+		[JsonIgnore]
 		public VersionList VersionItems { get; set; }
+		[JsonIgnore]
 		public ProjectList ProjectItems { get; set; }
 
 		public ObservableCollection<string> Tags { get; set; }
-		public ObservableCollection<VersionModel> versions { get; set; }
-		public ObservableCollection<VersionModel> Versions0
+		private ObservableCollection<VersionModel> versions { get; set; }
+		public ObservableCollection<VersionModel> Versions
 		{
 			get { return versions; }
 			set
@@ -56,8 +47,8 @@ namespace Ajuro.WPF.Base.Model
 				NotifyPropertyChanged();
 			}
 		}
-		public ObservableCollection<ProjectModel> projects { get; set; }
-		public ObservableCollection<ProjectModel> Projects0
+		private ObservableCollection<ProjectModel> projects { get; set; }
+		public ObservableCollection<ProjectModel> Projects
 		{
 			get { return projects; }
 			set
@@ -67,7 +58,7 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
-		public string selectedProject { get; set; }
+		private string selectedProject { get; set; }
 		public string SelectedProject
 		{
 			get { return selectedProject; }
@@ -87,8 +78,8 @@ namespace Ajuro.WPF.Base.Model
 				NotifyPropertyChanged();
 			}
 		}
-		public ObservableCollection<string> files { get; set; }
-		public ObservableCollection<string> Files
+		private ObservableCollection<VersionedFile> files { get; set; }
+		public ObservableCollection<VersionedFile> Files
 		{
 			get { return files; }
 			set
@@ -109,7 +100,7 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
-		public VisibilityLevel visibility { get; set; }
+		private VisibilityLevel visibility { get; set; }
 		public VisibilityLevel Visibility
 		{
 			get { return visibility; }
@@ -119,7 +110,7 @@ namespace Ajuro.WPF.Base.Model
 				NotifyPropertyChanged();
 			}
 		}
-		public DateTime lastUpdated { get; set; }
+		private DateTime lastUpdated { get; set; }
 		public DateTime LastUpdated
 		{
 			get { return lastUpdated; }
@@ -130,7 +121,7 @@ namespace Ajuro.WPF.Base.Model
 			}
 		}
 
-		public int status { get; set; }
+		private int status { get; set; }
 		public int Status
 		{
 			get { return status; }
@@ -156,19 +147,6 @@ namespace Ajuro.WPF.Base.Model
 				NotifyPropertyChanged();
 			}
 		}
-		private string name { get; set; }
-		/// <summary>
-		/// Name of the note, is also the name of the file storing the content of the note.
-		/// </summary>
-		public string Name
-		{
-			get { return name; }
-			set
-			{
-				name = value;
-				NotifyPropertyChanged();
-			}
-		}
 
 		private string label { get; set; }
 		/// <summary>
@@ -185,6 +163,37 @@ namespace Ajuro.WPF.Base.Model
 		}
 
 		public TemplaterInstruction TemplaterInstruction { get; set; }
+	}
+
+	public class VersionedFile
+	{
+		private string name { get; set; }
+		/// <summary>
+		/// Given name of the file
+		/// </summary>
+		public string Name
+		{
+			get { return name; }
+			set
+			{
+				name = value;
+				NotifyPropertyChanged();
+			}
+		}
+		private string key { get; set; }
+		/// <summary>
+		/// Unique identifier of the file
+		/// </summary>
+		public string Key
+		{
+			get { return key; }
+			set
+			{
+				key = value;
+				NotifyPropertyChanged();
+			}
+		}
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
